@@ -1,0 +1,180 @@
+"use client";
+import Image from "next/image";
+import React, { useState } from "react";
+
+export default function HomePageContent() {
+  return (
+    <>
+      <div>
+        <div>
+          {/* content header */}
+          <div className="text-2xl font-bold">
+            <h1>เราอยากบอกกับคุณว่า</h1>
+            <div className="divider divider-neutral w-48 mx-auto"></div>.
+          </div>
+          <div className="font-semibold text-lg">
+            <div>
+              <span className="text-red-600">เรา</span>
+              คือพื้นที่ที่แสดงเรื่องราวต่างๆที่เกี่ยวข้องกับการ
+              <span className="text-green-600">ท่องเที่ยว</span>
+              และ
+              <span className="text-green-600">ชุมชน</span>
+            </div>
+            <div className="mt-3">
+              <h1>
+                เพื่อให้
+                <span className="text-red-600">ทุกคน</span>
+                มีส่วนร่วมด้วยกัน สร้างบทความเกี่ยวกับการเดินทางและ
+                <span className="text-green-600">กิจกรรม</span>
+                ต่างๆที่น่าสนใจ
+              </h1>
+            </div>
+          </div>
+          {/* content main */}
+          <div
+            className="
+            mt-12 
+            grid grid-cols-2 gap-x-8 gap-y-6
+            sm:grid-cols-2 
+            md:grid-cols-2 
+            lg:grid-cols-2"
+          >
+            {/* card 1 */}
+            <div className="container grid flex-grow w-80 group  ">
+              <div className=" transform transition duration-1000 ease-in-out delay-100 hover:scale-110 hover:bg-base-200">
+                <div className=" rounded-xl shadow-lg grid place-items-center justify-center">
+                  <div className="relative pt-3 p-3">
+                    <figure>
+                      <Image
+                        className="opacity-100"
+                        src="/col1.png"
+                        alt="blog"
+                        quality={100}
+                        width={400}
+                        height={250}
+                      />
+                    </figure>
+                    <div className=" items-center text-center ">
+                      <div className=" transition duration-700 ease-out opacity-0 group-hover:opacity-100 group-hover:delay-100">
+                        <h1>BLOG</h1>
+                      </div>
+                      <div className="opacity-100 transition duration-700 ease-in-out group-hover:delay-100 group-hover:opacity-0 group-hover:-translate-y-8">
+                        <h1> Hover me</h1>
+                      </div>
+                      <p className="opacity-0 transition-opacity duration-700 delay-150 ease-in-out group-hover:opacity-100 group-hover:delay-100">
+                        ยินดีต้อนรับสู่บล็อกของเรา <br />
+                        ที่ซึ่งเราจะแชร์เรื่องราวต่างๆที่พบเจอ <br />
+                        คุณจะพบเนื้อหาที่สนุกสนาน <br />
+                        และมีข้อมูลมากมายที่จะอ่านและเรียนรู้
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {/* card 2 */}
+            <div className="grid flex-grow  w-80  group ">
+              <div className="transform card shadow-lg bg-white rounded-box transition duration-1000 ease-in-out delay-100 hover:scale-110 hover:bg-base-200">
+                <div className="grid place-items-center justify-center">
+                  <div className="relative pt-3 p-3">
+                    <figure>
+                      <Image
+                        className="opacity-100"
+                        src="/col1.png"
+                        alt="blog"
+                        quality={100}
+                        width={400}
+                        height={250}
+                      />
+                    </figure>
+                    <div className="card-body items-center text-center ">
+                      <div className="card-title  transition duration-700 ease-out opacity-0 group-hover:opacity-100 group-hover:delay-100">
+                        <h1>BLOG</h1>
+                      </div>
+                      <div className="opacity-100 transition duration-700 ease-in-out group-hover:delay-100 group-hover:opacity-0 group-hover:-translate-y-8">
+                        <h1> Hover me</h1>
+                      </div>
+                      <p className="opacity-0 transition-opacity duration-700 delay-150 ease-in-out group-hover:opacity-100 group-hover:delay-100">
+                        ยินดีต้อนรับสู่บล็อกของเรา <br />
+                        ที่ซึ่งเราจะแชร์เรื่องราวต่างๆที่พบเจอ <br />
+                        คุณจะพบเนื้อหาที่สนุกสนาน <br />
+                        และมีข้อมูลมากมายที่จะอ่านและเรียนรู้
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {/* card 3 */}
+            <div className="grid flex-grow   w-80  group ">
+              <div className="transform card shadow-lg bg-white rounded-box transition duration-1000 ease-in-out delay-100 hover:scale-110 hover:bg-base-200">
+                <div className="grid place-items-center justify-center">
+                  <div className="relative pt-3 p-3">
+                    <figure>
+                      <Image
+                        className="opacity-100"
+                        src="/col1.png"
+                        alt="blog"
+                        quality={100}
+                        width={400}
+                        height={250}
+                      />
+                    </figure>
+                    <div className="card-body items-center text-center ">
+                      <div className="card-title  transition duration-700 ease-out opacity-0 group-hover:opacity-100 group-hover:delay-100">
+                        <h1>BLOG</h1>
+                      </div>
+                      <div className="opacity-100 transition duration-700 ease-in-out group-hover:delay-100 group-hover:opacity-0 group-hover:-translate-y-8">
+                        <h1> Hover me</h1>
+                      </div>
+                      <p className="opacity-0 transition-opacity duration-700 delay-150 ease-in-out group-hover:opacity-100 group-hover:delay-100">
+                        ยินดีต้อนรับสู่บล็อกของเรา <br />
+                        ที่ซึ่งเราจะแชร์เรื่องราวต่างๆที่พบเจอ <br />
+                        คุณจะพบเนื้อหาที่สนุกสนาน <br />
+                        และมีข้อมูลมากมายที่จะอ่านและเรียนรู้
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {/* card 4 */}
+            <div className="grid flex-grow   w-80  group ">
+              <div className="transform card shadow-lg bg-white rounded-box transition duration-1000 ease-in-out delay-100 hover:scale-110 hover:bg-base-200">
+                <div className="grid place-items-center justify-center">
+                  <div className="relative pt-3 p-3">
+                    <figure>
+                      <Image
+                        className="opacity-100"
+                        src="/col1.png"
+                        alt="blog"
+                        quality={100}
+                        width={400}
+                        height={250}
+                      />
+                    </figure>
+                    <div className="card-body items-center text-center ">
+                      <div className="card-title  transition duration-700 ease-out opacity-0 group-hover:opacity-100 group-hover:delay-100">
+                        <h1>BLOG</h1>
+                      </div>
+                      <div className="opacity-100 transition duration-700 ease-in-out group-hover:delay-100 group-hover:opacity-0 group-hover:-translate-y-8">
+                        <h1> Hover me</h1>
+                      </div>
+                      <p className="opacity-0 transition-opacity duration-700 delay-150 ease-in-out group-hover:opacity-100 group-hover:delay-100">
+                        ยินดีต้อนรับสู่บล็อกของเรา <br />
+                        ที่ซึ่งเราจะแชร์เรื่องราวต่างๆที่พบเจอ <br />
+                        คุณจะพบเนื้อหาที่สนุกสนาน <br />
+                        และมีข้อมูลมากมายที่จะอ่านและเรียนรู้
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {/* end card*/}
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}

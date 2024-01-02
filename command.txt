@@ -1,0 +1,87 @@
+@model: ใช้ในการประกาศตาราง (model) ของคุณ โดยระบุชื่อตารางและฟิลด์ที่เกี่ยวข้อง.
+prisma
+Copy code
+model User {
+  id    Int     @id @default(autoincrement())
+  name  String
+  email String  @unique
+  posts Post[]
+}
+@id: ใช้ในการกำหนดฟิลด์ที่เป็น primary key ของตาราง.
+prisma
+Copy code
+id Int @id @default(autoincrement())
+@default(value): ใช้ในการกำหนดค่าเริ่มต้นสำหรับฟิลด์.
+prisma
+Copy code
+createdAt DateTime @default(now())
+@unique: ใช้ในการกำหนดฟิลด์ที่ต้องมีค่าไม่ซ้ำ.
+prisma
+Copy code
+email String @unique
+@relation: ใช้ในการกำหนดความสัมพันธ์ระหว่างตาราง.
+prisma
+Copy code
+model Post {
+  id     Int     @id @default(autoincrement())
+  title  String
+  author User    @relation(fields: [authorId], references: [id])
+  authorId Int
+}
+@map(name): ใช้ในการกำหนดชื่อตารางในฐานข้อมูล.
+prisma
+Copy code
+model User {
+  id    Int     @id @default(autoincrement()) @map(name: "user_id")
+  name  String
+  email String  @unique
+}
+@updatedAt: ใช้ในการเพิ่มฟิลด์ที่จะเก็บวันที่และเวลาของการอัปเดตล่าสุด.
+prisma
+Copy code
+updatedAt DateTime @updatedAt
+@ignore: ใช้ในการละเว้นฟิลด์นั้นในการสร้างตาราง.
+prisma
+Copy code
+ignoreMe String @ignore
+@env: ใช้ในการกำหนดค่าจาก environment variable.
+prisma
+Copy code
+DATABASE_URL String @env("DB_URL")
+@default(auto()): ใช้ในการกำหนดค่าเริ่มต้นโดยอัตโนมัติ, เช่น เวลาปัจจุบัน.
+prisma
+Copy code
+createdAt DateTime @default(auto())
+
+
+
+
+
+เพิ่มไฟล์ที่เปลี่ยนแปลงเข้าสู่ Staging Area: ใช้คำสั่ง git add เพื่อเพิ่มไฟล์ที่เปลี่ยนแปลงลงใน Staging Area ก่อน commit โดยระบุชื่อไฟล์หรือใช้ git add . เพื่อเพิ่มทุกไฟล์ที่เปลี่ยนแปลง:
+
+bash
+Copy code
+git add .
+ทำการ Commit การเปลี่ยนแปลง: ใช้คำสั่ง git commit เพื่อ commit การเปลี่ยนแปลงที่อยู่ใน Staging Area:
+
+bash
+Copy code
+git commit -m "เพิ่มคำอธิบายเกี่ยวกับการเปลี่ยนแปลงที่ทำ"
+หรือถ้าต้องการ commit และทำการเพิ่มไฟล์ที่เปลี่ยนแปลงพร้อม ๆ กัน ให้ใช้ -a flag:
+
+bash
+Copy code
+git commit -am "เพิ่มคำอธิบายเกี่ยวกับการเปลี่ยนแปลงที่ทำ"
+Push ไปยัง GitHub: ใช้คำสั่ง git push เพื่อ push การ commit ของคุณไปยัง remote repository (GitHub):
+
+bash
+Copy code
+ git push -u origin main
+
+
+git add .
+git commit -m "my changes" 
+ git push -u origin main
+
+ git commit -m "two commit"
+ git push -u origin main

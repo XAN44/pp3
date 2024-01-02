@@ -1,0 +1,96 @@
+"use client";
+import { authOptions } from "@/lib/auth";
+import { getServerSession } from "next-auth";
+import Image from "next/image";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useSession } from "next-auth/react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
+import { Button } from "@/components/ui/button";
+import { AlertAuth } from "@/lib/alert/alertSession";
+import { PostForm } from "@/components/post/postForm";
+import FetchPost from "@/components/post/fetchPost";
+import { FetchUserPost } from "@/lib/actions/user.post";
+import { useEffect, useState } from "react";
+import PostCard from "@/components/post/postCard";
+
+export default function Page() {
+  const { data: session, status } = useSession();
+  const [posts, setPosts] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const takePost = await FetchUserPost();
+        if (takePost && Array.isArray(takePost)) {
+          setPosts(takePost);
+          console.log("toddsobb", takePost);
+        }
+      } catch (error) {
+        console.error("Error fetching posts:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  if (status === "unauthenticated") {
+    return <AlertAuth />;
+  }
+
+  if (status === "loading") {
+    return <AlertAuth />;
+  }
+
+  if (status === "authenticated") {
+    // ทำการตรวจสอบ session ก่อนใช้งาน
+    return (
+      <>
+        <div className="mb-28  ">
+          {session.user.image ? (
+            <Avatar className="w-36 h-36">
+              <AvatarImage src={session.user.image} />
+              <AvatarFallback>{session.user.name}</AvatarFallback>
+            </Avatar>
+          ) : (
+            <Avatar className="w-36 h-36">
+              <AvatarImage src="defaultAvatar.png" />
+            </Avatar>
+          )}
+        </div>
+
+        <h2 className="text-2xl">
+          admin page - welcome back
+          {session.user.name}
+        </h2>
+        <h1>
+          bio
+          {session.user.bio}
+        </h1>
+        <h3>{session.user.nickname}</h3>
+        <div className="">
+          <PostForm
+            user={{
+              authorid: "",
+              content: "",
+            }}
+          />
+        </div>
+        <div className="">
+          {posts.map((post) => (
+            <PostCard
+              key={post.id}
+              id={post.id}
+              content={post.content}
+              authorId={post.authorId}
+              createAt={""}
+              author={
+                post.author || { id: "", name: "", nickname: "", image: "" }
+              }
+            />
+          ))}
+        </div>
+      </>
+    );
+  }
+}
