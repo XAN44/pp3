@@ -1,7 +1,6 @@
-import React, { Suspense } from "react";
-import HomePageHeader from "../components/homepage/HomePageHeader";
-import HomePageContent from "../components/homepage/HomePageContent";
 import HomePageContent1 from "@/components/homepage/HomePageContent1";
+import HomePageContent from "../components/homepage/HomePageContent";
+import HomePageHeader from "../components/homepage/HomePageHeader";
 
 export default function Home() {
   return (
@@ -11,8 +10,7 @@ export default function Home() {
         h-96
         w-screen
         -mt-[400px] 
-      "
-      >
+      ">
         {/* Cover Image */}
         <div className="">
           <HomePageHeader />

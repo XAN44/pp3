@@ -1,12 +1,12 @@
 import Navbar from "@/components/Navbar";
 import Provider from "@/components/Provider";
 import { Toaster } from "@/components/ui/toaster";
-import "@/app/globals.css";
+import { Theme } from "@radix-ui/themes";
+import "@radix-ui/themes/styles.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import React from "react";
-import "@radix-ui/themes/styles.css";
-import { Theme } from "@radix-ui/themes";
+import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
 

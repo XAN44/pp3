@@ -1,6 +1,5 @@
 "use client";
 import Image from "next/image";
-import React, { useState } from "react";
 
 export default function HomePageContent() {
   return (
@@ -37,8 +36,7 @@ export default function HomePageContent() {
             grid grid-cols-2 gap-x-2 gap-y-3
             sm:grid-cols-2 
             md:grid-cols-2 
-            lg:grid-cols-2"
-          >
+            lg:grid-cols-2">
             {/* card 1 */}
             <div className="container grid flex-grow w-80 group  ">
               <div className="  transform transition duration-1000 ease-in-out delay-100 hover:scale-110 ">

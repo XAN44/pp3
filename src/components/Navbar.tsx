@@ -1,28 +1,21 @@
 "use client";
-import Link from "next/link";
-import { Button, buttonVariants } from "./ui/button";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { HandMetal } from "lucide-react";
-import { authOptions } from "@/lib/auth";
-import { getServerSession } from "next-auth";
-import { signOut } from "next-auth/react";
+import Link from "next/link";
 import UserAccountnav from "./UserAccountnav";
-import Image from "next/image";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import ImageProfile from "./ui/img";
 
+import { useSession } from "next-auth/react";
+import { ImgProfilee } from "./profile-image/imgProfile";
 import {
   DropdownMenu,
-  DropdownMenuTrigger,
   DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuItem,
-  DropdownMenuGroup,
   DropdownMenuShortcut,
+  DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
-import { ImgProfilee } from "./profile-image/imgProfile";
-import { useSession } from "next-auth/react";
-import Cart from "@/app/(dashboard)/profile/cart/page";
 
 export default function Navbar() {
   const { data: session, status, update } = useSession();
