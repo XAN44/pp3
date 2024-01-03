@@ -5,7 +5,7 @@ import { getCurrentUser } from "../session";
 
 interface userPost {
   authorid: string;
-  path: string | null;
+  path: string;
   ImagePost: string;
   content: string;
 }
@@ -29,9 +29,7 @@ export async function userPost({
         ImagePost,
       },
     });
-    if (path === "/profile") {
-      revalidatePath(path);
-    }
+    revalidatePath(path);
   } catch (error: any) {
     throw new Error(`Failed to create/update user: ${error.message}`);
   }

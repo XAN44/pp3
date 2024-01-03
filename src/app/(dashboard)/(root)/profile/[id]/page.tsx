@@ -1,6 +1,8 @@
+import Follow from "@/components/follow/follow";
 import PostCard from "@/components/post/postCard";
 import { PostForm } from "@/components/post/postForm";
 import ProfileHeader from "@/components/profile/ProfileHeader";
+import { getFollower } from "@/lib/actions/user.follow";
 import { fetchUserProfileByID } from "@/lib/actions/user.post";
 import { getCurrentUser } from "@/lib/session";
 import { Container } from "@radix-ui/themes";
@@ -19,8 +21,12 @@ export default async function Page({ params }: { params: { id: string } }) {
   console.log(userInfo);
   if (!userInfo) redirect("/sign-in"); // ! และถ้าหากว่าไม่มี Prarams.id จะทำการ redireact ไปที่หน้า Sign-ins
 
+  const follower = await getFollower(params.id);
+  console.log("FOLLOW", follower);
+
   return (
     <Container className="relative mt-44">
+      <div className="ring-1 ring-black bg-red-600 w-full "></div>
       <div className=" flex flex-col place-items-center justify-center lg:flex-row ">
         {userInfo.map((Account) => (
           <>
@@ -48,18 +54,20 @@ export default async function Page({ params }: { params: { id: string } }) {
                 image={Account.image || " "}
                 bio={Account.bio || ""}
               />
+              <Follow authorId={Account.id} />
               <div className="divider divider-horizontal absolute ml-[400px] h-32  " />
             </div>
             <div className="relative h-32">
               <div className="text-center ">
-                <PostForm
-                  //*ส่วนของ Post Form
-                  user={{
-                    authorid: "",
-                    content: "",
-                    imagePost: "",
-                  }}
-                />
+                {userInfo.map((Account) => (
+                  <PostForm
+                    key={Account.id}
+                    accountId={Account.id}
+                    authUserId={user.id}
+                    imagePost={""}
+                    content={""}
+                  />
+                ))}
               </div>
               {Account.post.map((PostBy) => (
                 //*ส่วนแสดงเนื้อหาโพสต์

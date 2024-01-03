@@ -47,9 +47,7 @@ function ProfileHeader({
         )}
       </div>
 
-      <p className="">{bio}</p>
-
-      <div className="" />
+      <p>{bio}</p>
     </div>
   );
 }

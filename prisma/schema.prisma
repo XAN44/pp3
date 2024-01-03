@@ -48,7 +48,6 @@ model User {
     emailVerified   DateTime?
     image           String?   @default("https://utfs.io/f/be6dc431-2ebb-4b58-bb61-631dc74b6d50-nr9dfj.png")
     coverimage      String?
-    followingIds    String[]
     hasNotification Boolean?
     accounts        Account[]
     sessions        Session[]
@@ -57,6 +56,18 @@ model User {
     comments      Comment[]
     notifications Notification[]
     Reply         Reply[]
+    Follower      Follow[]       @relation(name: "Follower")
+    Following     Follow[]       @relation(name: "Following")
+}
+
+model Follow {
+    id          String  @id @default(cuid())
+    FollowerId  String?
+    FollowingId String?
+    Follower    User?   @relation(name: "Follower", references: [id], fields: [FollowerId])
+    Following   User?   @relation(name: "Following", references: [id], fields: [FollowingId])
+
+    @@unique([FollowerId, FollowingId])
 }
 
 model Post {
@@ -88,7 +99,6 @@ model Reply {
     replyCommet    Comment? @relation(fields: [replyCommentid], references: [id])
     replyCommentid String?
 }
-
 
 model Notification {
     id       String   @id @default(cuid())

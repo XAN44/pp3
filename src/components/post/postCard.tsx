@@ -1,9 +1,8 @@
+import { Container, Flex, Grid, Text } from "@radix-ui/themes";
 import Image from "next/image";
 import Link from "next/link";
-import { AvatarImage, Avatar } from "../ui/avatar";
-import { classNames } from "uploadthing/client";
-import { Code, Container, Flex, Grid, Text } from "@radix-ui/themes";
 import { FaCommentDots } from "react-icons/fa";
+import { Avatar, AvatarImage } from "../ui/avatar";
 
 interface Props {
   id: string;
@@ -44,8 +43,7 @@ const PostCard = ({
       p="6"
       className={`flex w-full flex-col rounded-xl ${
         isComment ? "px-0 xs:px-7" : "bg-dark-2 p-7"
-      }`}
-    >
+      }`}>
       <Flex gap="3">
         <Link href={`/profile/${author?.id}`}>
           <Avatar className="w-14 h-14">

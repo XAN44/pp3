@@ -1,11 +1,12 @@
 "use client";
-import { userPost } from "@/lib/actions/user.post";
-import { getCurrentUser } from "@/lib/session";
-import { TimeLinePost } from "@/lib/validations/Userpost";
-import { zodResolver } from "@hookform/resolvers/zod";
-import React, { ChangeEvent, useState } from "react";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import {
   Form,
   FormControl,
@@ -14,38 +15,28 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Button } from "../ui/button";
-import { usePathname } from "next/navigation";
-import { revalidatePath } from "next/cache";
-import { useRouter } from "next/router";
-import { CiImageOn } from "react-icons/ci";
-import { Value } from "@prisma/client/runtime/library";
-import Image from "next/image";
-import { isBase64Image } from "@/lib/utils";
+import { userPost } from "@/lib/actions/user.post";
 import { useUploadThing } from "@/lib/uploadthing";
-import { Input } from "../ui/input";
+import { isBase64Image } from "@/lib/utils";
+import { TimeLinePost } from "@/lib/validations/Userpost";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
-import { Container, Flex, Grid, Text } from "@radix-ui/themes";
+import Image from "next/image";
+import { usePathname } from "next/navigation";
+import { ChangeEvent, useState } from "react";
+import { useForm } from "react-hook-form";
+import { CiImageOn } from "react-icons/ci";
+import * as z from "zod";
+import { Button } from "../ui/button";
 
 interface Props {
-  user: {
-    authorid: string;
-    content: string;
-    imagePost: string;
-  };
+  content: string;
+  imagePost: string;
+  accountId: string;
+  authUserId: string;
 }
 
-export function PostForm({ user }: Props) {
+export function PostForm({ content, imagePost, accountId, authUserId }: Props) {
   const [files, setFiles] = useState<File[]>([]);
   const [selectedImage, setSelectedImage] = useState<string>("");
   const { startUpload } = useUploadThing("media");
@@ -74,7 +65,7 @@ export function PostForm({ user }: Props) {
     }
 
     await userPost({
-      authorid: user?.authorid,
+      authorid: authUserId,
       content: values.content ? String(values.content) : "", // ตรวจสอบค่า content ก่อนใช้งาน
       ImagePost: values.imagePost ? String(values.imagePost) : "",
       path: pathname,
@@ -107,87 +98,87 @@ export function PostForm({ user }: Props) {
 
   return (
     <>
-      <Dialog>
-        <DialogTrigger>โพสต์เนื้อหา</DialogTrigger>
-        <DialogContent className="grid items-center justify-center text-center">
-          <DialogHeader>
-            <DialogTitle> เพิ่มเนื้อหาของคุณ ! </DialogTitle>
-            <DialogDescription> เพิิ่มเนื้อหาของคุณได้เลย </DialogDescription>
-          </DialogHeader>
+      {accountId === authUserId && (
+        <Dialog>
+          <DialogTrigger>โพสต์เนื้อหา</DialogTrigger>
+          <DialogContent className="grid items-center justify-center text-center">
+            <DialogHeader>
+              <DialogTitle> เพิ่มเนื้อหาของคุณ ! </DialogTitle>
+              <DialogDescription> เพิิ่มเนื้อหาของคุณได้เลย </DialogDescription>
+            </DialogHeader>
 
-          <div className=" ">
-            <Form {...PostTimeline}>
-              <form
-                onSubmit={PostTimeline.handleSubmit(onSubmitPost)}
-                className="flex flex-col justify-center gap-10 text-center"
-              >
-                <FormField
-                  control={PostTimeline.control}
-                  name="content"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-col gap-3 ">
-                      <FormControl className=" border border-dark-4">
-                        <textarea
-                          rows={10}
-                          className="resize-none bg-base-300 rounded-lg w-96 pl-3 pr-3 pt-3"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={PostTimeline.control}
-                  name="imagePost"
-                  render={({ field }) => (
-                    <FormItem className="flex w-full flex-col gap-2  items-center justify-center ">
-                      <FormLabel className="text-base-semibold text-light-2"></FormLabel>
-                      <FormControl>
-                        <label
-                          htmlFor="file-upload"
-                          className="flex gap-2 cursor-pointer w-12"
-                        >
-                          <input
-                            id="file-upload"
-                            type="file"
-                            className="hidden w-5 "
-                            accept="image/*"
-                            placeholder="add post photo"
-                            onChange={(e) => handleImage(e, field.onChange)}
+            <div className=" ">
+              <Form {...PostTimeline}>
+                <form
+                  onSubmit={PostTimeline.handleSubmit(onSubmitPost)}
+                  className="flex flex-col justify-center gap-10 text-center">
+                  <FormField
+                    control={PostTimeline.control}
+                    name="content"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-col gap-3 ">
+                        <FormControl className=" border border-dark-4">
+                          <textarea
+                            rows={10}
+                            className="resize-none bg-base-300 rounded-lg w-96 pl-3 pr-3 pt-3"
+                            {...field}
                           />
-                          <CiImageOn size={30} id="file-upload" />
-                        </label>
-                      </FormControl>
-                      <Image
-                        src={selectedImage}
-                        alt="image post"
-                        width={100}
-                        height={100}
-                        style={{ display: imageSelected ? "block" : "none" }}
-                      />
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <Button type="submit" className="mt-3" disabled={isLoading}>
-                  {isLoading ? (
-                    <>
-                      <Button disabled>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Please wait
-                      </Button>
-                    </>
-                  ) : (
-                    isText
-                  )}
-                </Button>
-              </form>
-            </Form>
-          </div>
-        </DialogContent>
-      </Dialog>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={PostTimeline.control}
+                    name="imagePost"
+                    render={({ field }) => (
+                      <FormItem className="flex w-full flex-col gap-2  items-center justify-center ">
+                        <FormLabel className="text-base-semibold text-light-2"></FormLabel>
+                        <FormControl>
+                          <label
+                            htmlFor="file-upload"
+                            className="flex gap-2 cursor-pointer w-12">
+                            <input
+                              id="file-upload"
+                              type="file"
+                              className="hidden w-5 "
+                              accept="image/*"
+                              placeholder="add post photo"
+                              onChange={(e) => handleImage(e, field.onChange)}
+                            />
+                            <CiImageOn size={30} id="file-upload" />
+                          </label>
+                        </FormControl>
+                        <Image
+                          src={selectedImage}
+                          alt="image post"
+                          width={100}
+                          height={100}
+                          style={{ display: imageSelected ? "block" : "none" }}
+                        />
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <Button type="submit" className="mt-3" disabled={isLoading}>
+                    {isLoading ? (
+                      <>
+                        <Button disabled>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          Please wait
+                        </Button>
+                      </>
+                    ) : (
+                      isText
+                    )}
+                  </Button>
+                </form>
+              </Form>
+            </div>
+          </DialogContent>
+        </Dialog>
+      )}
     </>
   );
 }
