@@ -56,18 +56,17 @@ model User {
     comments      Comment[]
     notifications Notification[]
     Reply         Reply[]
-    Follower      Follow[]       @relation(name: "Follower")
-    Following     Follow[]       @relation(name: "Following")
+    followers     Follows[]      @relation("following")
+    following     Follows[]      @relation("follower")
 }
 
-model Follow {
-    id          String  @id @default(cuid())
-    FollowerId  String?
-    FollowingId String?
-    Follower    User?   @relation(name: "Follower", references: [id], fields: [FollowerId])
-    Following   User?   @relation(name: "Following", references: [id], fields: [FollowingId])
+model Follows {
+    follower    User   @relation("follower", fields: [followerId], references: [id])
+    followerId  String
+    following   User   @relation("following", fields: [followingId], references: [id])
+    followingId String
 
-    @@unique([FollowerId, FollowingId])
+    @@id([followerId, followingId])
 }
 
 model Post {

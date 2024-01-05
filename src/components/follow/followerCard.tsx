@@ -8,8 +8,8 @@ interface FollowerCardProps {
 function FollowerCard({ authorId, follower }: FollowerCardProps) {
   return (
     <div>
-      <p>{authorId}</p>
-      <p>{follower}</p>
+      <p>ผู้ติดตาม {authorId}</p>
+      <p> ยอดผู้ติดตาม {follower}</p>
     </div>
   );
 }

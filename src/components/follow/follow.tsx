@@ -5,21 +5,25 @@ import { usePathname } from "next/navigation";
 
 interface Props {
   authorId: string;
+  currentUserId: string;
 }
 
-export default function Follow({ authorId }: Props) {
+export default function Follow({ authorId, currentUserId }: Props) {
   const path = usePathname() ?? "";
 
-  const handleFollow = async () => {
+  const handleFollower = async () => {
     try {
-      await Follower({ authorId, path });
+      await Follower({ accountId: authorId, path });
+      console.log("Follower function called successfully");
     } catch (error) {
-      console.error("เกิดข้อผิดพลาดในการติดตาม:", error);
+      console.error(error);
     }
   };
   return (
     <>
-      <button onClick={handleFollow}>ติดตาม</button>
+      <div>
+        <button onClick={handleFollower}>ติดตาม</button>
+      </div>
     </>
   );
 }

@@ -1,59 +1,82 @@
 "use server";
-import { db } from "@/lib/db";
 
 import { revalidatePath } from "next/cache";
+import { db } from "../db";
 import { getCurrentUser } from "../session";
 
-interface Follower {
-  authorId: string;
+interface Props {
+  accountId: string;
   path: string;
 }
 
-export async function Follower({ path, authorId }: Follower): Promise<void> {
-  try {
-    const user = await getCurrentUser();
-    if (!user) {
-      throw new Error("เข้าสู่ระบบก่อน");
-    }
+export async function Follower({ accountId, path }: Props) {
+  // Todo: เช็คผู้ใช้ที่กำลัง Login
+  const currentUser = await getCurrentUser();
 
-    // ค้นหาข้อมูล Follow ที่ต้องการอัปเดตโดยใช้เงื่อนไขของ user.id ในฟิลด์ FollowerId
-    const existingFollow = await db.follow.findFirst({
+  if (!currentUser) {
+    // ! เตือนให้ผู้ใช้เข้าสู่ระบบใหม่
+    throw new Error("Pless Login");
+  }
+
+  try {
+    // Todo:เช็คว่าเป้าหมายที่ต้องการติดตามมีอยู่จริงไหม
+    const findAccournt = await db.follows.findFirst({
       where: {
-        FollowerId: user.id,
+        follower: {
+          id: accountId,
+        },
       },
     });
 
-    // ถ้ามีข้อมูล Follow ที่ตรงกับเงื่อนไข (FollowerId เท่ากับ user.id) ให้ทำการอัปเดต
-    if (existingFollow) {
-      await db.follow.update({
+    // * หากมีให้เข้าเงื่อนไขด้านล่างนี้
+    // Todo:เช็คว่ามีการติดตามเป้าหมายแล้วหรือไม่
+    // !โดยไม่ให้มีการติดตามซ้ำ
+    if (!findAccournt) {
+      const isAlreadyFollowing = await db.follows.findFirst({
         where: {
-          id: existingFollow.id,
-        },
-        data: {
-          FollowingId: authorId,
+          follower: { id: currentUser.id },
+          following: { id: accountId },
         },
       });
-    } else {
-      // ถ้าไม่มีข้อมูล Follow ที่ตรงกับเงื่อนไข (FollowerId เท่ากับ user.id) ให้สร้างข้อมูล Follow ใหม่
-      await db.follow.create({
-        data: {
-          FollowerId: user.id,
-          FollowingId: authorId,
-        },
-      });
+      //  *ถ้าเงื่อนไขผ่าน จะทำการสร้างการติดตามผู้ใช้คนนั้นๆ
+      if (!isAlreadyFollowing) {
+        const newFollower = await db.follows.create({
+          data: {
+            follower: { connect: { id: currentUser.id } },
+            following: { connect: { id: accountId } },
+          },
+        });
+        console.log("Added new follow:", newFollower);
+      } else {
+        console.log("Already following this account");
+      }
     }
 
     revalidatePath(path);
-  } catch (error: any) {
-    throw new Error(error.message);
+    return;
+  } catch (error) {
+    throw new Error("Error somthing wrong!");
   }
 }
 
-export async function getFollower(userId: string) {
-  const count = await db.follow.count({
-    where: {
-      FollowerId: userId,
-    },
-  });
-  return count;
+export async function getTotalFollower(accountid: string) {
+  try {
+    const followers = await db.follows.findMany({
+      where: {
+        following: {
+          id: accountid,
+        },
+      },
+      include: {
+        follower: {
+          select: {
+            id: true,
+            name: true,
+            image: true,
+          },
+        },
+      },
+    });
+    return followers;
+  } catch (error) {}
 }

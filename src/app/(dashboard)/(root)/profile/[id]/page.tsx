@@ -1,8 +1,9 @@
 import Follow from "@/components/follow/follow";
+import FollowerCard from "@/components/follow/followerCard";
 import PostCard from "@/components/post/postCard";
 import { PostForm } from "@/components/post/postForm";
 import ProfileHeader from "@/components/profile/ProfileHeader";
-import { getFollower } from "@/lib/actions/user.follow";
+import { getTotalFollower } from "@/lib/actions/user.follow";
 import { fetchUserProfileByID } from "@/lib/actions/user.post";
 import { getCurrentUser } from "@/lib/session";
 import { Container } from "@radix-ui/themes";
@@ -18,11 +19,10 @@ export default async function Page({ params }: { params: { id: string } }) {
 
   const userInfo = await fetchUserProfileByID(params.id); //Todo: โดยใช้ Params.id ในการยืนยันจากฐานข้อมูล หากข้อมูลตรงกัน จะทำการแสดงเนื้อหาต่างๆที่โค้ดด้านล่าง
 
+  const follower = await getTotalFollower(params.id);
+
   console.log(userInfo);
   if (!userInfo) redirect("/sign-in"); // ! และถ้าหากว่าไม่มี Prarams.id จะทำการ redireact ไปที่หน้า Sign-ins
-
-  const follower = await getFollower(params.id);
-  console.log("FOLLOW", follower);
 
   return (
     <Container className="relative mt-44">
@@ -46,7 +46,6 @@ export default async function Page({ params }: { params: { id: string } }) {
               <ProfileHeader
                 // *ส่วนของ Profile
                 //Todo:ใช้ Params จากการ Login ในการแสดงข้อมูล ผสมผสานกับการใช้ข้อมูลจาก DATABASE
-
                 accountId={Account.id}
                 authUserId={user.id} //*ใช้ user.id จาก session เพื่อตรวจสอบว่า id ตรงไหม หากตรง จะสามารถเข้าถึงการทำงานบางฟังก์ชันได้
                 name={Account.name || ""}
@@ -54,7 +53,16 @@ export default async function Page({ params }: { params: { id: string } }) {
                 image={Account.image || " "}
                 bio={Account.bio || ""}
               />
-              <Follow authorId={Account.id} />
+              {follower &&
+                follower.map((fol, index) => (
+                  <FollowerCard
+                    key={index}
+                    authorId={fol.followerId}
+                    follower={fol.followerId}
+                  />
+                ))}
+
+              <Follow authorId={Account.id} currentUserId={user.id} />
               <div className="divider divider-horizontal absolute ml-[400px] h-32  " />
             </div>
             <div className="relative h-32">

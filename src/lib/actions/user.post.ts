@@ -75,7 +75,7 @@ export async function FetchUserPost() {
       return fetchUser;
     }
   } catch (error) {
-    console.error("Error fetching user posts:", error); // หรือใช้วิธีที่ต้องการเพื่อจัดการข้อผิดพลาดที่เกิดขึ้น
+    console.error("Error fetching user posts:", error);
   }
 }
 
@@ -115,6 +115,7 @@ export async function fetchUserProfileByID(id: string) {
       where: {
         id: id,
       },
+
       include: {
         post: {
           orderBy: {

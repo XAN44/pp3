@@ -1,11 +1,4 @@
 "use client";
-import { userPost } from "@/lib/actions/user.post";
-import { getCurrentUser } from "@/lib/session";
-import { commentPost } from "@/lib/validations/Userpost";
-import { zodResolver } from "@hookform/resolvers/zod";
-import React, { ChangeEvent, useState } from "react";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
 import {
   Form,
   FormControl,
@@ -14,29 +7,14 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Button } from "../ui/button";
-import { usePathname } from "next/navigation";
-import { revalidatePath } from "next/cache";
-import { useRouter } from "next/router";
-import { CiImageOn } from "react-icons/ci";
-import { Value } from "@prisma/client/runtime/library";
-import Image from "next/image";
-import { isBase64Image } from "@/lib/utils";
-import { useUploadThing } from "@/lib/uploadthing";
-import { Input } from "../ui/input";
-import { Loader2 } from "lucide-react";
-import { Container, Flex, Grid, Text } from "@radix-ui/themes";
 import { CommentInPost } from "@/lib/actions/user.comment";
+import { commentPost } from "@/lib/validations/Userpost";
+import { zodResolver } from "@hookform/resolvers/zod";
+import Image from "next/image";
+import { usePathname } from "next/navigation";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
+import { Button } from "../ui/button";
 
 interface Props {
   postId: string;
@@ -49,7 +27,6 @@ export default function Comment({
   currentUserImage,
   currentUserId,
 }: Props) {
-  
   const path = usePathname() ?? "";
 
   const commentTimeLine = useForm<z.infer<typeof commentPost>>({
@@ -76,8 +53,7 @@ export default function Comment({
           className="
             flex  
             justify-center 
-             text-center "
-        >
+             text-center ">
           <FormField
             control={commentTimeLine.control}
             name="comment"
@@ -86,8 +62,7 @@ export default function Comment({
                 className="
                 flex w-full 
                 items-center 
-                gap-3 "
-              >
+                gap-3 ">
                 <FormLabel>
                   <Image
                     src={currentUserImage}
@@ -101,8 +76,7 @@ export default function Comment({
                 <FormControl
                   className="
                  border-none
-                  "
-                >
+                  ">
                   <input
                     placeholder="Comment.."
                     className=" 
