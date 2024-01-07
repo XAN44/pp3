@@ -1,5 +1,7 @@
+import dynamic from "next/dynamic";
 import Image from "next/image";
-import Link from "next/link";
+
+const Follow = dynamic(() => import("../follow/follow"), { ssr: false });
 
 interface Props {
   accountId: string;
@@ -8,6 +10,8 @@ interface Props {
   nickname: string;
   image: string;
   bio: string;
+  totalFollower: number;
+  totalFollowing: number;
 }
 
 function ProfileHeader({
@@ -17,8 +21,9 @@ function ProfileHeader({
   nickname,
   image,
   bio,
-}: // follower,
-Props) {
+  totalFollower,
+  totalFollowing,
+}: Props) {
   return (
     <div className="flex w-full flex-col justify-start">
       <div className="flex items-center justify-between">
@@ -39,15 +44,19 @@ Props) {
             <p className="text-base-medium text-gray-1">@{nickname}</p>
           </div>
         </div>
-        {accountId === authUserId && (
-          <Link href="/profile/edit">
-            <div>
-              <h1>jao kong</h1>
-            </div>
-          </Link>
+        {accountId !== authUserId && (
+          <>
+            <Follow
+              key={accountId}
+              follower={JSON.stringify(accountId)}
+              following={authUserId}
+              isFollower={true}
+            />
+          </>
         )}
       </div>
       <p>{bio}</p>
+      <div></div>
     </div>
   );
 }

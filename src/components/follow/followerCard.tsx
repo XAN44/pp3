@@ -1,15 +1,21 @@
 "use client";
 
 interface FollowerCardProps {
-  authorId: string;
-  follower: string;
+  accountId: {
+    follower: number;
+    following: number;
+  };
 }
 
-function FollowerCard({ authorId, follower }: FollowerCardProps) {
+function FollowerCard({ accountId }: FollowerCardProps) {
   return (
-    <div>
-      <p>ผู้ติดตาม {authorId}</p>
-      <p> ยอดผู้ติดตาม {follower}</p>
+    <div className="flex">
+      <div className="">
+        <p> Follower {accountId.follower}</p>
+      </div>
+      <div>
+        <p> Following {accountId.following}</p>
+      </div>
     </div>
   );
 }

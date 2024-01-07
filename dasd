@@ -1,76 +1,122 @@
-import React, { useEffect, useState } from "react";
-import { Button } from "../ui/button";
-import { Toast } from "@radix-ui/react-toast";
-import { toast } from "../ui/use-toast";
-import { useSession } from "next-auth/react";
-import Image from "next/image";
-import { Avatar, AvatarImage } from "../ui/avatar";
-import { CldUploadButton } from "next-cloudinary";
+import { db } from "@/lib/db";
+import { NextApiResponse } from "next";
+import { revalidatePath } from "next/cache";
+import { NextResponse } from "next/server";
 
-export function ImgProfile() {
-    const { data: session, status } = useSession();
-    const [file, setFile] = React.useState<File>();
-    const [image, setImage] = React.useState()
+interface Request {
+  accountId: string;
+  currentId: string;
+  path: string;
+  query: {
+    accountId?: string;
+  };
+}
 
+export async function POST(req: Request) {
+  const { accountId, currentId, path } = req;
 
-    const onsubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        if (!file) return;
-
-        try {
-            const data = new FormData();
-            data.set("file", file);
-
-            const res = await fetch("/api/uploadProfile", {
-                method: "POST",
-                body: data,
-            });
-
-            if (res.ok) {
-                toast({
-                    title: "สำเร็จ!",
-                    description: "อัพโหลดรูปภาพสำเร็จ",
-                    variant: "default",
-                });
-            }
-        } catch (e: any) {
-            toast({
-                title: "ผิดพลาด!",
-                description: e.message,
-                variant: "destructive",
-            });
-        }
-    };
-
-
-
-
-    if (status === "authenticated") {
-        return (
-            <>
-            <div className= "" >
-            <CldUploadButton uploadPreset="uhlc9xfr" className = "" >
-                <div>
-                <svg
-                xmlns="http://www.w3.org/2000/svg"
-        fill = "none"
-        viewBox = "0 0 24 24"
-        strokeWidth = { 1.5}
-        stroke = "currentColor"
-        className = "w-6 h-6"
-            >
-            <path
-                  strokeLinecap="round"
-        strokeLinejoin = "round"
-        d = "M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"
-            />
-            </svg>
-            < /div>
-            < h1 > Upload < /h1>
-            < /CldUploadButton>
-            < /div>
-            < input type = "file" name = "file" />
-                </>
-    );
+  try {
+    if (accountId === currentId) {
+      return NextResponse.json(
+        {
+          accountId: null,
+          currentId: null,
+          error: "Cannot follow yourself",
+        },
+        { status: 400 }
+      );
     }
+    const isAlreadyFollowing = await db.follows.findFirst({
+      where: {
+        followerId: accountId,
+        followingId: currentId,
+      },
+    });
+
+    if (!isAlreadyFollowing) {
+      const newFollower = await db.follows.create({
+        data: {
+          followerId: accountId,
+          followingId: currentId,
+        },
+      });
+      revalidatePath(path);
+      console.log(`Added new follow: ${JSON.stringify(newFollower)}`);
+
+      return NextResponse.json({ success: true });
+    } else {
+      return NextResponse.json({
+        error: "You are already following this user",
+        statusCode: 400,
+      });
+    }
+  } catch (error) {
+    console.error("Error following user:", error);
+    return NextResponse.json({
+      error: "Server error",
+      statusCode: 500,
+    });
+  }
+}
+
+export async function GET(req: Request, res: NextApiResponse) {
+  const { accountId } = req.query;
+
+  try {
+    const totalFollowers = await db.follows.count({
+      where: {
+        followingId: accountId as string,
+      },
+    });
+
+    const totalFollowing = await db.follows.count({
+      where: {
+        followerId: accountId as string,
+      },
+    });
+
+    return NextResponse.json({
+      statusCode: 200,
+      data: { success: true },
+    });
+  } catch (error) {
+    console.error("Error fetching followers/following:", error);
+    return res.status(500).json({ error: "Server error" });
+  }
+}
+
+export async function DELETE(req: Request, res: NextApiResponse) {
+  const { accountId, currentId, path } = req;
+
+  if (accountId === currentId) {
+    return res.status(400).json({ error: "Cannot unfollow yourself" });
+  }
+
+  try {
+    const isFollow = await db.follows.findFirst({
+      where: {
+        followerId: accountId,
+        followingId: currentId,
+      },
+    });
+
+    if (isFollow) {
+      const deletedFollow = await db.follows.deleteMany({
+        where: {
+          followerId: accountId,
+          followingId: currentId,
+        },
+      });
+      revalidatePath(path);
+      console.log(`Deleted follow relation: ${JSON.stringify(deletedFollow)}`);
+      return res.status(200).json({ success: true });
+    }
+    return NextResponse.json({
+      statusCode: 200,
+      data: { success: true },
+    });
+  } catch (error) {
+    console.error("Error unfollowing user:", error);
+    return res.status(500).json({ error: "Server error" });
+  }
 }

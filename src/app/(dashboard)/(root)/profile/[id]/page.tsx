@@ -1,15 +1,35 @@
-import Follow from "@/components/follow/follow";
-import FollowerCard from "@/components/follow/followerCard";
+// import FollowerCard from "@/components/follow/followerCard";
 import PostCard from "@/components/post/postCard";
 import { PostForm } from "@/components/post/postForm";
 import ProfileHeader from "@/components/profile/ProfileHeader";
-import { getTotalFollower } from "@/lib/actions/user.follow";
+import {
+  getTotalFollowers,
+  getTotalFollowing,
+} from "@/lib/actions/user.follow";
 import { fetchUserProfileByID } from "@/lib/actions/user.post";
 import { getCurrentUser } from "@/lib/session";
 import { Container } from "@radix-ui/themes";
+import dynamic from "next/dynamic";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 
+// const userfollow = dynamic<React.ReactNode>(
+//   () =>
+//     import("@/lib/actions/user.follow").then(
+//       ({ getTotalFollowers }) => getTotalFollowers
+//     ) as any
+// );
+
+// const userfollowing = dynamic<React.ReactNode>(
+//   () =>
+//     import("@/lib/actions/user.follow").then(
+//       ({ getTotalFollowing }) => getTotalFollowing
+//     ) as any
+// );
+
+const FollowerCard = dynamic(() => import("@/components/follow/followerCard"), {
+  ssr: false,
+});
 export default async function Page({ params }: { params: { id: string } }) {
   const user = await getCurrentUser();
   if (!user) return null;
@@ -18,10 +38,9 @@ export default async function Page({ params }: { params: { id: string } }) {
   //* หากเป็นเจ้าของ จะสามารถเข้าถึงหน้าต่างบางอย่างได้ เช่น ตั้งค่า และอื่นๆ
 
   const userInfo = await fetchUserProfileByID(params.id); //Todo: โดยใช้ Params.id ในการยืนยันจากฐานข้อมูล หากข้อมูลตรงกัน จะทำการแสดงเนื้อหาต่างๆที่โค้ดด้านล่าง
-
-  const follower = await getTotalFollower(params.id);
-
-  console.log(userInfo);
+  // TODO:แสดงการติดตาม
+  const userfollow = await getTotalFollowers(params.id);
+  const userfollowing = await getTotalFollowing(params.id);
   if (!userInfo) redirect("/sign-in"); // ! และถ้าหากว่าไม่มี Prarams.id จะทำการ redireact ไปที่หน้า Sign-ins
 
   return (
@@ -52,31 +71,33 @@ export default async function Page({ params }: { params: { id: string } }) {
                 nickname={Account.nickname || ""}
                 image={Account.image || " "}
                 bio={Account.bio || ""}
+                totalFollower={userfollow}
+                totalFollowing={userfollowing}
               />
-              {follower &&
-                follower.map((fol, index) => (
-                  <FollowerCard
-                    key={index}
-                    authorId={fol.followerId}
-                    follower={fol.followerId}
-                  />
-                ))}
+              <FollowerCard
+                accountId={{
+                  follower: userfollow,
+                  following: userfollowing,
+                }}
+              />
 
-              <Follow authorId={Account.id} currentUserId={user.id} />
               <div className="divider divider-horizontal absolute ml-[400px] h-32  " />
             </div>
             <div className="relative h-32">
               <div className="text-center ">
                 {userInfo.map((Account) => (
-                  <PostForm
-                    key={Account.id}
-                    accountId={Account.id}
-                    authUserId={user.id}
-                    imagePost={""}
-                    content={""}
-                  />
+                  <>
+                    <PostForm
+                      key={Account.id}
+                      accountId={Account.id}
+                      authUserId={user.id}
+                      imagePost={""}
+                      content={""}
+                    />
+                  </>
                 ))}
               </div>
+
               {Account.post.map((PostBy) => (
                 //*ส่วนแสดงเนื้อหาโพสต์
                 //Todo:ใช้ Params จากการ Login ในการแสดงข้อมูล

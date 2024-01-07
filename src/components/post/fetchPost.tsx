@@ -1,8 +1,5 @@
-import { FetchUserPost, Fetchusercomment } from "@/lib/actions/user.post";
-import React, { useEffect, useState } from "react";
-import { getCurrentUser } from "@/lib/session";
+import { FetchUserPost } from "@/lib/actions/user.post";
 import PostCard from "./postCard";
-import { useWatch } from "react-hook-form";
 
 export default async function FetchPost() {
   const posts = await FetchUserPost();

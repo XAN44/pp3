@@ -2,81 +2,107 @@
 
 import { revalidatePath } from "next/cache";
 import { db } from "../db";
-import { getCurrentUser } from "../session";
 
-interface Props {
-  accountId: string;
-  path: string;
-}
-
-export async function Follower({ accountId, path }: Props) {
+export async function Follower(
+  accountId: string,
+  currentId: string,
+  path: string
+) {
   // Todo: เช็คผู้ใช้ที่กำลัง Login
-  const currentUser = await getCurrentUser();
-
-  if (!currentUser) {
-    // ! เตือนให้ผู้ใช้เข้าสู่ระบบใหม่
-    throw new Error("Pless Login");
-  }
 
   try {
-    // Todo:เช็คว่าเป้าหมายที่ต้องการติดตามมีอยู่จริงไหม
-    const findAccournt = await db.follows.findFirst({
-      where: {
-        follower: {
-          id: accountId,
-        },
-      },
-    });
-
-    // * หากมีให้เข้าเงื่อนไขด้านล่างนี้
-    // Todo:เช็คว่ามีการติดตามเป้าหมายแล้วหรือไม่
-    // !โดยไม่ให้มีการติดตามซ้ำ
-    if (!findAccournt) {
+    if (accountId === currentId) {
+      return false;
+    } else {
+      // Todo:เช็คว่ามีการติดตามเป้าหมายแล้วหรือไม่
+      // !โดยไม่ให้มีการติดตามซ้ำ
       const isAlreadyFollowing = await db.follows.findFirst({
         where: {
-          follower: { id: currentUser.id },
-          following: { id: accountId },
+          followerId: accountId,
+          followingId: currentId,
         },
       });
       //  *ถ้าเงื่อนไขผ่าน จะทำการสร้างการติดตามผู้ใช้คนนั้นๆ
       if (!isAlreadyFollowing) {
         const newFollower = await db.follows.create({
           data: {
-            follower: { connect: { id: currentUser.id } },
-            following: { connect: { id: accountId } },
+            followerId: accountId,
+            followingId: currentId,
           },
         });
+
         console.log("Added new follow:", newFollower);
+        revalidatePath(path);
+        return true;
       } else {
-        console.log("Already following this account");
+        return true;
       }
     }
-
-    revalidatePath(path);
-    return;
   } catch (error) {
-    throw new Error("Error somthing wrong!");
+    throw new Error(
+      "เกิดข้อผิดพลาด: มีปัญหาในการเข้าถึงหรือประมวลผลข้อมูลที่ไม่ถูกต้อง"
+    );
   }
 }
 
-export async function getTotalFollower(accountid: string) {
+// * Unfollower
+
+export async function unFollower(
+  accountId: string,
+  currentId: string,
+  path: string
+) {
   try {
-    const followers = await db.follows.findMany({
-      where: {
-        following: {
-          id: accountid,
+    if (accountId !== currentId) {
+      const isFollow = await db.follows.findFirst({
+        where: {
+          followerId: accountId,
+          followingId: currentId,
         },
-      },
-      include: {
-        follower: {
-          select: {
-            id: true,
-            name: true,
-            image: true,
+      });
+
+      if (isFollow) {
+        const deletedFollow = await db.follows.deleteMany({
+          where: {
+            followerId: accountId,
+            followingId: currentId,
           },
-        },
+        });
+        revalidatePath(path);
+        console.log(
+          `Deleted follow relation: ${JSON.stringify(deletedFollow)}`
+        );
+      }
+    }
+  } catch (error) {
+    throw new Error("เกิดข้อผิดพลาด");
+  }
+}
+
+// * Check
+
+export async function getTotalFollowers(accountId: string) {
+  try {
+    const totalFollowers = await db.follows.count({
+      where: {
+        followingId: accountId,
       },
     });
-    return followers;
-  } catch (error) {}
+    return totalFollowers;
+  } catch (error) {
+    throw new Error("เกิดข้อผิดพลาดในการดึงจำนวนผู้ติดตาม");
+  }
+}
+
+export async function getTotalFollowing(accountId: string) {
+  try {
+    const totalFollowing = await db.follows.count({
+      where: {
+        followerId: accountId,
+      },
+    });
+    return totalFollowing;
+  } catch (error) {
+    throw new Error("เกิดข้อผิดพลาดในการดึงจำนวนผู้ถูกติดตาม");
+  }
 }

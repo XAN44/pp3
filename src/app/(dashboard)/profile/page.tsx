@@ -1,19 +1,7 @@
 "use server";
-import { authOptions } from "@/lib/auth";
-import { getServerSession } from "next-auth";
-import React, { Suspense, useEffect, useState } from "react";
-import Image from "next/image";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useSession } from "next-auth/react";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
-import { Button } from "@/components/ui/button";
-import { AlertAuth } from "@/lib/alert/alertSession";
-import { PostForm } from "@/components/post/postForm";
 import FetchPost from "@/components/post/fetchPost";
-import Cart from "./cart/page";
-import { getCurrentUser } from "@/lib/session";
-import { FetchUserPost } from "@/lib/actions/user.post";
+import { PostForm } from "@/components/post/postForm";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   FetchBio,
   FetchImageProfile,
@@ -21,7 +9,10 @@ import {
   FetchNickname,
   fetchAccount,
 } from "@/lib/actions/user.action";
+import { AlertAuth } from "@/lib/alert/alertSession";
+import { getCurrentUser } from "@/lib/session";
 import { Flex, Grid, Text } from "@radix-ui/themes";
+import { Suspense } from "react";
 
 export default async function Page() {
   const session = await getCurrentUser();
@@ -51,8 +42,7 @@ export default async function Page() {
             gap="3"
             className="shadow-inner text-center ring-1 w-[400px] 
             p-6
-            "
-          >
+            ">
             {ac?.image ? (
               <Avatar className="w-36 h-36 left-1/2 -translate-x-16 ">
                 <AvatarImage src={ac.image} />
