@@ -1,70 +1,59 @@
 "use client";
-
-import { Follower, unFollower } from "@/lib/actions/user.follow";
+import { CheckFollow, Follower, unFollower } from "@/lib/actions/user.follow";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
 
 interface Props {
-  follower: string;
-  following: string;
-  isFollower: boolean;
+  followAccount: string;
+  followingByCurrentId: string;
+  totalFollow: number;
 }
-export default function Follow({ follower, following, isFollower }: Props) {
+export default function Follow({
+  followAccount,
+  followingByCurrentId,
+  totalFollow,
+}: Props) {
   const path = usePathname() ?? "";
-  const [isFollowing, setIsFollowing] = useState(false);
-
-  useEffect(() => {
-    setIsFollowing(isFollower);
-  }, [isFollower]);
 
   const handleFollower = async () => {
     try {
+      await Follower(JSON.parse(followingByCurrentId), followAccount, path);
+      console.log("Success");
+      // ตรวจสอบสถานะการติดตามใหม่หลังจากกดปุ่มติดตาม
+      const isFollowing = await CheckFollow(
+        JSON.stringify(followingByCurrentId),
+        followAccount
+      );
       if (isFollowing) {
-        await unFollower(following, JSON.parse(follower), path);
-        setIsFollowing(false);
-        console.log("Unfollowed successfully");
+        console.log("Already following");
       } else {
-        await Follower(following, JSON.parse(follower), path);
-        setIsFollowing(true);
-        console.log("Started following successfully");
+        console.log("Not following yet");
       }
     } catch (error) {
-      console.error(error);
+      console.error("Error:", error);
     }
   };
 
-  async function followUser() {
+  const handleunFollower = async () => {
     try {
-      const response = await fetch("/api/follow", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          accountId: JSON.parse(follower),
-          currentId: following,
-          path,
-        }),
-      });
-
-      if (!response.ok) {
-        const errorMessage = await response.json();
-        throw new Error(errorMessage?.error || "Failed to follow user");
-      }
-
-      setIsFollowing(!isFollowing); // Toggle the state when successful
-      console.log("Followed user successfully");
-    } catch (error: any) {
-      console.error("Error following user:", error.message);
-      // Handle error scenarios here
+      await unFollower(JSON.parse(followingByCurrentId), followAccount, path);
+      console.log("Success");
+    } catch (error) {
+      console.error("Error:", error);
     }
-  }
+  };
 
+  // แสดงผลปุ่มตามสถานะการติดตามที่มีในข้อมูล totalFollow โดยตรง
   return (
     <div className="">
-      <button onClick={followUser}>
-        {isFollowing ? "Unfollow" : "Follow"}
-      </button>
+      {totalFollow > 0 ? (
+        <>
+          <button onClick={handleunFollower}>Unfollow</button>
+        </>
+      ) : (
+        <>
+          <button onClick={handleFollower}>Follow</button>
+        </>
+      )}
     </div>
   );
 }

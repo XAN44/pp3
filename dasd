@@ -1,122 +1,49 @@
-import { db } from "@/lib/db";
-import { NextApiResponse } from "next";
-import { revalidatePath } from "next/cache";
-import { NextResponse } from "next/server";
+"use client";
 
-interface Request {
-  accountId: string;
-  currentId: string;
-  path: string;
-  query: {
-    accountId?: string;
+import { Follower, unFollower } from "@/lib/actions/user.follow";
+import { usePathname } from "next/navigation";
+
+interface Props {
+  followAccount: string;
+  followingByCurrentId: string;
+  totalFollow: number;
+}
+export default function Follow({
+  followAccount,
+  followingByCurrentId,
+  totalFollow,
+}: Props) {
+  const path = usePathname() ?? "";
+
+  const handleFollower = async () => {
+    try {
+      await Follower(JSON.parse(followingByCurrentId), followAccount, path);
+      console.log("sucess");
+    } catch (error) {
+      console.log("error");
+    }
   };
-}
 
-export async function POST(req: Request) {
-  const { accountId, currentId, path } = req;
-
-  try {
-    if (accountId === currentId) {
-      return NextResponse.json(
-        {
-          accountId: null,
-          currentId: null,
-          error: "Cannot follow yourself",
-        },
-        { status: 400 }
-      );
+  const handleunFollower = async () => {
+    try {
+      await unFollower(JSON.parse(followingByCurrentId), followAccount, path);
+      console.log("sucess");
+    } catch (error) {
+      console.log("error");
     }
-    const isAlreadyFollowing = await db.follows.findFirst({
-      where: {
-        followerId: accountId,
-        followingId: currentId,
-      },
-    });
+  };
 
-    if (!isAlreadyFollowing) {
-      const newFollower = await db.follows.create({
-        data: {
-          followerId: accountId,
-          followingId: currentId,
-        },
-      });
-      revalidatePath(path);
-      console.log(`Added new follow: ${JSON.stringify(newFollower)}`);
-
-      return NextResponse.json({ success: true });
-    } else {
-      return NextResponse.json({
-        error: "You are already following this user",
-        statusCode: 400,
-      });
-    }
-  } catch (error) {
-    console.error("Error following user:", error);
-    return NextResponse.json({
-      error: "Server error",
-      statusCode: 500,
-    });
-  }
-}
-
-export async function GET(req: Request, res: NextApiResponse) {
-  const { accountId } = req.query;
-
-  try {
-    const totalFollowers = await db.follows.count({
-      where: {
-        followingId: accountId as string,
-      },
-    });
-
-    const totalFollowing = await db.follows.count({
-      where: {
-        followerId: accountId as string,
-      },
-    });
-
-    return NextResponse.json({
-      statusCode: 200,
-      data: { success: true },
-    });
-  } catch (error) {
-    console.error("Error fetching followers/following:", error);
-    return res.status(500).json({ error: "Server error" });
-  }
-}
-
-export async function DELETE(req: Request, res: NextApiResponse) {
-  const { accountId, currentId, path } = req;
-
-  if (accountId === currentId) {
-    return res.status(400).json({ error: "Cannot unfollow yourself" });
-  }
-
-  try {
-    const isFollow = await db.follows.findFirst({
-      where: {
-        followerId: accountId,
-        followingId: currentId,
-      },
-    });
-
-    if (isFollow) {
-      const deletedFollow = await db.follows.deleteMany({
-        where: {
-          followerId: accountId,
-          followingId: currentId,
-        },
-      });
-      revalidatePath(path);
-      console.log(`Deleted follow relation: ${JSON.stringify(deletedFollow)}`);
-      return res.status(200).json({ success: true });
-    }
-    return NextResponse.json({
-      statusCode: 200,
-      data: { success: true },
-    });
-  } catch (error) {
-    console.error("Error unfollowing user:", error);
-    return res.status(500).json({ error: "Server error" });
-  }
+  return (
+    <div className="">
+      {totalFollow > 0 ? (
+        <>
+          <button onClick={handleunFollower}>Unfollow</button>
+        </>
+      ) : (
+        <>
+          <button onClick={handleFollower}>Follow</button>
+        </>
+      )}
+    </div>
+  );
 }

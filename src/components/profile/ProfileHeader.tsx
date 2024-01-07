@@ -44,19 +44,12 @@ function ProfileHeader({
             <p className="text-base-medium text-gray-1">@{nickname}</p>
           </div>
         </div>
-        {accountId !== authUserId && (
-          <>
-            <Follow
-              key={accountId}
-              follower={JSON.stringify(accountId)}
-              following={authUserId}
-              isFollower={true}
-            />
-          </>
-        )}
       </div>
       <p>{bio}</p>
-      <div></div>
+      <div className="flex">
+        <div>Follower {totalFollower}</div>
+        <div>Following {totalFollowing}</div>
+      </div>
     </div>
   );
 }

@@ -73,6 +73,7 @@ export async function unFollower(
           `Deleted follow relation: ${JSON.stringify(deletedFollow)}`
         );
       }
+      return true;
     }
   } catch (error) {
     throw new Error("เกิดข้อผิดพลาด");
@@ -105,4 +106,21 @@ export async function getTotalFollowing(accountId: string) {
   } catch (error) {
     throw new Error("เกิดข้อผิดพลาดในการดึงจำนวนผู้ถูกติดตาม");
   }
+}
+
+export async function CheckFollow(
+  accountId: string,
+  followingId: string,
+  isFollow?: boolean
+) {
+  try {
+    const readFollow = await db.follows.findFirst({
+      where: {
+        followerId: accountId,
+        followingId: followingId,
+        isFollow: isFollow,
+      },
+    });
+    return readFollow; // Return a boolean indicating if follow exists or not
+  } catch (error) {}
 }

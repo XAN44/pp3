@@ -61,11 +61,12 @@ model User {
 }
 
 model Follows {
-    id          String @default(cuid())
-    follower    User   @relation("follower", fields: [followerId], references: [id])
+    id          String  @default(cuid())
+    follower    User    @relation("follower", fields: [followerId], references: [id])
     followerId  String
-    following   User   @relation("following", fields: [followingId], references: [id])
+    following   User    @relation("following", fields: [followingId], references: [id])
     followingId String
+    isFollow    Boolean @default(false)
 
     @@id([followerId, followingId])
 }

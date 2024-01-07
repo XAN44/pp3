@@ -1,15 +1,17 @@
 // import FollowerCard from "@/components/follow/followerCard";
+import Follow from "@/components/follow/follow";
+import Followbtn from "@/components/follow/followbtn";
 import PostCard from "@/components/post/postCard";
 import { PostForm } from "@/components/post/postForm";
 import ProfileHeader from "@/components/profile/ProfileHeader";
 import {
+  CheckFollow,
   getTotalFollowers,
   getTotalFollowing,
 } from "@/lib/actions/user.follow";
 import { fetchUserProfileByID } from "@/lib/actions/user.post";
 import { getCurrentUser } from "@/lib/session";
 import { Container } from "@radix-ui/themes";
-import dynamic from "next/dynamic";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 
@@ -27,20 +29,23 @@ import { Suspense } from "react";
 //     ) as any
 // );
 
-const FollowerCard = dynamic(() => import("@/components/follow/followerCard"), {
-  ssr: false,
-});
 export default async function Page({ params }: { params: { id: string } }) {
+  if (!params.id) return null;
+
   const user = await getCurrentUser();
   if (!user) return null;
 
   //Todo: ตรวจสอบ user พื่อดึงข้อมูลผู้ใช้มาแสดงผล โดยตัวแปร user จะดึงค่า session จาก getCurrentUser เพื่อใช้ในการยืนยันว่าผู้ใช้ที่เข้าถึง Profile Page เป็นเจ้าของหรือไม่
   //* หากเป็นเจ้าของ จะสามารถเข้าถึงหน้าต่างบางอย่างได้ เช่น ตั้งค่า และอื่นๆ
 
-  const userInfo = await fetchUserProfileByID(params.id); //Todo: โดยใช้ Params.id ในการยืนยันจากฐานข้อมูล หากข้อมูลตรงกัน จะทำการแสดงเนื้อหาต่างๆที่โค้ดด้านล่าง
+  const userInfo = await fetchUserProfileByID(params.id);
+  if (!userInfo) redirect("/");
+
+  //Todo: โดยใช้ Params.id ในการยืนยันจากฐานข้อมูล หากข้อมูลตรงกัน จะทำการแสดงเนื้อหาต่างๆที่โค้ดด้านล่าง
   // TODO:แสดงการติดตาม
   const userfollow = await getTotalFollowers(params.id);
   const userfollowing = await getTotalFollowing(params.id);
+  const checkFollower = await CheckFollow(params.id, user.id, false);
   if (!userInfo) redirect("/sign-in"); // ! และถ้าหากว่าไม่มี Prarams.id จะทำการ redireact ไปที่หน้า Sign-ins
 
   return (
@@ -63,10 +68,9 @@ export default async function Page({ params }: { params: { id: string } }) {
                             p-3 
                             ">
               <ProfileHeader
-                // *ส่วนของ Profile
-                //Todo:ใช้ Params จากการ Login ในการแสดงข้อมูล ผสมผสานกับการใช้ข้อมูลจาก DATABASE
+                key={Account.id}
                 accountId={Account.id}
-                authUserId={user.id} //*ใช้ user.id จาก session เพื่อตรวจสอบว่า id ตรงไหม หากตรง จะสามารถเข้าถึงการทำงานบางฟังก์ชันได้
+                authUserId={user.id}
                 name={Account.name || ""}
                 nickname={Account.nickname || ""}
                 image={Account.image || " "}
@@ -74,12 +78,22 @@ export default async function Page({ params }: { params: { id: string } }) {
                 totalFollower={userfollow}
                 totalFollowing={userfollowing}
               />
-              <FollowerCard
-                accountId={{
-                  follower: userfollow,
-                  following: userfollowing,
-                }}
-              />
+              {Account.id !== user.id && (
+                <>
+                  <Follow
+                    key={Account.id}
+                    followAccount={Account.id}
+                    followingByCurrentId={JSON.stringify(user.id)}
+                    totalFollow={userfollow}
+                  />
+                  <Followbtn
+                    key={Account.id}
+                    ProfileId={Account.id}
+                    isFollowing={user.id}
+                    checkFollow={checkFollower}
+                  />
+                </>
+              )}
 
               <div className="divider divider-horizontal absolute ml-[400px] h-32  " />
             </div>
