@@ -1,5 +1,4 @@
 // import FollowerCard from "@/components/follow/followerCard";
-import Follow from "@/components/follow/follow";
 import Followbtn from "@/components/follow/followbtn";
 import PostCard from "@/components/post/postCard";
 import { PostForm } from "@/components/post/postForm";
@@ -45,7 +44,7 @@ export default async function Page({ params }: { params: { id: string } }) {
   // TODO:แสดงการติดตาม
   const userfollow = await getTotalFollowers(params.id);
   const userfollowing = await getTotalFollowing(params.id);
-  const checkFollower = await CheckFollow(params.id, user.id, false);
+  const checkFollower = await CheckFollow(params.id, user.id);
   if (!userInfo) redirect("/sign-in"); // ! และถ้าหากว่าไม่มี Prarams.id จะทำการ redireact ไปที่หน้า Sign-ins
 
   return (
@@ -80,14 +79,8 @@ export default async function Page({ params }: { params: { id: string } }) {
               />
               {Account.id !== user.id && (
                 <>
-                  <Follow
-                    key={Account.id}
-                    followAccount={Account.id}
-                    followingByCurrentId={JSON.stringify(user.id)}
-                    totalFollow={userfollow}
-                  />
                   <Followbtn
-                    key={Account.id}
+                    key={user.id}
                     ProfileId={Account.id}
                     isFollowing={user.id}
                     checkFollow={checkFollower}

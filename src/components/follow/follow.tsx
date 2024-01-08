@@ -1,5 +1,5 @@
 "use client";
-import { CheckFollow, Follower, unFollower } from "@/lib/actions/user.follow";
+import { unFollower } from "@/lib/actions/user.follow";
 import { usePathname } from "next/navigation";
 
 interface Props {
@@ -14,24 +14,24 @@ export default function Follow({
 }: Props) {
   const path = usePathname() ?? "";
 
-  const handleFollower = async () => {
-    try {
-      await Follower(JSON.parse(followingByCurrentId), followAccount, path);
-      console.log("Success");
-      // ตรวจสอบสถานะการติดตามใหม่หลังจากกดปุ่มติดตาม
-      const isFollowing = await CheckFollow(
-        JSON.stringify(followingByCurrentId),
-        followAccount
-      );
-      if (isFollowing) {
-        console.log("Already following");
-      } else {
-        console.log("Not following yet");
-      }
-    } catch (error) {
-      console.error("Error:", error);
-    }
-  };
+  // const handleFollower = async () => {
+  //   try {
+  //     await Follower(JSON.parse(followingByCurrentId), followAccount, path);
+  //     console.log("Success");
+  //     // ตรวจสอบสถานะการติดตามใหม่หลังจากกดปุ่มติดตาม
+  //     const isFollowing = await CheckFollow(
+  //       JSON.stringify(followingByCurrentId),
+  //       followAccount
+  //     );
+  //     if (isFollowing) {
+  //       console.log("Already following");
+  //     } else {
+  //       console.log("Not following yet");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error:", error);
+  //   }
+  // };
 
   const handleunFollower = async () => {
     try {
@@ -45,7 +45,7 @@ export default function Follow({
   // แสดงผลปุ่มตามสถานะการติดตามที่มีในข้อมูล totalFollow โดยตรง
   return (
     <div className="">
-      {totalFollow > 0 ? (
+      {/* {totalFollow > 0 ? (
         <>
           <button onClick={handleunFollower}>Unfollow</button>
         </>
@@ -53,7 +53,7 @@ export default function Follow({
         <>
           <button onClick={handleFollower}>Follow</button>
         </>
-      )}
+      )} */}
     </div>
   );
 }

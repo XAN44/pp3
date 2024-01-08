@@ -86,7 +86,7 @@ export async function getTotalFollowers(accountId: string) {
   try {
     const totalFollowers = await db.follows.count({
       where: {
-        followingId: accountId,
+        followerId: accountId,
       },
     });
     return totalFollowers;
@@ -99,7 +99,7 @@ export async function getTotalFollowing(accountId: string) {
   try {
     const totalFollowing = await db.follows.count({
       where: {
-        followerId: accountId,
+        followingId: accountId,
       },
     });
     return totalFollowing;
@@ -121,6 +121,9 @@ export async function CheckFollow(
         isFollow: isFollow,
       },
     });
-    return readFollow; // Return a boolean indicating if follow exists or not
-  } catch (error) {}
+    return !!readFollow; // Return a boolean indicating if follow exists or not
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
 }

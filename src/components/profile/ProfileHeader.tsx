@@ -1,7 +1,4 @@
-import dynamic from "next/dynamic";
 import Image from "next/image";
-
-const Follow = dynamic(() => import("../follow/follow"), { ssr: false });
 
 interface Props {
   accountId: string;

@@ -1,5 +1,5 @@
 "use client";
-import { Follower } from "@/lib/actions/user.follow";
+import { Follower, unFollower } from "@/lib/actions/user.follow";
 import { usePathname } from "next/navigation";
 import { Button } from "../ui/button";
 
@@ -13,15 +13,24 @@ function Followbtn({
   checkFollow: boolean;
 }) {
   const path = usePathname();
+
   const onFollow = async () => {
-    await Follower(ProfileId, isFollowing, path);
-    console.log();
+    try {
+      if (checkFollow) {
+        await unFollower(ProfileId, isFollowing, path);
+      } else {
+        await Follower(ProfileId, isFollowing, path);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
   };
+
   return (
     <>
       <div className="">
         <Button onClick={onFollow}>
-          {checkFollow ? "Unfollow" : "Follow"}{" "}
+          {checkFollow ? "Unfollow" : "Follow"}
         </Button>
       </div>
     </>
