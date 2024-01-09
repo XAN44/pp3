@@ -1,6 +1,12 @@
 "use client";
 
+import { zodResolver } from "@hookform/resolvers/zod";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
+import * as z from "zod";
+import GoogleSignInButton from "../GoogleSignInButton";
+import { Button } from "../ui/button";
 import {
   Form,
   FormControl,
@@ -9,13 +15,7 @@ import {
   FormLabel,
   FormMessage,
 } from "../ui/form";
-import * as z from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "../ui/input";
-import { Button } from "../ui/button";
-import Link from "next/link";
-import GoogleSignInButton from "../GoogleSignInButton";
-import { useRouter } from "next/navigation";
 import { toast } from "../ui/use-toast";
 
 const FormSchema = z

@@ -26,12 +26,20 @@ function Followbtn({
     }
   };
 
+  const Fol = async () => {
+    const res = await fetch("/api/follow", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json ",
+      },
+      body: JSON.stringify({ follower: ProfileId, Following: isFollowing }),
+    });
+  };
+
   return (
     <>
       <div className="">
-        <Button onClick={onFollow}>
-          {checkFollow ? "Unfollow" : "Follow"}
-        </Button>
+        <Button onClick={Fol}>{checkFollow ? "Unfollow" : "Follow"}</Button>
       </div>
     </>
   );

@@ -1,50 +1,41 @@
 import { db } from "@/lib/db";
-import { revalidatePath } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
 
 type Params = {
-  AccountFollower: string;
-  AccountFollowing: string;
+  follower: string;
+  following: string;
   path: string;
 };
-export async function POST(
-  req: NextRequest,
-  res: NextResponse,
-  { AccountFollower, AccountFollowing, path }: Params
-) {
-  const Follow = AccountFollower;
-  const Following = AccountFollowing;
+export async function POST(req: NextRequest, res: NextResponse) {
   try {
-    if (Follow === Following) {
+    const body = await req.json();
+
+    const { follower, following }: Params = body;
+
+    if (follower === following) {
       return NextResponse.json(
-        { message: "ไม่สามารถติดตามตัวเองได้" },
+        { message: "ไม่สามารถติดตามตัวตนตัวเองได้" },
         { status: 400 }
       );
-    }
-    const isAlreadyFollow = await db.follows.findFirst({
-      where: {
-        followerId: Follow,
-        followingId: Following,
-      },
-    });
-    if (isAlreadyFollow) {
-      return NextResponse.json(
-        {
-          message: `คุณได้ติดตาม ${Following} แล้ว จึงไม่สามารถติดตามซ้ำได้อีก`,
+    } else {
+      const isAlreadyFollowing = await db.follows.findFirst({
+        where: {
+          followerId: follower,
+          followingId: following,
         },
-        { status: 400 }
-      );
+      });
+      if (!isAlreadyFollowing) {
+        const newFollow = await db.follows.create({
+          data: { followerId: follower, followingId: following },
+        });
+        console.log("Added new follow:", newFollow);
+        return NextResponse.json({ message: "ติดตามสำเร็จ" }, { status: 200 });
+      }
     }
-    const newFollow = await db.follows.create({
-      data: {
-        followerId: Follow,
-        followingId: Following,
-      },
-    });
-    revalidatePath(path);
-    console.log(`ติดตามสำเร็จ ${newFollow}`);
-    return NextResponse.json({ message: "ติดตามสำเร็จ" }, { status: 200 });
   } catch (error) {
-    return NextResponse.json({ message: "ERROR" }, { status: 500 });
+    return NextResponse.json(
+      { message: "ข้อมูลที่รับมาไม่ถูกต้อง" },
+      { status: 400 }
+    );
   }
 }
