@@ -1,11 +1,15 @@
 "use client";
 
-import * as z from "zod";
-import Image from "next/image";
-import { useForm } from "react-hook-form";
-import { usePathname, useRouter } from "next/navigation";
-import { ChangeEvent, useState } from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import {
   Form,
   FormControl,
@@ -15,39 +19,39 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { useUploadThing } from "@/lib/uploadthing";
-import { isBase64Image } from "@/lib/utils";
-import { getCurrentUser } from "@/lib/session";
-import { useSession } from "next-auth/react";
+import { useToast } from "@/components/ui/use-toast";
 import {
-  UserBio,
-  UserName,
-  UserNickName,
-  FOrmImage,
-} from "@/lib/validations/user";
-import {
+  Facebook,
+  IG,
+  tiktok,
+  twitter,
   updateBio,
   updateImage,
   updateName,
   updateNickname,
 } from "@/lib/actions/user.action";
+import { useUploadThing } from "@/lib/uploadthing";
+import { isBase64Image } from "@/lib/utils";
 import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { AvatarImage } from "../ui/avatar";
+  FOrmImage,
+  UrlFacebookFORM,
+  UrlIGFORM,
+  UrlTiktokFORM,
+  UrlTwiiterFORM,
+  UserBio,
+  UserName,
+  UserNickName,
+} from "@/lib/validations/user";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Avatar } from "@radix-ui/react-avatar";
-import { toast } from "../ui/use-toast";
-import { UpdateSession } from "@/lib/updateSession";
 import { Loader2 } from "lucide-react";
+import { useSession } from "next-auth/react";
+import { usePathname } from "next/navigation";
+import { ChangeEvent, useState } from "react";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
+import { AvatarImage } from "../ui/avatar";
 
 interface Props {
   user: {
@@ -56,6 +60,10 @@ interface Props {
     bio: string;
     nickname: string;
     name: string;
+    facebookUrl: string;
+    igUrl: string;
+    tiktokUrl: string;
+    twitterUrl: string;
   };
 }
 export function ImgProfilee({ user }: Props) {
@@ -66,6 +74,7 @@ export function ImgProfilee({ user }: Props) {
   const [isText, setIsText] = useState("บันทึก");
 
   const [files, setFiles] = useState<File[]>([]);
+  const { toast } = useToast();
 
   const imageform = useForm<z.infer<typeof FOrmImage>>({
     resolver: zodResolver(FOrmImage),
@@ -92,6 +101,33 @@ export function ImgProfilee({ user }: Props) {
     },
   });
 
+  const UrlFacebook = useForm<z.infer<typeof UrlFacebookFORM>>({
+    resolver: zodResolver(UrlFacebookFORM),
+    defaultValues: {
+      facebookUrl: user?.facebookUrl ? user.facebookUrl : " ",
+    },
+  });
+
+  const UrlIg = useForm<z.infer<typeof UrlIGFORM>>({
+    resolver: zodResolver(UrlIGFORM),
+    defaultValues: {
+      igUrl: user?.igUrl ? user.igUrl : " ",
+    },
+  });
+
+  const UrlTwitter = useForm<z.infer<typeof UrlTwiiterFORM>>({
+    resolver: zodResolver(UrlTwiiterFORM),
+    defaultValues: {
+      twitterUrl: user?.twitterUrl ? user.twitterUrl : " ",
+    },
+  });
+
+  const UrlTiktok = useForm<z.infer<typeof UrlTiktokFORM>>({
+    resolver: zodResolver(UrlTiktokFORM),
+    defaultValues: {
+      tiktokUrl: user?.tiktokUrl ? user.tiktokUrl : " ",
+    },
+  });
   const onSubmitImg = async (values: z.infer<typeof FOrmImage>) => {
     setIsloading(true);
     const blob = values.image;
@@ -152,6 +188,51 @@ export function ImgProfilee({ user }: Props) {
     });
     update({
       name: values.name,
+    });
+  };
+
+  const onCreateUrlFacebook = async (
+    values: z.infer<typeof UrlFacebookFORM>
+  ) => {
+    await Facebook({
+      userId: user?.id,
+      Facebook: values.facebookUrl,
+      path: pathname,
+    });
+    toast({
+      description: "Your message has been sent.",
+    });
+  };
+
+  const onCreateUrlIg = async (values: z.infer<typeof UrlIGFORM>) => {
+    await IG({
+      userId: user?.id,
+      IG: values.igUrl,
+      path: pathname,
+    });
+    toast({
+      description: "Your message has been sent.",
+    });
+  };
+  const onCreateUrlTwitter = async (values: z.infer<typeof UrlTwiiterFORM>) => {
+    await twitter({
+      userId: user?.id,
+      Twitter: values.twitterUrl,
+      path: pathname,
+    });
+    toast({
+      description: "Your message has been sent.",
+    });
+  };
+
+  const onCreateUrlTiktok = async (values: z.infer<typeof UrlTiktokFORM>) => {
+    await tiktok({
+      userId: user?.id,
+      Tiktok: values.tiktokUrl,
+      path: pathname,
+    });
+    toast({
+      description: "Your message has been sent.",
     });
   };
 
@@ -224,8 +305,7 @@ export function ImgProfilee({ user }: Props) {
                           grid
                           justify-items-center
                           mb-6
-                        "
-                          >
+                        ">
                             <Avatar className="w-40 ">
                               {field.value ? (
                                 <AvatarImage
@@ -258,8 +338,7 @@ export function ImgProfilee({ user }: Props) {
                       <Button
                         type="submit"
                         className="mt-3"
-                        disabled={isLoading}
-                      >
+                        disabled={isLoading}>
                         {isLoading ? (
                           <>
                             <Button disabled>
@@ -367,6 +446,124 @@ export function ImgProfilee({ user }: Props) {
                           </FormControl>
                           <FormMessage />
                         </FormItem>
+                      )}
+                    />
+                    <Button type="submit" className="mt-3">
+                      บันทึก
+                    </Button>
+                  </form>
+                </Form>
+              </DialogContent>
+            </Dialog>
+            <Dialog>
+              <DialogTrigger>เพิ่มช่องทางการติดต่อ</DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>ช่องทางติดต่อจากแพลตฟอร์มต่างๆ</DialogTitle>
+                  <DialogDescription>
+                    คุณสามารถคัดลอกลิงค์โปรไฟล์ของตัวเองจากแพลตฟอร์มต่างๆมาใส่ในช่องกรอกข้อมูลด้านล่างนี้ได้
+                    เพื่อความหลากหลายที่ให้ผู้อื่นสามารถรู้จักคุณได้มากขึน
+                  </DialogDescription>
+                </DialogHeader>
+                <Form {...UrlFacebook}>
+                  <form
+                    onSubmit={UrlFacebook.handleSubmit(onCreateUrlFacebook)}>
+                    <FormField
+                      control={UrlFacebook.control}
+                      name="facebookUrl"
+                      render={({ field }) => (
+                        <>
+                          <FormItem>
+                            <FormLabel className="text-sm">FACEBOOK</FormLabel>
+                            <FormControl>
+                              <Textarea
+                                placeholder="FACEBOOK URL"
+                                className="w-full"
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        </>
+                      )}
+                    />
+                    <Button type="submit" className="mt-3">
+                      บันทึก
+                    </Button>
+                  </form>
+                </Form>
+                <Form {...UrlIg}>
+                  <form onSubmit={UrlIg.handleSubmit(onCreateUrlIg)}>
+                    <FormField
+                      control={UrlIg.control}
+                      name="igUrl"
+                      render={({ field }) => (
+                        <>
+                          <FormItem>
+                            <FormLabel className="text-sm">IG</FormLabel>
+                            <FormControl>
+                              <Textarea
+                                placeholder="IG URL"
+                                className="w-full"
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        </>
+                      )}
+                    />
+                    <Button type="submit" className="mt-3">
+                      บันทึก
+                    </Button>
+                  </form>
+                </Form>
+                <Form {...UrlTiktok}>
+                  <form onSubmit={UrlTiktok.handleSubmit(onCreateUrlTiktok)}>
+                    <FormField
+                      control={UrlTiktok.control}
+                      name="tiktokUrl"
+                      render={({ field }) => (
+                        <>
+                          <FormItem>
+                            <FormLabel className="text-sm">TIKTOK</FormLabel>
+                            <FormControl>
+                              <Textarea
+                                placeholder="TIKTOK URL"
+                                className="w-full"
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        </>
+                      )}
+                    />
+                    <Button type="submit" className="mt-3">
+                      บันทึก
+                    </Button>
+                  </form>
+                </Form>
+                {/*  */}
+                <Form {...UrlTwitter}>
+                  <form onSubmit={UrlTwitter.handleSubmit(onCreateUrlTwitter)}>
+                    <FormField
+                      control={UrlTwitter.control}
+                      name="twitterUrl"
+                      render={({ field }) => (
+                        <>
+                          <FormItem>
+                            <FormLabel className="text-sm">TWITTER</FormLabel>
+                            <FormControl>
+                              <Textarea
+                                placeholder="TWITTER URL"
+                                className="w-full"
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        </>
                       )}
                     />
                     <Button type="submit" className="mt-3">

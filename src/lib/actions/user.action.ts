@@ -66,9 +66,117 @@ export async function fetchUserProfile(id: string) {
         nickname: true,
       },
     });
+
     return fetchUser;
   }
 }
+
+interface contactFacebookBy {
+  userId: string;
+  Facebook: string;
+  path: string;
+}
+
+export async function Facebook({
+  userId,
+  Facebook,
+  path,
+}: contactFacebookBy): Promise<void> {
+  try {
+    const currentUser1 = await getCurrentUser();
+    if (!currentUser1) {
+      throw new Error("user not found");
+    }
+    await db.user.update({
+      where: {
+        id: currentUser1.id,
+      },
+      data: {
+        Facebook,
+      },
+    });
+    revalidatePath(path);
+  } catch (error: any) {
+    throw new Error(`Failed to create/update user: ${error.message}`);
+  }
+}
+
+interface contactIGBy {
+  userId: string;
+  IG: string;
+  path: string;
+}
+
+export async function IG({ userId, IG, path }: contactIGBy) {
+  try {
+    const user = await getCurrentUser();
+    if (!user) {
+      throw new Error("Not found account");
+    }
+
+    await db.user.update({
+      where: {
+        id: user?.id,
+      },
+      data: {
+        IG,
+      },
+    });
+    revalidatePath(path);
+  } catch (error) {}
+}
+
+interface contactTiktokBy {
+  userId: string;
+  Tiktok: string;
+  path: string;
+}
+
+export async function tiktok({ userId, Tiktok, path }: contactTiktokBy) {
+  try {
+    const user = await getCurrentUser();
+    if (!user) {
+      throw new Error("Not found account");
+    }
+
+    await db.user.update({
+      where: {
+        id: user?.id,
+      },
+      data: {
+        Tiktok,
+      },
+    });
+    revalidatePath(path);
+  } catch (error) {}
+}
+
+interface contactTwitterBy {
+  userId: string;
+  Twitter: string;
+  path: string;
+}
+
+export async function twitter({ userId, Twitter, path }: contactTwitterBy) {
+  try {
+    const user = await getCurrentUser();
+    if (!user) {
+      throw new Error("Not found account");
+    }
+
+    await db.user.update({
+      where: {
+        id: user?.id,
+      },
+      data: {
+        Twitter,
+      },
+    });
+    revalidatePath(path);
+  } catch (error) {}
+}
+
+export async function Fetchcontact(accountId: string) {}
 
 interface Params {
   userId: string;

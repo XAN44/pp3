@@ -15,3 +15,19 @@ export const UserName = z.object({
 export const UserNickName = z.object({
   nickname: z.string().min(0).max(100),
 });
+
+export const UrlFacebookFORM = z.object({
+  facebookUrl: z.string().url(),
+});
+
+export const UrlIGFORM = z.object({
+  igUrl: z.string().url(),
+});
+
+export const UrlTwiiterFORM = z.object({
+  twitterUrl: z.string().url(),
+});
+
+export const UrlTiktokFORM = z.object({
+  tiktokUrl: z.string().url(),
+});

@@ -1,11 +1,7 @@
-import React, { useEffect, useState } from "react";
-import { Button } from "../ui/button";
-import { Toast } from "@radix-ui/react-toast";
-import { toast } from "../ui/use-toast";
 import { useSession } from "next-auth/react";
-import Image from "next/image";
-import { Avatar, AvatarImage } from "../ui/avatar";
 import { CldUploadButton } from "next-cloudinary";
+import React from "react";
+import { toast } from "../ui/use-toast";
 
 export function ASd() {
   const { data: session, status } = useSession();
@@ -52,8 +48,7 @@ export function ASd() {
                 viewBox="0 0 24 24"
                 strokeWidth={1.5}
                 stroke="currentColor"
-                className="w-6 h-6"
-              >
+                className="w-6 h-6">
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"

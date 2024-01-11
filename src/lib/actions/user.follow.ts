@@ -121,7 +121,7 @@ export async function CheckFollow(
         isFollow: isFollow,
       },
     });
-    return !!readFollow; // Return a boolean indicating if follow exists or not
+    return !!readFollow;
   } catch (error) {
     console.error(error);
     return false;

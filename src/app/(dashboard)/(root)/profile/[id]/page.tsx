@@ -1,8 +1,8 @@
 // import FollowerCard from "@/components/follow/followerCard";
-import Followbtn from "@/components/follow/followbtn";
 import PostCard from "@/components/post/postCard";
 import { PostForm } from "@/components/post/postForm";
 import ProfileHeader from "@/components/profile/ProfileHeader";
+import TabmenuinProfile from "@/components/profile/tabmenuinProfile";
 import {
   CheckFollow,
   getTotalFollowers,
@@ -13,20 +13,6 @@ import { getCurrentUser } from "@/lib/session";
 import { Container } from "@radix-ui/themes";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
-
-// const userfollow = dynamic<React.ReactNode>(
-//   () =>
-//     import("@/lib/actions/user.follow").then(
-//       ({ getTotalFollowers }) => getTotalFollowers
-//     ) as any
-// );
-
-// const userfollowing = dynamic<React.ReactNode>(
-//   () =>
-//     import("@/lib/actions/user.follow").then(
-//       ({ getTotalFollowing }) => getTotalFollowing
-//     ) as any
-// );
 
 export default async function Page({ params }: { params: { id: string } }) {
   if (!params.id) return null;
@@ -45,26 +31,22 @@ export default async function Page({ params }: { params: { id: string } }) {
   const userfollow = await getTotalFollowers(params.id);
   const userfollowing = await getTotalFollowing(params.id);
   const checkFollower = await CheckFollow(params.id, user.id);
+
   if (!userInfo) redirect("/sign-in"); // ! และถ้าหากว่าไม่มี Prarams.id จะทำการ redireact ไปที่หน้า Sign-ins
 
   return (
     <Container className="relative mt-44">
-      <div className="ring-1 ring-black bg-red-600 w-full "></div>
       <div className=" flex flex-col place-items-center justify-center lg:flex-row ">
         {userInfo.map((Account) => (
           <>
             <div
               className="
-                            card
                             fixed
-                            inset-x-0
+                            inset-x-0 
                             inset-y-[20%]
                             left-[32px]
                             grid
-                            h-32 w-96 flex-grow  place-items-start rounded-box border
-                            border-red-100 
-                            bg-base-300
-                            p-3 
+                            h-32 w-96 flex-grow  place-items-start 
                             ">
               <ProfileHeader
                 key={Account.id}
@@ -76,21 +58,18 @@ export default async function Page({ params }: { params: { id: string } }) {
                 bio={Account.bio || ""}
                 totalFollower={userfollow}
                 totalFollowing={userfollowing}
+                isFollow={checkFollower}
+                contact={{
+                  facebook: Account.Facebook || "",
+                  ig: Account.IG || "",
+                  twitter: Account.Twitter || "",
+                  tiktok: Account.Tiktok || "",
+                }}
               />
-              {Account.id !== user.id && (
-                <>
-                  <Followbtn
-                    key={user.id}
-                    ProfileId={Account.id}
-                    isFollowing={user.id}
-                    checkFollow={checkFollower}
-                  />
-                </>
-              )}
-
-              <div className="divider divider-horizontal absolute ml-[400px] h-32  " />
             </div>
-            <div className="relative h-32">
+
+            <div className="relative h-32 place-items-center text-center justify-center">
+              <TabmenuinProfile />
               <div className="text-center ">
                 {userInfo.map((Account) => (
                   <>

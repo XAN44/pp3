@@ -69,6 +69,10 @@ const Navbar = async ({ params }: { params: { id: string } }) => {
                           bio: "",
                           nickname: "",
                           name: "",
+                          facebookUrl: "",
+                          igUrl: "",
+                          tiktokUrl: "",
+                          twitterUrl: "",
                         }}
                       />
                       <DropdownMenuShortcut>(ตั้งค่า)</DropdownMenuShortcut>

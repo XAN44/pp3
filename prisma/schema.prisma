@@ -49,8 +49,13 @@ model User {
     image           String?   @default("https://utfs.io/f/be6dc431-2ebb-4b58-bb61-631dc74b6d50-nr9dfj.png")
     coverimage      String?
     hasNotification Boolean?
-    accounts        Account[]
-    sessions        Session[]
+    Facebook        String?
+    IG              String?
+    Twitter         String?
+    Tiktok          String?
+
+    accounts Account[]
+    sessions Session[]
 
     post          Post[]
     comments      Comment[]

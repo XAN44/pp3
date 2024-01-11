@@ -1,4 +1,9 @@
-import Image from "next/image";
+import { Avatar, Text } from "@radix-ui/themes";
+import Link from "next/link";
+import { AiFillInstagram } from "react-icons/ai";
+import { FaFacebook, FaTiktok } from "react-icons/fa";
+import { FaXTwitter } from "react-icons/fa6";
+import Followbtn from "../follow/followbtn";
 
 interface Props {
   accountId: string;
@@ -9,6 +14,13 @@ interface Props {
   bio: string;
   totalFollower: number;
   totalFollowing: number;
+  isFollow: boolean;
+  contact: {
+    facebook: string;
+    ig: string;
+    twitter: string;
+    tiktok: string;
+  };
 }
 
 function ProfileHeader({
@@ -20,34 +32,96 @@ function ProfileHeader({
   bio,
   totalFollower,
   totalFollowing,
+  isFollow,
+  contact,
 }: Props) {
   return (
-    <div className="flex w-full flex-col justify-start">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="relative h-20 w-20 object-cover">
-            <Image
-              src={image}
-              alt="logo"
-              fill
-              className="rounded-full object-cover shadow-2xl"
-            />
-          </div>
+    <>
+      <div
+        className="                             card
+                            bg-base-300
+w-full grid grid-flow-row items-center justify-center  ring-1 ring-black place-items-center">
+        {/* TOTOD:AVATAR */}
+        <div className="flex">
+          <Avatar
+            size="8"
+            fallback={name}
+            src={image}
+            radius="full"
+            className="ring-1 ring-black"
+          />
+        </div>
+        <div className="justify-center items-center text-center place-items-center">
+          <Text size="3" weight="regular" as="div">
+            {name}
+          </Text>
+          <Text size="2">@{nickname}</Text>
+        </div>
+        <div className="">
+          <Text>{bio}</Text>
+        </div>
+        {accountId !== authUserId && (
+          <Followbtn
+            key={authUserId}
+            ProfileId={accountId}
+            isFollowing={authUserId}
+            checkFollow={isFollow}
+          />
+        )}
 
-          <div className="flex-1">
-            <h2 className="text-left text-heading3-bold text-light-1">
-              {name}
-            </h2>
-            <p className="text-base-medium text-gray-1">@{nickname}</p>
+        {/* Facebook contact */}
+        {contact && contact.facebook ? (
+          <div className="flex items-center justify-center place-items-center">
+            <Text>FACEBOOK : </Text>
+            <Link href={contact.facebook}>
+              <FaFacebook />
+            </Link>
           </div>
+        ) : (
+          <div className="">Facebook : ยังไม่มีช่องทางติดตาม</div>
+        )}
+        {/* IG contact */}
+
+        {contact && contact.ig ? (
+          <div className="flex items-center justify-center place-items-center">
+            <Text>INSTAGRAM : </Text>
+            <Link href={contact.facebook}>
+              <AiFillInstagram />
+            </Link>
+          </div>
+        ) : (
+          <div className="">IG : ยังไม่มีช่องทางติดตาม</div>
+        )}
+        {/* Tiktok contact */}
+
+        {contact && contact.tiktok ? (
+          <div className="flex items-center justify-center place-items-center">
+            <Text>TIKTOK : </Text>
+            <Link href={contact.facebook}>
+              <FaTiktok />
+            </Link>
+          </div>
+        ) : (
+          <div className="">Tiktok : ยังไม่มีช่องทางติดตาม</div>
+        )}
+        {/* Twitter contact */}
+
+        {contact && contact.twitter ? (
+          <div className="flex items-center justify-center place-items-center">
+            <Text>TWITTER : </Text>
+            <Link href={contact.facebook}>
+              <FaXTwitter />
+            </Link>
+          </div>
+        ) : (
+          <div className=""> Twitter : ยังไม่มีช่องทางติดตาม</div>
+        )}
+        <div className="flex">
+          <Text>Follower {totalFollower}</Text>
+          <Text>Following {totalFollowing}</Text>
         </div>
       </div>
-      <p>{bio}</p>
-      <div className="flex">
-        <div>Follower {totalFollower}</div>
-        <div>Following {totalFollowing}</div>
-      </div>
-    </div>
+    </>
   );
 }
 

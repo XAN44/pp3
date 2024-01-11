@@ -115,7 +115,6 @@ export async function fetchUserProfileByID(id: string) {
       where: {
         id: id,
       },
-
       include: {
         post: {
           orderBy: {
@@ -132,6 +131,10 @@ export async function fetchUserProfileByID(id: string) {
                 id: true,
                 name: true,
                 image: true,
+                Facebook: true,
+                Tiktok: true,
+                IG: true,
+                Twitter: true,
               },
             },
             comments: {

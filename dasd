@@ -1,49 +1,48 @@
-"use client";
-
-import { Follower, unFollower } from "@/lib/actions/user.follow";
-import { usePathname } from "next/navigation";
-
 interface Props {
-  followAccount: string;
-  followingByCurrentId: string;
-  totalFollow: number;
+  accountId: string;
+  authUserId: string;
+  name: string;
+  nickname: string;
+  image: string;
+  bio: string;
+  totalFollower: number;
+  totalFollowing: number;
 }
-export default function Follow({
-  followAccount,
-  followingByCurrentId,
-  totalFollow,
+
+function ProfileHeader({
+  accountId,
+  authUserId,
+  name,
+  nickname,
+  image,
+  bio,
+  totalFollower,
+  totalFollowing,
 }: Props) {
-  const path = usePathname() ?? "";
-
-  const handleFollower = async () => {
-    try {
-      await Follower(JSON.parse(followingByCurrentId), followAccount, path);
-      console.log("sucess");
-    } catch (error) {
-      console.log("error");
-    }
-  };
-
-  const handleunFollower = async () => {
-    try {
-      await unFollower(JSON.parse(followingByCurrentId), followAccount, path);
-      console.log("sucess");
-    } catch (error) {
-      console.log("error");
-    }
-  };
-
   return (
-    <div className="">
-      {totalFollow > 0 ? (
-        <>
-          <button onClick={handleunFollower}>Unfollow</button>
-        </>
-      ) : (
-        <>
-          <button onClick={handleFollower}>Follow</button>
-        </>
-      )}
+    <div className="gird w-full  justify-start">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="relative h-20 w-20 object-cover">
+            <Image
+              src={image}
+              alt="logo"
+              fill
+              className="rounded-full object-cover shadow-2xl"
+            />
+          </div>
+
+          <h2 className="text-left text-heading3-bold text-light-1">{name}</h2>
+          <p className="text-base-medium text-gray-1">@{nickname}</p>
+        </div>
+      </div>
+      <p>{bio}</p>
+      <div className="flex">
+        <div>Follower {totalFollower}</div>
+        <div>Following {totalFollowing}</div>
+      </div>
     </div>
   );
 }
+
+export default ProfileHeader;
