@@ -52,7 +52,11 @@ function ProfileHeader({
           <Text size="3" weight="regular" as="div">
             {name}
           </Text>
-          <Text size="2">@{nickname}</Text>
+          {nickname && nickname ? (
+            <Text size="2">@{nickname}</Text>
+          ) : (
+            <Text size="2">@Dont have nickname</Text>
+          )}
         </div>
         <div className="">
           <Text>{bio}</Text>

@@ -16,6 +16,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { useToast } from "@/components/ui/use-toast";
 import { POSTARTILE } from "@/lib/actions/user.article";
 import { useUploadThing } from "@/lib/uploadthing";
 import { isBase64Image } from "@/lib/utils";
@@ -37,7 +38,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
-import { Toast } from "../ui/toast";
 
 interface Props {
   accountId: string;
@@ -45,7 +45,6 @@ interface Props {
   title: string;
   articleContent: string;
   ArticleImage: string;
-  path: string;
   tag: string;
 }
 
@@ -55,7 +54,6 @@ export default function ArticleForm({
   title,
   articleContent,
   ArticleImage,
-  path,
   tag,
 }: Props) {
   const [files, setFiles] = useState<File[]>([]);
@@ -64,6 +62,7 @@ export default function ArticleForm({
   const [isLoading, setIsloading] = useState(false);
   const [isText, setIsText] = useState("บันทึก");
   const [imageSelected, setImageSelected] = useState(false);
+  const { toast } = useToast();
 
   const pathname = usePathname();
   const postArticle = useForm<z.infer<typeof ArticlePost>>({
@@ -95,11 +94,12 @@ export default function ArticleForm({
       tag: values.tag ? String(values.tag) : "",
       path: pathname,
     });
-    Toast({
+    toast({
       title: "Creat Article success",
     });
     setIsloading(false);
     setIsText("บันทึกสำเร็จ");
+    console.log("NEW ARTICLE", POSTARTILE);
   };
 
   const handleImage = (
@@ -116,7 +116,6 @@ export default function ArticleForm({
 
       fileReader.onload = async (event) => {
         const imageDataUrl = event.target?.result?.toString() || " ";
-
         setSelectedImage(imageDataUrl);
         fieldChange(imageDataUrl);
         setImageSelected(true);

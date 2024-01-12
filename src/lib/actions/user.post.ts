@@ -114,6 +114,42 @@ export async function fetchUserProfileByID(id: string) {
         id: id,
       },
       include: {
+        // TODO:Article
+        Article: {
+          select: {
+            id: true,
+            title: true,
+            articleContent: true,
+            ArticleImage: true,
+            createAt: true,
+            authorId: true,
+            author: {
+              select: {
+                id: true,
+                name: true,
+                image: true,
+              },
+            },
+            tag: {
+              select: {
+                id: true,
+                tag: true,
+              },
+            },
+            comment: {
+              include: {
+                author: {
+                  select: {
+                    id: true,
+                    name: true,
+                    image: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+        // TODO: POST
         post: {
           orderBy: {
             createdAt: "desc",
@@ -135,6 +171,7 @@ export async function fetchUserProfileByID(id: string) {
                 Twitter: true,
               },
             },
+            // TODO:COMMENT
             comments: {
               include: {
                 author: {

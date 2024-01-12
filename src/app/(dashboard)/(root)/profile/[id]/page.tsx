@@ -1,4 +1,5 @@
 // import FollowerCard from "@/components/follow/followerCard";
+import ArticleCard from "@/components/article/articleCard";
 import ArticleForm from "@/components/article/articleForm";
 import PostCard from "@/components/post/postCard";
 import { PostForm } from "@/components/post/postForm";
@@ -84,7 +85,7 @@ export default async function Page({ params }: { params: { id: string } }) {
                   <TabsTrigger value="article"> ARTICLE</TabsTrigger>
                 </TabsList>
                 <TabsContent value="post">
-                  <div className="text-center ">
+                  <div className="text-center place-items-start ">
                     {userInfo.map((Account) => (
                       <>
                         <PostForm
@@ -100,7 +101,7 @@ export default async function Page({ params }: { params: { id: string } }) {
                       //*ส่วนแสดงเนื้อหาโพสต์
                       //Todo:ใช้ Params จากการ Login ในการแสดงข้อมูล
                       <>
-                        <div className=" ">
+                        <div className="text-start place-items-start">
                           <Suspense fallback={<p> LOADING </p>}>
                             <PostCard
                               key={PostBy.id}
@@ -121,16 +122,36 @@ export default async function Page({ params }: { params: { id: string } }) {
                   </div>
                 </TabsContent>
                 <TabsContent value="article">
-                  <ArticleForm
-                    key={Account.id}
-                    accountId={Account.id}
-                    authUserId={user.id}
-                    ArticleImage={""}
-                    articleContent={""}
-                    path={""}
-                    tag={""}
-                    title={""}
-                  />
+                  <div className="text-center place-items-start">
+                    <ArticleForm
+                      key={Account.id}
+                      accountId={Account.id}
+                      authUserId={user.id}
+                      ArticleImage={""}
+                      articleContent={""}
+                      tag={""}
+                      title={""}
+                    />
+                  </div>
+
+                  {Account.Article.map((ArticleBy) => (
+                    <div
+                      key={ArticleBy.id}
+                      className="text-start place-items-start">
+                      <ArticleCard
+                        key={ArticleBy.id}
+                        id={ArticleBy.id}
+                        title={ArticleBy.title}
+                        articleContent={ArticleBy.articleContent}
+                        ArticleImage={ArticleBy.ArticleImage}
+                        tag={ArticleBy.tag}
+                        authorId={ArticleBy.authorId}
+                        author={ArticleBy.author}
+                        comments={ArticleBy.comment}
+                        createAt={new Date(ArticleBy.createAt).toLocaleString()}
+                      />
+                    </div>
+                  ))}
                 </TabsContent>
               </Tabs>
             </div>

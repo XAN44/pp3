@@ -16,6 +16,10 @@ export const commentPost = z.object({
   comment: z.string().nonempty(),
 });
 
+export const commentArticle = z.object({
+  commentz: z.string().nonempty(),
+});
+
 export const replyComment = z.object({
   reply: z.string().nonempty(),
 });
