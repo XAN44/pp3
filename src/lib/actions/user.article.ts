@@ -1,3 +1,5 @@
+"use server";
+
 import { revalidatePath } from "next/cache";
 import { db } from "../db";
 
@@ -17,10 +19,16 @@ export async function POSTARTILE({
   ArticleImage,
   path,
   tag,
-}: Props) {
+}: Props): Promise<void> {
   try {
     if (!authorId) {
       throw new Error("Pless LOGIN");
+    }
+
+    console.log("db.article:", db.article);
+
+    if (!db.article) {
+      throw new Error("db.article is undefined");
     }
     await db.article.create({
       data: {
@@ -37,6 +45,8 @@ export async function POSTARTILE({
     });
     revalidatePath(path);
   } catch (error: any) {
+    console.error(error); // Log the error for debugging
+
     throw new Error(`Failed to create/update user: ${error.message}`);
   }
 }

@@ -10,6 +10,7 @@ import {
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -28,6 +29,15 @@ import { useForm } from "react-hook-form";
 import { CiImageOn } from "react-icons/ci";
 import * as z from "zod";
 import { Button } from "../ui/button";
+import { Input } from "../ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
+import { Toast } from "../ui/toast";
 
 interface Props {
   accountId: string;
@@ -36,9 +46,7 @@ interface Props {
   articleContent: string;
   ArticleImage: string;
   path: string;
-  hashtag: {
-    tag: string;
-  };
+  tag: string;
 }
 
 export default function ArticleForm({
@@ -48,7 +56,7 @@ export default function ArticleForm({
   articleContent,
   ArticleImage,
   path,
-  hashtag,
+  tag,
 }: Props) {
   const [files, setFiles] = useState<File[]>([]);
   const [selectedImage, setSelectedImage] = useState<string>("");
@@ -84,8 +92,11 @@ export default function ArticleForm({
         ? String(values.articleContent)
         : "",
       ArticleImage: values.articleImage ? String(values.articleImage) : "",
-      tag: values.hashtags ? String(values.hashtags) : "",
+      tag: values.tag ? String(values.tag) : "",
       path: pathname,
+    });
+    Toast({
+      title: "Creat Article success",
     });
     setIsloading(false);
     setIsText("บันทึกสำเร็จ");
@@ -105,6 +116,7 @@ export default function ArticleForm({
 
       fileReader.onload = async (event) => {
         const imageDataUrl = event.target?.result?.toString() || " ";
+
         setSelectedImage(imageDataUrl);
         fieldChange(imageDataUrl);
         setImageSelected(true);
@@ -117,7 +129,7 @@ export default function ArticleForm({
     <>
       {accountId === authUserId && (
         <Dialog>
-          <DialogTrigger>โพสต์เนื้อหา</DialogTrigger>
+          <DialogTrigger>Create Article</DialogTrigger>
           <DialogContent className="grid items-center justify-center text-center">
             <DialogHeader>
               <DialogTitle> เพิ่มเนื้อหาของคุณ ! </DialogTitle>
@@ -134,10 +146,10 @@ export default function ArticleForm({
                     name="title"
                     render={({ field }) => (
                       <FormItem className="flex flex-col gap-3 ">
+                        <FormLabel> TITLE </FormLabel>
                         <FormControl className=" border border-dark-4">
-                          <textarea
-                            rows={10}
-                            className="resize-none bg-base-300 rounded-lg w-96 pl-3 pr-3 pt-3"
+                          <Input
+                            className=" ring-1 ring-black resize-none bg-base-300 rounded-lg w-full pl-3 pr-3 pt-3"
                             {...field}
                           />
                         </FormControl>
@@ -145,7 +157,53 @@ export default function ArticleForm({
                       </FormItem>
                     )}
                   />
+                  <FormField
+                    control={postArticle.control}
+                    name="articleContent"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-col gap-3 ">
+                        <FormLabel> CONTENT </FormLabel>
 
+                        <FormControl className=" border border-dark-4">
+                          <textarea
+                            rows={10}
+                            className="resize-none bg-base-300 rounded-lg w-96 pl-3 pr-3 pt-3 ring-1 ring-black"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={postArticle.control}
+                    name="tag"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-col gap-3 ">
+                        <FormLabel> HASHTAG </FormLabel>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}>
+                          <FormControl className=" border border-dark-4">
+                            <SelectTrigger>
+                              <SelectValue placeholder="select hashtag" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="ท่องเที่ยว">
+                              ท่องเที่ยว
+                            </SelectItem>
+                            <SelectItem value="อาหาร">อาหาร</SelectItem>
+                            <SelectItem value="อื่นๆ">อื่นๆ</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormDescription>
+                          คุณสามารถเลือกแท็กเพื่อโพสต์แสดงไปยังเนื้อหาที่เกี่ยวข้องได้
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                   <FormField
                     control={postArticle.control}
                     name="articleImage"

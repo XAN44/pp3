@@ -121,7 +121,16 @@ export default async function Page({ params }: { params: { id: string } }) {
                   </div>
                 </TabsContent>
                 <TabsContent value="article">
-                  <ArticleForm />
+                  <ArticleForm
+                    key={Account.id}
+                    accountId={Account.id}
+                    authUserId={user.id}
+                    ArticleImage={""}
+                    articleContent={""}
+                    path={""}
+                    tag={""}
+                    title={""}
+                  />
                 </TabsContent>
               </Tabs>
             </div>

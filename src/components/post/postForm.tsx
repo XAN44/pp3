@@ -66,7 +66,7 @@ export function PostForm({ content, imagePost, accountId, authUserId }: Props) {
 
     await userPost({
       authorid: authUserId,
-      content: values.content ? String(values.content) : "", // ตรวจสอบค่า content ก่อนใช้งาน
+      content: values.content ? String(values.content) : "",
       ImagePost: values.imagePost ? String(values.imagePost) : "",
       path: pathname,
     });
