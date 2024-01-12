@@ -17,14 +17,12 @@ export async function userPost({
   path,
 }: userPost): Promise<void> {
   try {
-    const currentUser = await getCurrentUser();
-
-    if (!currentUser) {
+    if (!authorid) {
       throw new Error("ไม่มีผู้ใช้");
     }
     await db.post.create({
       data: {
-        authorId: currentUser.id,
+        authorId: authorid,
         content,
         ImagePost,
       },

@@ -1,8 +1,10 @@
 // import FollowerCard from "@/components/follow/followerCard";
+import ArticleForm from "@/components/article/articleForm";
 import PostCard from "@/components/post/postCard";
 import { PostForm } from "@/components/post/postForm";
 import ProfileHeader from "@/components/profile/ProfileHeader";
 import TabmenuinProfile from "@/components/profile/tabmenuinProfile";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   CheckFollow,
   getTotalFollowers,
@@ -47,6 +49,7 @@ export default async function Page({ params }: { params: { id: string } }) {
                             left-[32px]
                             grid
                             h-32 w-96 flex-grow  place-items-start 
+                            bg-base-200
                             ">
               <ProfileHeader
                 key={Account.id}
@@ -69,41 +72,58 @@ export default async function Page({ params }: { params: { id: string } }) {
             </div>
 
             <div className="relative h-32 place-items-center text-center justify-center">
-              <TabmenuinProfile />
-              <div className="text-center ">
-                {userInfo.map((Account) => (
-                  <>
-                    <PostForm
-                      key={Account.id}
-                      accountId={Account.id}
-                      authUserId={user.id}
-                      imagePost={""}
-                      content={""}
-                    />
-                  </>
-                ))}
-              </div>
-
-              {Account.post.map((PostBy) => (
-                //*ส่วนแสดงเนื้อหาโพสต์
-                //Todo:ใช้ Params จากการ Login ในการแสดงข้อมูล
-                <>
-                  <div className=" ">
-                    <Suspense fallback={<p> LOADING </p>}>
-                      <PostCard
-                        key={PostBy.id}
-                        id={PostBy.id}
-                        content={PostBy.content}
-                        ImagePost={PostBy.ImagePost}
-                        authorId={PostBy.authorId}
-                        createAt={new Date(PostBy.createdAt).toLocaleString()}
-                        author={PostBy.author}
-                        comments={PostBy.comments}
-                      />
-                    </Suspense>
+              <TabmenuinProfile
+                activity={false}
+                content={false}
+                article={false}
+                product={false}
+              />
+              <Tabs defaultValue="post">
+                <TabsList>
+                  <TabsTrigger value="post"> POST</TabsTrigger>
+                  <TabsTrigger value="article"> ARTICLE</TabsTrigger>
+                </TabsList>
+                <TabsContent value="post">
+                  <div className="text-center ">
+                    {userInfo.map((Account) => (
+                      <>
+                        <PostForm
+                          key={Account.id}
+                          accountId={Account.id}
+                          authUserId={user.id}
+                          imagePost={""}
+                          content={""}
+                        />
+                      </>
+                    ))}
+                    {Account.post.map((PostBy) => (
+                      //*ส่วนแสดงเนื้อหาโพสต์
+                      //Todo:ใช้ Params จากการ Login ในการแสดงข้อมูล
+                      <>
+                        <div className=" ">
+                          <Suspense fallback={<p> LOADING </p>}>
+                            <PostCard
+                              key={PostBy.id}
+                              id={PostBy.id}
+                              content={PostBy.content}
+                              ImagePost={PostBy.ImagePost}
+                              authorId={PostBy.authorId}
+                              createAt={new Date(
+                                PostBy.createdAt
+                              ).toLocaleString()}
+                              author={PostBy.author}
+                              comments={PostBy.comments}
+                            />
+                          </Suspense>
+                        </div>
+                      </>
+                    ))}
                   </div>
-                </>
-              ))}
+                </TabsContent>
+                <TabsContent value="article">
+                  <ArticleForm />
+                </TabsContent>
+              </Tabs>
             </div>
           </>
         ))}

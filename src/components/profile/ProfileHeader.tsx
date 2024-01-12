@@ -37,10 +37,7 @@ function ProfileHeader({
 }: Props) {
   return (
     <>
-      <div
-        className="                             card
-                            bg-base-300
-w-full grid grid-flow-row items-center justify-center  ring-1 ring-black place-items-center">
+      <div className="card bg-base-200 w-full grid grid-flow-row items-center justify-center place-items-center ">
         {/* TOTOD:AVATAR */}
         <div className="flex">
           <Avatar

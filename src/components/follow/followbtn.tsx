@@ -26,43 +26,12 @@ function Followbtn({
     }
   };
 
-  const Fol = async () => {
-    try {
-      if (checkFollow) {
-        await fetch("/api/follow", {
-          method: "DELETE",
-          body: JSON.stringify({
-            Follower: ProfileId,
-            following: isFollowing,
-            path: path,
-          }),
-        });
-      } else {
-        await fetch("/api/follow", {
-          method: "POST",
-          body: JSON.stringify({
-            follower: ProfileId,
-            following: isFollowing,
-            path: path,
-          }),
-        });
-      }
-    } catch (error) {
-      console.error("Error:", error);
-    }
-  };
-
   return (
     <>
       <div className="">
         <Button onClick={onFollow}>
           {checkFollow ? "Unfollow" : "Follow"}
         </Button>
-        {/*    <label className="swap" onClick={onFollow}>
-          <input type="checkbox" />
-          <div className="swap-on">Unfollow</div>
-          <div className="swap-off">follow</div>
-        </label> */}
       </div>
     </>
   );

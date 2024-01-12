@@ -63,6 +63,7 @@ model User {
     Reply         Reply[]
     followers     Follows[]      @relation("following")
     following     Follows[]      @relation("follower")
+    Article       Article[]
 }
 
 model Follows {
@@ -86,6 +87,25 @@ model Post {
     comments  Comment[]
 }
 
+model Article {
+    id             String       @id @default(cuid())
+    title          String?
+    articleContent String?
+    ArticleImage   String?
+    author         User?        @relation(fields: [authorId], references: [id])
+    authorId       String?
+    createAt       DateTime     @default(now())
+    comment        Comment[]
+    tag            ArticleTag[]
+}
+
+model ArticleTag {
+    id        String   @id @default(cuid())
+    tag       String?
+    Article   Article? @relation(fields: [articleId], references: [id])
+    articleId String?
+}
+
 model Comment {
     id        String   @id @default(cuid())
     text      String
@@ -95,6 +115,8 @@ model Comment {
     Post      Post?    @relation(fields: [postId], references: [id])
     postId    String?
     Reply     Reply[]
+    Article   Article? @relation(fields: [articleId], references: [id])
+    articleId String?
 }
 
 model Reply {

@@ -1,16 +1,19 @@
-import { Text } from "@radix-ui/themes";
+type Props = {
+  article?: boolean;
+  content: boolean;
+  activity: boolean;
+  product: boolean;
+};
 
-type Props = {};
-
-export default function tabmenuinProfile({}: Props) {
+export default function tabmenuinProfile({
+  article,
+  activity,
+  content,
+  product,
+}: Props) {
   return (
-    <div>
-      <div className="">
-        <Text>ทั้งหมด</Text>
-        <Text>ทั้งหมด</Text>
-        <Text>ทั้งหมด</Text>
-        <Text>ทั้งหมด</Text>
-      </div>
-    </div>
+    <>
+      <h1></h1>
+    </>
   );
 }

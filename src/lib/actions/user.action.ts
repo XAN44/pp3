@@ -176,8 +176,6 @@ export async function twitter({ userId, Twitter, path }: contactTwitterBy) {
   } catch (error) {}
 }
 
-export async function Fetchcontact(accountId: string) {}
-
 interface Params {
   userId: string;
   image: string;
