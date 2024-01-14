@@ -87,3 +87,4 @@ git commit -m "my changes"
  git push -u origin main
 
  ``
+ git stash drop

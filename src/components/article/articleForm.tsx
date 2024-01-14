@@ -165,7 +165,7 @@ export default function ArticleForm({
 
                         <FormControl className=" border border-dark-4">
                           <textarea
-                            rows={10}
+                            rows={4}
                             className="resize-none bg-base-300 rounded-lg w-96 pl-3 pr-3 pt-3 ring-1 ring-black"
                             {...field}
                           />

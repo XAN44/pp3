@@ -70,53 +70,48 @@ function ProfileHeader({
           />
         )}
 
-        {/* Facebook contact */}
-        {contact && contact.facebook ? (
-          <div className="flex items-center justify-center place-items-center">
-            <Text>FACEBOOK : </Text>
+        <div className="text-center items-center justify-center placeitemce ring-1 ring-black">
+          {/* Facebook contact */}
+          {contact.facebook && (
             <Link href={contact.facebook}>
-              <FaFacebook />
+              <div className="flex items-center justify-center place-items-center">
+                <Text>FACEBOOK : </Text>
+                <FaFacebook />
+              </div>
             </Link>
-          </div>
-        ) : (
-          <div className="">Facebook : ยังไม่มีช่องทางติดตาม</div>
-        )}
-        {/* IG contact */}
+          )}
+          {/* IG contact */}
 
-        {contact && contact.ig ? (
-          <div className="flex items-center justify-center place-items-center">
-            <Text>INSTAGRAM : </Text>
-            <Link href={contact.facebook}>
-              <AiFillInstagram />
+          {contact?.ig && (
+            <Link href={contact.ig}>
+              <div className="flex items-center justify-center place-items-center">
+                <Text>INSTAGRAM : </Text>
+                <AiFillInstagram />
+              </div>
             </Link>
-          </div>
-        ) : (
-          <div className="">IG : ยังไม่มีช่องทางติดตาม</div>
-        )}
-        {/* Tiktok contact */}
+          )}
+          {/* Tiktok contact */}
 
-        {contact && contact.tiktok ? (
-          <div className="flex items-center justify-center place-items-center">
-            <Text>TIKTOK : </Text>
-            <Link href={contact.facebook}>
-              <FaTiktok />
+          {contact.tiktok && (
+            <Link href={contact.tiktok}>
+              <div className="flex items-center justify-center place-items-center">
+                <Text>TIKTOK : </Text>
+                <FaTiktok />
+              </div>
             </Link>
-          </div>
-        ) : (
-          <div className="">Tiktok : ยังไม่มีช่องทางติดตาม</div>
-        )}
-        {/* Twitter contact */}
+          )}
+          {/* Twitter contact */}
 
-        {contact && contact.twitter ? (
-          <div className="flex items-center justify-center place-items-center">
-            <Text>TWITTER : </Text>
-            <Link href={contact.facebook}>
-              <FaXTwitter />
+          {contact.twitter && (
+            <Link href={contact.twitter}>
+              <div className="flex items-center justify-center place-items-center">
+                <Text>TWITTER : </Text>
+                <FaXTwitter />
+              </div>
             </Link>
-          </div>
-        ) : (
-          <div className=""> Twitter : ยังไม่มีช่องทางติดตาม</div>
-        )}
+          )}
+        </div>
+
         <div className="flex">
           <Text>Follower {totalFollower}</Text>
           <Text>Following {totalFollowing}</Text>
