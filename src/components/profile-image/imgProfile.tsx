@@ -192,7 +192,7 @@ export function ImgProfilee({ user }: Props) {
   };
 
   const onCreateUrlFacebook = async (
-    values: z.infer<typeof UrlFacebookFORM>
+    values: z.infer<typeof UrlFacebookFORM>,
   ) => {
     await Facebook({
       userId: user?.id,
@@ -254,7 +254,7 @@ export function ImgProfilee({ user }: Props) {
 
   const handleImage = (
     e: ChangeEvent<HTMLInputElement>,
-    fieldChange: (value: string) => void
+    fieldChange: (value: string) => void,
   ) => {
     e.preventDefault();
 
@@ -305,7 +305,8 @@ export function ImgProfilee({ user }: Props) {
                           grid
                           justify-items-center
                           mb-6
-                        ">
+                        "
+                          >
                             <Avatar className="w-40 ">
                               {field.value ? (
                                 <AvatarImage
@@ -338,7 +339,8 @@ export function ImgProfilee({ user }: Props) {
                       <Button
                         type="submit"
                         className="mt-3"
-                        disabled={isLoading}>
+                        disabled={isLoading}
+                      >
                         {isLoading ? (
                           <>
                             <Button disabled>
@@ -467,7 +469,8 @@ export function ImgProfilee({ user }: Props) {
                 </DialogHeader>
                 <Form {...UrlFacebook}>
                   <form
-                    onSubmit={UrlFacebook.handleSubmit(onCreateUrlFacebook)}>
+                    onSubmit={UrlFacebook.handleSubmit(onCreateUrlFacebook)}
+                  >
                     <FormField
                       control={UrlFacebook.control}
                       name="facebookUrl"

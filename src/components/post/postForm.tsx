@@ -76,7 +76,7 @@ export function PostForm({ content, imagePost, accountId, authUserId }: Props) {
 
   const handleImage = (
     e: ChangeEvent<HTMLInputElement>,
-    fieldChange: (Value: string) => void
+    fieldChange: (Value: string) => void,
   ) => {
     e.preventDefault();
     const fileReader = new FileReader();
@@ -111,7 +111,8 @@ export function PostForm({ content, imagePost, accountId, authUserId }: Props) {
               <Form {...PostTimeline}>
                 <form
                   onSubmit={PostTimeline.handleSubmit(onSubmitPost)}
-                  className="flex flex-col justify-center gap-10 text-center">
+                  className="flex flex-col justify-center gap-10 text-center"
+                >
                   <FormField
                     control={PostTimeline.control}
                     name="content"
@@ -138,7 +139,8 @@ export function PostForm({ content, imagePost, accountId, authUserId }: Props) {
                         <FormControl>
                           <label
                             htmlFor="file-upload"
-                            className="flex gap-2 cursor-pointer w-12">
+                            className="flex gap-2 cursor-pointer w-12"
+                          >
                             <input
                               id="file-upload"
                               type="file"

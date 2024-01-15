@@ -42,7 +42,8 @@ export default async function Page() {
             gap="3"
             className="shadow-inner text-center ring-1 w-[400px] 
             p-6
-            ">
+            "
+          >
             {ac?.image ? (
               <Avatar className="w-36 h-36 left-1/2 -translate-x-16 ">
                 <AvatarImage src={ac.image} />

@@ -1,11 +1,11 @@
-import ArticleCard from "@/components/article/articleCard";
+import ArticleCardPage from "@/components/article/articlePage";
 import CommentInarticle from "@/components/article/commentinArticle";
 import CommentCard from "@/components/post/commentCard";
 import Reply from "@/components/post/replyForm";
 import { fetchUser } from "@/lib/actions/user.action";
 import { FetchArticleByID } from "@/lib/actions/user.article";
 import { getCurrentUser } from "@/lib/session";
-import { Container } from "@radix-ui/themes";
+import { Container, Heading } from "@radix-ui/themes";
 import { redirect } from "next/navigation";
 
 const Page = async ({ params }: { params: { id: string } }) => {
@@ -22,7 +22,7 @@ const Page = async ({ params }: { params: { id: string } }) => {
   return (
     <Container className=" mt-32 inset-y-28 h-full top-24 place-items-start ">
       <div className="">
-        <ArticleCard
+        <ArticleCardPage
           key={ArticleBy?.id}
           id={ArticleBy?.id}
           title={ArticleBy?.title}
@@ -43,6 +43,9 @@ const Page = async ({ params }: { params: { id: string } }) => {
         />
       </div>
       <div className="mt-10">
+        <Heading align="center" trim="normal">
+          ความคิดเห็นทั้งหมด
+        </Heading>
         {ArticleBy.comment.map((comment: any) => (
           <>
             <CommentCard

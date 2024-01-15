@@ -11,14 +11,14 @@ export async function POST(req: NextRequest, res: NextResponse) {
     if (!follower || !following) {
       return NextResponse.json(
         { message: "ข้อมูลไม่สมบูรณ์หรือไม่ถูกต้อง" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     if (follower === following) {
       return NextResponse.json(
         { message: "ไม่สามารถติดตามตัวตนตัวเองได้" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -47,7 +47,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
     console.log(error);
     return NextResponse.json(
       { message: "ข้อมูลที่รับมาไม่ถูกต้อง" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 }
@@ -80,7 +80,7 @@ export async function DELETE(req: NextRequest, res: NextResponse) {
   } catch (error) {
     return NextResponse.json(
       { message: "ข้อมูลที่รับมาไม่ถูกต้อง" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 }
@@ -101,7 +101,7 @@ export async function PUT(req: NextRequest, res: NextResponse) {
   } catch (error) {
     return NextResponse.json(
       { message: "ข้อมูลที่รับมาไม่ถูกต้อง" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 }
@@ -120,7 +120,7 @@ export async function GET(req: NextRequest, res: NextResponse) {
   } catch (error) {
     return NextResponse.json(
       { message: "ข้อมูลที่รับมาไม่ถูกต้อง" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 }

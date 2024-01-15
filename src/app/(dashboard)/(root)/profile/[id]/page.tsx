@@ -51,7 +51,8 @@ export default async function Page({ params }: { params: { id: string } }) {
                             grid
                             h-32 w-96 flex-grow  place-items-start 
                             bg-base-200
-                            ">
+                            "
+            >
               <ProfileHeader
                 key={Account.id}
                 accountId={Account.id}
@@ -110,7 +111,7 @@ export default async function Page({ params }: { params: { id: string } }) {
                               ImagePost={PostBy.ImagePost}
                               authorId={PostBy.authorId}
                               createAt={new Date(
-                                PostBy.createdAt
+                                PostBy.createdAt,
                               ).toLocaleString()}
                               author={PostBy.author}
                               comments={PostBy.comments}
@@ -137,7 +138,8 @@ export default async function Page({ params }: { params: { id: string } }) {
                   {Account.Article.map((ArticleBy) => (
                     <div
                       key={ArticleBy.id}
-                      className="text-start place-items-start">
+                      className="text-start place-items-start"
+                    >
                       <ArticleCard
                         key={ArticleBy.id}
                         id={ArticleBy.id}

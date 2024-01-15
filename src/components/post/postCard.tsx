@@ -43,7 +43,8 @@ const PostCard = ({
       p="6"
       className={`flex w-full flex-col rounded-xl ${
         isComment ? "px-0 xs:px-7" : "bg-dark-2 p-7"
-      }`}>
+      }`}
+    >
       <Flex gap="3">
         <Link href={`/profile/${author?.id}`}>
           <Avatar className="w-14 h-14">

@@ -52,7 +52,7 @@ function Register() {
 
       // เพิ่มข้อมูลรูปภาพโปรไฟล์
       const selectedImage = document.getElementById(
-        "profileImage"
+        "profileImage",
       ) as HTMLInputElement;
       if (selectedImage?.files && selectedImage.files[0]) {
         formData.append("profileImage", selectedImage.files[0]);

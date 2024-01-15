@@ -104,7 +104,7 @@ export default function ArticleForm({
 
   const handleImage = (
     e: ChangeEvent<HTMLInputElement>,
-    fieldChange: (Value: string) => void
+    fieldChange: (Value: string) => void,
   ) => {
     e.preventDefault();
     const fileReader = new FileReader();
@@ -139,7 +139,8 @@ export default function ArticleForm({
               <Form {...postArticle}>
                 <form
                   onSubmit={postArticle.handleSubmit(onSubmitPost)}
-                  className="flex flex-col justify-center gap-10 text-center">
+                  className="flex flex-col justify-center gap-10 text-center"
+                >
                   <FormField
                     control={postArticle.control}
                     name="title"
@@ -182,7 +183,8 @@ export default function ArticleForm({
                         <FormLabel> HASHTAG </FormLabel>
                         <Select
                           onValueChange={field.onChange}
-                          defaultValue={field.value}>
+                          defaultValue={field.value}
+                        >
                           <FormControl className=" border border-dark-4">
                             <SelectTrigger>
                               <SelectValue placeholder="select hashtag" />
@@ -212,7 +214,8 @@ export default function ArticleForm({
                         <FormControl>
                           <label
                             htmlFor="file-upload"
-                            className="flex gap-2 cursor-pointer w-12">
+                            className="flex gap-2 cursor-pointer w-12"
+                          >
                             <input
                               id="file-upload"
                               type="file"

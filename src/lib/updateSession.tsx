@@ -2,7 +2,7 @@ import React from "react";
 import { useEffect } from "react";
 import { useSession } from "next-auth/react";
 
-export  function UpdateSession() {
+export function UpdateSession() {
   const { data: session, status, update } = useSession();
 
   useEffect(() => {

@@ -39,7 +39,7 @@ app.use(
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
     credentials: true, // เปลี่ยนเป็น false ในโหมด HTTP   credentials: true, // เปลี่ยนเป็น true ในโหมด HTTPS
     optionsSuccessStatus: 200,
-  })
+  }),
 );
 
 dotenv.config({
@@ -58,7 +58,7 @@ app.use(
       secure: false, // เปลี่ยนเป็น false ในโหมด HTTP   secure: true, // เป็น true ในโหมด HTTPS
       sameSite: "Lax", // เปลี่ยนเป็น none ในโหมด HTTP   sameSite: 'none', // เป็น 'none' ในโหมด HTTPS
     },
-  })
+  }),
 );
 
 //JWT TOKEN
@@ -87,7 +87,6 @@ function createJWTToken(userId) {
 }
 
 app.use("/profileImages", express.static("public/profileImages"));
-
 
 // ฟังก์ชันสําหรับลงทะเบียน
 app.post("/register", async (req, res) => {
@@ -128,8 +127,7 @@ app.post("/register", async (req, res) => {
 
     const profileImageFileName = Date.now() + "-" + profileImageFile.name;
     profileImageFile.mv(
-      "C:/agric/agric-production/public/profileImages" +
-      profileImageFileName
+      "C:/agric/agric-production/public/profileImages" + profileImageFileName,
     );
 
     const profileImageUrl = `/profileImages/${profileImageFileName}`;
@@ -185,8 +183,6 @@ app.post("/LoginPage", async (req, res) => {
       sameSite: "none", // ระบุว่า cookie จะส่งได้ไฟล์เดียวกับโดเมนเท่านั้น
       maxAge: 1000 * 60 * 60 * 24, // หมดอายุหลังจาก 24 ชั่วโมง
       path: "/", // สามารถใช้งานได้ทุก path ของเว็บไซต์
-
-
     });
 
     res.status(200).json({
@@ -292,8 +288,7 @@ app.post("/postProduct", async (req, res) => {
       const productImageFile = productImageFiles[key];
       const productImageFileName = Date.now() + "-" + productImageFile.name;
       productImageFile.mv(
-        "C:/agric/agric-production/public/imagePruduct/" +
-        productImageFileName
+        "C:/agric/agric-production/public/imagePruduct/" + productImageFileName,
       );
       const productImageUrl = `/imagePruduct/${productImageFileName}`;
       productImageUrls.push(productImageUrl);
@@ -469,7 +464,7 @@ app.get("/uploadedImages", (req, res) => {
     }
 
     const imageFileNames = files.filter((file) =>
-      file.match(/\.(jpeg|jpg|png|gif)$/i)
+      file.match(/\.(jpeg|jpg|png|gif)$/i),
     );
     res.status(200).json({ imageFileNames });
   });

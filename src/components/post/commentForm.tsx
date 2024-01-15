@@ -41,7 +41,7 @@ export default function Comment({
       postId,
       values.comment,
       JSON.parse(currentUserId),
-      path
+      path,
     );
   };
 
@@ -53,7 +53,8 @@ export default function Comment({
           className="
             flex  
             justify-center 
-             text-center ">
+             text-center "
+        >
           <FormField
             control={commentTimeLine.control}
             name="comment"
@@ -62,7 +63,8 @@ export default function Comment({
                 className="
                 flex w-full 
                 items-center 
-                gap-3 ">
+                gap-3 "
+              >
                 <FormLabel>
                   <Image
                     src={currentUserImage}
@@ -76,7 +78,8 @@ export default function Comment({
                 <FormControl
                   className="
                  border-none
-                  ">
+                  "
+                >
                   <input
                     placeholder="Comment.."
                     className=" 

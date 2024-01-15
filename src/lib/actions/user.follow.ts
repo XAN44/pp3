@@ -6,7 +6,7 @@ import { db } from "../db";
 export async function Follower(
   accountId: string,
   currentId: string,
-  path: string
+  path: string,
 ) {
   // Todo: เช็คผู้ใช้ที่กำลัง Login
 
@@ -40,7 +40,7 @@ export async function Follower(
     }
   } catch (error) {
     throw new Error(
-      "เกิดข้อผิดพลาด: มีปัญหาในการเข้าถึงหรือประมวลผลข้อมูลที่ไม่ถูกต้อง"
+      "เกิดข้อผิดพลาด: มีปัญหาในการเข้าถึงหรือประมวลผลข้อมูลที่ไม่ถูกต้อง",
     );
   }
 }
@@ -50,7 +50,7 @@ export async function Follower(
 export async function unFollower(
   accountId: string,
   currentId: string,
-  path: string
+  path: string,
 ) {
   try {
     if (accountId !== currentId) {
@@ -70,7 +70,7 @@ export async function unFollower(
         });
         revalidatePath(path);
         console.log(
-          `Deleted follow relation: ${JSON.stringify(deletedFollow)}`
+          `Deleted follow relation: ${JSON.stringify(deletedFollow)}`,
         );
       }
       return true;
@@ -111,7 +111,7 @@ export async function getTotalFollowing(accountId: string) {
 export async function CheckFollow(
   accountId: string,
   followingId: string,
-  isFollow?: boolean
+  isFollow?: boolean,
 ) {
   try {
     const readFollow = await db.follows.findFirst({

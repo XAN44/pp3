@@ -16,7 +16,7 @@ export async function POST(req: Request) {
     if (!user?.id) {
       return NextResponse.json(
         { message: "ไม่มีสิทธิ์ในการแก้ไข" },
-        { status: 500 }
+        { status: 500 },
       );
     }
 
@@ -46,7 +46,7 @@ export async function GET(req: Request, res: Response) {
   } catch (error) {
     return NextResponse.json(
       { message: "ไม่สามารถดึงข้อมูล" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

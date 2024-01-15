@@ -31,7 +31,7 @@ export async function POST(req: Request) {
           user: null,
           error: "อีเมล์นี้มีการใช้งานแล้ว",
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
     const existhingUsername = await db.user.findUnique({
@@ -45,7 +45,7 @@ export async function POST(req: Request) {
           user: null,
           error: "ชื่อผู้ใช้นี้มีการใช้งานแล้ว",
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -65,7 +65,7 @@ export async function POST(req: Request) {
   } catch (error) {
     return NextResponse.json(
       { message: "มีข้อผิดพลาดบางอย่าง" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

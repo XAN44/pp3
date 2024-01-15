@@ -1,4 +1,6 @@
+
 /** @type {import('tailwindcss').Config} */
+
 module.exports = {
   darkMode: ["class"],
   content: [
@@ -11,6 +13,7 @@ module.exports = {
     "./src/**/*.{js,jsx,ts,tsx}",
     ["./src/**/*.{html,js}"],
   ],
+  plugins: [require("daisyui")],
   theme: {
     container: {
       center: true,

@@ -7,7 +7,7 @@ export async function CommentInPost(
   postId: string,
   comment: string,
   authorId: string,
-  path: string
+  path: string,
 ) {
   try {
     const Inpost = await db.post.findUnique({
@@ -107,7 +107,7 @@ export async function replyComments(
   commentId: string,
   reply: string,
   authorId: string,
-  path: string
+  path: string,
 ) {
   try {
     const findComment = await db.comment.findUnique({

@@ -10,7 +10,8 @@ export default function Home() {
         h-96
         w-screen
         -mt-[400px] 
-      ">
+      "
+      >
         {/* Cover Image */}
         <div className="">
           <HomePageHeader />

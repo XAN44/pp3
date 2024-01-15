@@ -49,7 +49,7 @@ export async function CommentinArticles(
   articleId: string,
   comment: string,
   authorId: string,
-  path: string
+  path: string,
 ) {
   try {
     const inArticle = await db.article.findUnique({

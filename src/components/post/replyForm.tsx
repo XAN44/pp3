@@ -52,7 +52,7 @@ export default function Reply({
       commentId,
       values.reply,
       JSON.parse(currentUserId),
-      path
+      path,
     );
   };
 
@@ -65,7 +65,8 @@ export default function Reply({
           <Form {...replyForm}>
             <form
               onSubmit={replyForm.handleSubmit(onSubmitReply)}
-              className="flex justify-center text-center">
+              className="flex justify-center text-center"
+            >
               <FormField
                 control={replyForm.control}
                 name="reply"
