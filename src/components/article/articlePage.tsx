@@ -1,3 +1,5 @@
+import { Button } from '@nextui-org/button'
+import { Divider } from '@nextui-org/react'
 import { Flex, Heading, Text } from '@radix-ui/themes'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -61,10 +63,10 @@ export default function ArticleCardPage({
           )}
         </Avatar>
         <Text> {author && author.name}</Text>
+        <Divider orientation="vertical" className="mr-3" />
+
         <Link href={`/profile/${author?.id}`}>
-          <div className="divider  before:bg-primary after:bg-secondary">
-            เยี่ยมชมโปรไฟล์
-          </div>
+          <Button size="sm"> เยี่ยมชมโปรไฟล์ </Button>
         </Link>
       </Flex>
 

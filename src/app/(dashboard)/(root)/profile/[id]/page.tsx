@@ -1,41 +1,41 @@
 // import FollowerCard from "@/components/follow/followerCard";
-import ArticleCard from "@/components/article/articleCard";
-import ArticleForm from "@/components/article/articleForm";
-import PostCard from "@/components/post/postCard";
-import { PostForm } from "@/components/post/postForm";
-import ProfileHeader from "@/components/profile/ProfileHeader";
-import TabmenuinProfile from "@/components/profile/tabmenuinProfile";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import ArticleCard from '@/components/article/articleCard'
+import ArticleForm from '@/components/article/articleForm'
+import PostCard from '@/components/post/postCard'
+import { PostForm } from '@/components/post/postForm'
+import ProfileHeader from '@/components/profile/ProfileHeader'
+import TabmenuinProfile from '@/components/profile/tabmenuinProfile'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
   CheckFollow,
   getTotalFollowers,
   getTotalFollowing,
-} from "@/lib/actions/user.follow";
-import { fetchUserProfileByID } from "@/lib/actions/user.post";
-import { getCurrentUser } from "@/lib/session";
-import { Container } from "@radix-ui/themes";
-import { redirect } from "next/navigation";
-import { Suspense } from "react";
+} from '@/lib/actions/user.follow'
+import { fetchUserProfileByID } from '@/lib/actions/user.post'
+import { getCurrentUser } from '@/lib/session'
+import { Container } from '@radix-ui/themes'
+import { redirect } from 'next/navigation'
+import { Suspense } from 'react'
 
 export default async function Page({ params }: { params: { id: string } }) {
-  if (!params.id) return null;
+  if (!params.id) return null
 
-  const user = await getCurrentUser();
-  if (!user) return null;
+  const user = await getCurrentUser()
+  if (!user) return null
 
   //Todo: ตรวจสอบ user พื่อดึงข้อมูลผู้ใช้มาแสดงผล โดยตัวแปร user จะดึงค่า session จาก getCurrentUser เพื่อใช้ในการยืนยันว่าผู้ใช้ที่เข้าถึง Profile Page เป็นเจ้าของหรือไม่
   //* หากเป็นเจ้าของ จะสามารถเข้าถึงหน้าต่างบางอย่างได้ เช่น ตั้งค่า และอื่นๆ
 
-  const userInfo = await fetchUserProfileByID(params.id);
-  if (!userInfo) redirect("/");
+  const userInfo = await fetchUserProfileByID(params.id)
+  if (!userInfo) redirect('/')
 
   //Todo: โดยใช้ Params.id ในการยืนยันจากฐานข้อมูล หากข้อมูลตรงกัน จะทำการแสดงเนื้อหาต่างๆที่โค้ดด้านล่าง
   // TODO:แสดงการติดตาม
-  const userfollow = await getTotalFollowers(params.id);
-  const userfollowing = await getTotalFollowing(params.id);
-  const checkFollower = await CheckFollow(params.id, user.id);
+  const userfollow = await getTotalFollowers(params.id)
+  const userfollowing = await getTotalFollowing(params.id)
+  const checkFollower = await CheckFollow(params.id, user.id)
 
-  if (!userInfo) redirect("/sign-in"); // ! และถ้าหากว่าไม่มี Prarams.id จะทำการ redireact ไปที่หน้า Sign-ins
+  if (!userInfo) redirect('/sign-in') // ! และถ้าหากว่าไม่มี Prarams.id จะทำการ redireact ไปที่หน้า Sign-ins
 
   return (
     <Container className="relative mt-44">
@@ -57,23 +57,23 @@ export default async function Page({ params }: { params: { id: string } }) {
                 key={Account.id}
                 accountId={Account.id}
                 authUserId={user.id}
-                name={Account.name || ""}
-                nickname={Account.nickname || ""}
-                image={Account.image || " "}
-                bio={Account.bio || ""}
+                name={Account.name || ''}
+                nickname={Account.nickname || ''}
+                image={Account.image || ' '}
+                bio={Account.bio || ''}
                 totalFollower={userfollow}
                 totalFollowing={userfollowing}
                 isFollow={checkFollower}
                 contact={{
-                  facebook: Account.Facebook || "",
-                  ig: Account.IG || "",
-                  twitter: Account.Twitter || "",
-                  tiktok: Account.Tiktok || "",
+                  facebook: Account.Facebook || '',
+                  ig: Account.IG || '',
+                  twitter: Account.Twitter || '',
+                  tiktok: Account.Tiktok || '',
                 }}
               />
             </div>
 
-            <div className="relative h-32 place-items-center text-center justify-center">
+            <div className="relative h-32 place-items-center justify-center text-center">
               <TabmenuinProfile
                 activity={false}
                 content={false}
@@ -86,15 +86,15 @@ export default async function Page({ params }: { params: { id: string } }) {
                   <TabsTrigger value="article"> ARTICLE</TabsTrigger>
                 </TabsList>
                 <TabsContent value="post">
-                  <div className="text-center place-items-start ">
+                  <div className="place-items-start text-center ">
                     {userInfo.map((Account) => (
                       <>
                         <PostForm
                           key={Account.id}
                           accountId={Account.id}
                           authUserId={user.id}
-                          imagePost={""}
-                          content={""}
+                          imagePost={''}
+                          content={''}
                         />
                       </>
                     ))}
@@ -102,7 +102,7 @@ export default async function Page({ params }: { params: { id: string } }) {
                       //*ส่วนแสดงเนื้อหาโพสต์
                       //Todo:ใช้ Params จากการ Login ในการแสดงข้อมูล
                       <>
-                        <div className="text-start place-items-start">
+                        <div className="place-items-start text-start">
                           <Suspense fallback={<p> LOADING </p>}>
                             <PostCard
                               key={PostBy.id}
@@ -111,7 +111,7 @@ export default async function Page({ params }: { params: { id: string } }) {
                               ImagePost={PostBy.ImagePost}
                               authorId={PostBy.authorId}
                               createAt={new Date(
-                                PostBy.createdAt,
+                                PostBy.createdAt
                               ).toLocaleString()}
                               author={PostBy.author}
                               comments={PostBy.comments}
@@ -123,22 +123,22 @@ export default async function Page({ params }: { params: { id: string } }) {
                   </div>
                 </TabsContent>
                 <TabsContent value="article">
-                  <div className="text-center place-items-start">
+                  <div className="place-items-start text-center">
                     <ArticleForm
                       key={Account.id}
                       accountId={Account.id}
                       authUserId={user.id}
-                      ArticleImage={""}
-                      articleContent={""}
-                      tag={""}
-                      title={""}
+                      ArticleImage={''}
+                      articleContent={''}
+                      tag={''}
+                      title={''}
                     />
                   </div>
 
                   {Account.Article.map((ArticleBy) => (
                     <div
                       key={ArticleBy.id}
-                      className="text-start place-items-start"
+                      className="place-items-start text-start"
                     >
                       <ArticleCard
                         key={ArticleBy.id}
@@ -161,5 +161,5 @@ export default async function Page({ params }: { params: { id: string } }) {
         ))}
       </div>
     </Container>
-  );
+  )
 }

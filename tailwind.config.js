@@ -1,3 +1,4 @@
+const {nextui} = require("@nextui-org/react");
 
 /** @type {import('tailwindcss').Config} */
 
@@ -12,8 +13,10 @@ module.exports = {
     "./src/**/*.{js,jsx}",
     "./src/**/*.{js,jsx,ts,tsx}",
     ["./src/**/*.{html,js}"],
+    "./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}"
   ],
   plugins: [require("daisyui")],
+  
   theme: {
     container: {
       center: true,
@@ -81,6 +84,7 @@ module.exports = {
   },
   plugins: [require("tailwindcss-animate")],
   plugins: [require("daisyui")],
+  plugins: [nextui()],
 
   daisyui: {
     themes: false, // false: only light + dark | true: all themes | array: specific themes like this ["light", "dark", "cupcake"]

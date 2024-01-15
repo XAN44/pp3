@@ -1,12 +1,5 @@
-"use client";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+'use client'
+
 import {
   Form,
   FormControl,
@@ -15,37 +8,42 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { useToast } from "@/components/ui/use-toast";
-import { POSTARTILE } from "@/lib/actions/user.article";
-import { useUploadThing } from "@/lib/uploadthing";
-import { isBase64Image } from "@/lib/utils";
-import { ArticlePost } from "@/lib/validations/Userpost";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2 } from "lucide-react";
-import Image from "next/image";
-import { usePathname } from "next/navigation";
-import { ChangeEvent, useState } from "react";
-import { useForm } from "react-hook-form";
-import { CiImageOn } from "react-icons/ci";
-import * as z from "zod";
-import { Button } from "../ui/button";
-import { Input } from "../ui/input";
+} from '@/components/ui/form'
+import { useToast } from '@/components/ui/use-toast'
+import { POSTARTILE } from '@/lib/actions/user.article'
+import { useUploadThing } from '@/lib/uploadthing'
+import { isBase64Image } from '@/lib/utils'
+import { ArticlePost } from '@/lib/validations/Userpost'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { Select, SelectItem } from '@nextui-org/react'
+import { Loader2 } from 'lucide-react'
+import Image from 'next/image'
+import { usePathname } from 'next/navigation'
+import React, { ChangeEvent, useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { CiImageOn } from 'react-icons/ci'
+import * as z from 'zod'
+import { HASHTAG } from '../tag/hashtag'
+import { Button } from '../ui/button'
+import { Input } from '../ui/input'
+import { Textarea } from '@nextui-org/react'
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../ui/select";
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogCloseButton,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogOverlay,
+  useDisclosure,
+} from '@chakra-ui/react'
 
 interface Props {
-  accountId: string;
-  authUserId: string;
-  title: string;
-  articleContent: string;
-  ArticleImage: string;
-  tag: string;
+  accountId: string
+  authUserId: string
+  title: string
+  articleContent: string
+  ArticleImage: string
+  tag: string
 }
 
 export default function ArticleForm({
@@ -56,206 +54,214 @@ export default function ArticleForm({
   ArticleImage,
   tag,
 }: Props) {
-  const [files, setFiles] = useState<File[]>([]);
-  const [selectedImage, setSelectedImage] = useState<string>("");
-  const { startUpload } = useUploadThing("media");
-  const [isLoading, setIsloading] = useState(false);
-  const [isText, setIsText] = useState("บันทึก");
-  const [imageSelected, setImageSelected] = useState(false);
-  const { toast } = useToast();
+  const [files, setFiles] = useState<File[]>([])
+  const [selectedImage, setSelectedImage] = useState<string>('')
+  const { startUpload } = useUploadThing('media')
+  const [isLoading, setIsloading] = useState(false)
+  const [isText, setIsText] = useState('บันทึก')
+  const [imageSelected, setImageSelected] = useState(false)
+  const { toast } = useToast()
 
-  const pathname = usePathname();
+  const pathname = usePathname()
   const postArticle = useForm<z.infer<typeof ArticlePost>>({
     resolver: zodResolver(ArticlePost),
     defaultValues: {},
-  });
+  })
 
   const onSubmitPost = async (values: z.infer<typeof ArticlePost>) => {
-    setIsloading(true);
+    setIsloading(true)
 
-    const blob = values.articleImage;
+    const blob = values.articleImage
     if (blob) {
-      const hasImageChange = isBase64Image(blob);
+      const hasImageChange = isBase64Image(blob)
       if (hasImageChange) {
-        const imgRes = await startUpload(files);
+        const imgRes = await startUpload(files)
         if (imgRes && imgRes[0].url) {
-          values.articleImage = imgRes[0].url;
+          values.articleImage = imgRes[0].url
         }
       }
     }
 
     await POSTARTILE({
       authorId: authUserId,
-      title: values.title ? String(values.title) : "",
+      title: values.title ? String(values.title) : '',
       articleContent: values.articleContent
         ? String(values.articleContent)
-        : "",
-      ArticleImage: values.articleImage ? String(values.articleImage) : "",
-      tag: values.tag ? String(values.tag) : "",
+        : '',
+      ArticleImage: values.articleImage ? String(values.articleImage) : '',
+      tag: values.tag ? String(values.tag) : '',
       path: pathname,
-    });
+    })
     toast({
-      title: "Creat Article success",
-    });
-    setIsloading(false);
-    setIsText("บันทึกสำเร็จ");
-    console.log("NEW ARTICLE", POSTARTILE);
-  };
+      title: 'Creat Article success',
+    })
+    setIsloading(false)
+    setIsText('บันทึกสำเร็จ')
+    console.log('NEW ARTICLE', POSTARTILE)
+  }
 
   const handleImage = (
     e: ChangeEvent<HTMLInputElement>,
-    fieldChange: (Value: string) => void,
+    fieldChange: (Value: string) => void
   ) => {
-    e.preventDefault();
-    const fileReader = new FileReader();
+    e.preventDefault()
+    const fileReader = new FileReader()
 
     if (e.target.files && e.target.files.length > 0) {
-      const file = e.target.files[0];
-      setFiles(Array.from(e.target.files));
-      if (!file.type.includes("image")) return;
+      const file = e.target.files[0]
+      setFiles(Array.from(e.target.files))
+      if (!file.type.includes('image')) return
 
       fileReader.onload = async (event) => {
-        const imageDataUrl = event.target?.result?.toString() || " ";
-        setSelectedImage(imageDataUrl);
-        fieldChange(imageDataUrl);
-        setImageSelected(true);
-      };
-      fileReader.readAsDataURL(file);
+        const imageDataUrl = event.target?.result?.toString() || ' '
+        setSelectedImage(imageDataUrl)
+        fieldChange(imageDataUrl)
+        setImageSelected(true)
+      }
+      fileReader.readAsDataURL(file)
     }
-  };
+  }
+  const { isOpen, onOpen, onClose } = useDisclosure()
+  const cancelRef = React.useRef<HTMLInputElement>(null)
 
   return (
     <>
       {accountId === authUserId && (
-        <Dialog>
-          <DialogTrigger>Create Article</DialogTrigger>
-          <DialogContent className="grid items-center justify-center text-center">
-            <DialogHeader>
-              <DialogTitle> เพิ่มเนื้อหาของคุณ ! </DialogTitle>
-              <DialogDescription> เพิิ่มเนื้อหาของคุณได้เลย </DialogDescription>
-            </DialogHeader>
-
-            <div className=" ">
-              <Form {...postArticle}>
-                <form
-                  onSubmit={postArticle.handleSubmit(onSubmitPost)}
-                  className="flex flex-col justify-center gap-10 text-center"
-                >
-                  <FormField
-                    control={postArticle.control}
-                    name="title"
-                    render={({ field }) => (
-                      <FormItem className="flex flex-col gap-3 ">
-                        <FormLabel> TITLE </FormLabel>
-                        <FormControl className=" border border-dark-4">
-                          <Input
-                            className=" ring-1 ring-black resize-none bg-base-300 rounded-lg w-full pl-3 pr-3 pt-3"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={postArticle.control}
-                    name="articleContent"
-                    render={({ field }) => (
-                      <FormItem className="flex flex-col gap-3 ">
-                        <FormLabel> CONTENT </FormLabel>
-
-                        <FormControl className=" border border-dark-4">
-                          <textarea
-                            rows={4}
-                            className="resize-none bg-base-300 rounded-lg w-96 pl-3 pr-3 pt-3 ring-1 ring-black"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={postArticle.control}
-                    name="tag"
-                    render={({ field }) => (
-                      <FormItem className="flex flex-col gap-3 ">
-                        <FormLabel> HASHTAG </FormLabel>
-                        <Select
-                          onValueChange={field.onChange}
-                          defaultValue={field.value}
-                        >
-                          <FormControl className=" border border-dark-4">
-                            <SelectTrigger>
-                              <SelectValue placeholder="select hashtag" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            <SelectItem value="ท่องเที่ยว">
-                              ท่องเที่ยว
-                            </SelectItem>
-                            <SelectItem value="อาหาร">อาหาร</SelectItem>
-                            <SelectItem value="อื่นๆ">อื่นๆ</SelectItem>
-                          </SelectContent>
-                        </Select>
-                        <FormDescription>
-                          คุณสามารถเลือกแท็กเพื่อโพสต์แสดงไปยังเนื้อหาที่เกี่ยวข้องได้
-                        </FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={postArticle.control}
-                    name="articleImage"
-                    render={({ field }) => (
-                      <FormItem className="flex w-full flex-col gap-2  items-center justify-center ">
-                        <FormLabel className="text-base-semibold text-light-2"></FormLabel>
-                        <FormControl>
-                          <label
-                            htmlFor="file-upload"
-                            className="flex gap-2 cursor-pointer w-12"
-                          >
-                            <input
-                              id="file-upload"
-                              type="file"
-                              className="hidden w-5 "
-                              accept="image/*"
-                              placeholder="add post photo"
-                              onChange={(e) => handleImage(e, field.onChange)}
+        <div className=" ">
+          <Button onClick={onOpen}>Delete Customer</Button>
+          <AlertDialog
+            motionPreset="slideInBottom"
+            leastDestructiveRef={cancelRef}
+            onClose={onClose}
+            isOpen={isOpen}
+            isCentered
+          >
+            <AlertDialogOverlay />
+            <AlertDialogContent>
+              <AlertDialogHeader>Discard Changes?</AlertDialogHeader>
+              <AlertDialogCloseButton />
+              <AlertDialogBody>
+                <Form {...postArticle}>
+                  <form
+                    onSubmit={postArticle.handleSubmit(onSubmitPost)}
+                    className="flex flex-col justify-center gap-10 text-center"
+                  >
+                    <FormField
+                      control={postArticle.control}
+                      name="title"
+                      render={({ field }) => (
+                        <FormItem className="flex flex-col gap-3 ">
+                          <FormLabel> TITLE </FormLabel>
+                          <FormControl className=" border-dark-4 border">
+                            <Input
+                              className=" w-full resize-none rounded-lg bg-base-300 pl-3 pr-3 pt-3 ring-1 ring-black"
+                              {...field}
                             />
-                            <CiImageOn size={30} id="file-upload" />
-                          </label>
-                        </FormControl>
-                        <Image
-                          src={selectedImage}
-                          alt="image post"
-                          width={100}
-                          height={100}
-                          style={{ display: imageSelected ? "block" : "none" }}
-                        />
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <Button type="submit" className="mt-3" disabled={isLoading}>
-                    {isLoading ? (
-                      <>
-                        <Button disabled>
-                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                          Please wait
-                        </Button>
-                      </>
-                    ) : (
-                      isText
-                    )}
-                  </Button>
-                </form>
-              </Form>
-            </div>
-          </DialogContent>
-        </Dialog>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={postArticle.control}
+                      name="articleContent"
+                      render={({ field }) => (
+                        <FormItem className="flex flex-col place-items-center items-center justify-center gap-3  ">
+                          <FormLabel> CONTENT </FormLabel>
+
+                          <FormControl className="">
+                            <Textarea
+                              labelPlacement="outside"
+                              placeholder="แบ่งปันเรื่องราวดีๆของคุณเข้าสู่แพลตฟอร์ม!"
+                              className="max-w-xs"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={postArticle.control}
+                      name="tag"
+                      render={({ field }) => (
+                        <FormItem className="flex flex-col gap-3 ">
+                          <FormLabel> HASHTAG </FormLabel>
+                          <Select
+                            items={HASHTAG}
+                            label="Select Hashtag"
+                            placeholder="HashTag For You"
+                            {...field}
+                            value={field.value}
+                            onChange={(value) => field.onChange(value)}
+                          >
+                            {(HASHTAG) => (
+                              <SelectItem key={HASHTAG.value}>
+                                {HASHTAG.label}
+                              </SelectItem>
+                            )}
+                          </Select>
+                          <FormDescription>
+                            คุณสามารถเลือกแท็กเพื่อโพสต์แสดงไปยังเนื้อหาที่เกี่ยวข้องได้
+                          </FormDescription>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={postArticle.control}
+                      name="articleImage"
+                      render={({ field }) => (
+                        <FormItem className="flex w-full flex-col items-center  justify-center gap-2 ">
+                          <FormLabel className="text-base-semibold text-light-2"></FormLabel>
+                          <FormControl>
+                            <label
+                              htmlFor="file-upload"
+                              className="flex w-12 cursor-pointer gap-2"
+                            >
+                              <input
+                                id="file-upload"
+                                type="file"
+                                className="hidden w-5 "
+                                accept="image/*"
+                                placeholder="add post photo"
+                                onChange={(e) => handleImage(e, field.onChange)}
+                              />
+                              <CiImageOn size={30} id="file-upload" />
+                            </label>
+                          </FormControl>
+                          <Image
+                            src={selectedImage}
+                            alt="image post"
+                            width={100}
+                            height={100}
+                            style={{
+                              display: imageSelected ? 'block' : 'none',
+                            }}
+                          />
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <Button type="submit" className="mt-3" disabled={isLoading}>
+                      {isLoading ? (
+                        <>
+                          <Button disabled>
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            Please wait
+                          </Button>
+                        </>
+                      ) : (
+                        isText
+                      )}
+                    </Button>
+                  </form>
+                </Form>
+              </AlertDialogBody>
+            </AlertDialogContent>
+          </AlertDialog>
+        </div>
       )}
     </>
-  );
+  )
 }
