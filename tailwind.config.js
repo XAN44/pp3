@@ -5,17 +5,17 @@ const {nextui} = require("@nextui-org/react");
 module.exports = {
   darkMode: ["class"],
   content: [
-    "./pages/**/*.{js,jsx}",
+    "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/**/*.{js,ts,jsx,tsx,mdx}",
-
-    "./components/**/*.{js,jsx}",
-    "./app/**/*.{js,jsx}",
+    "./components/**/*.{js,ts,jsx,tsx,mdx}",
+    
+    "./app/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/**/*.{js,jsx}",
+
     "./src/**/*.{js,jsx,ts,tsx}",
-    ["./src/**/*.{html,js}"],
+    "./src/**/*.{html,js}",
     "./node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}"
   ],
-  plugins: [require("daisyui")],
   
   theme: {
     container: {
@@ -87,12 +87,28 @@ module.exports = {
   plugins: [nextui()],
 
   daisyui: {
-    themes: false, // false: only light + dark | true: all themes | array: specific themes like this ["light", "dark", "cupcake"]
-    darkTheme: "light", // name of one of the included themes for dark mode
+    themes:[
+        {
+          mytheme: {   
+            "primary": "#ee00ff",
+            "secondary": "#00dfba",
+            "accent": "#9f0000",
+            "neutral": "#091f2e",
+            "base-100": "#fcfcfc",
+            "info": "#008ce0",
+            "success": "#00f5a9",
+            "warning": "#b96d00",
+            "error": "#ff7588",
+          },
+        },
+      ], 
+
+
+    darkTheme: "dark", // name of one of the included themes for dark mode
     base: true, // applies background color and foreground color for root element by default
     styled: true, // include daisyUI colors and design decisions for all components
     utils: true, // adds responsive and modifier utility classes
-    prefix: "", // prefix for daisyUI classnames (components, modifiers and responsive class names. Not colors)
+    prefix: true, // prefix for daisyUI classnames (components, modifiers and responsive class names. Not colors)
     logs: true, // Shows info about daisyUI version and used config in the console when building your CSS
     themeRoot: ":root", // The element that receives theme color CSS variables
   },

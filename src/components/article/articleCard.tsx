@@ -1,8 +1,15 @@
 import { ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable'
-import { Button, Card, CardBody, CardHeader, Image } from '@nextui-org/react'
+import {
+  Avatar,
+  Button,
+  Card,
+  CardBody,
+  CardFooter,
+  CardHeader,
+  Image,
+} from '@nextui-org/react'
 import { Flex, Grid, Heading, Text } from '@radix-ui/themes'
 import Link from 'next/link'
-import { Avatar, AvatarImage } from '../ui/avatar'
 
 interface Props {
   id: string
@@ -45,19 +52,44 @@ export default function ArticleCard({
   isComment,
 }: Props) {
   return (
-    <div className="grid items-center justify-center  ">
+    <div className=" grid w-full items-center  justify-center ">
       {ArticleImage && (
-        <Card shadow="sm" key={ArticleImage} isPressable>
-          <CardBody className=" pt-1">
+        <Card
+          shadow="sm"
+          radius="lg"
+          isFooterBlurred
+          key={ArticleImage}
+          isPressable
+          className="bg-zinc-300  "
+        >
+          <CardBody className=" overflow-visible p-0 pt-0">
             <Image
+              isZoomed
               src={ArticleImage}
               alt="articleImage"
-              shadow="sm"
-              radius="lg"
+              radius="md"
               width="100%"
               className="h-[140px] w-full rounded-xl object-cover"
             />
           </CardBody>
+          <CardFooter className="flex justify-between px-3 text-small">
+            <aside>
+              <div className="w-40">
+                <b>{title}</b>
+                <p className="text-default-500">{articleContent}</p>
+              </div>
+            </aside>
+            <main>
+              {author?.image && (
+                <Avatar alt="profile" src={author?.image} isBordered />
+              )}
+              <footer>
+                <Link href={`/article/${id}`}>
+                  <Button>READ MORE</Button>
+                </Link>
+              </footer>
+            </main>
+          </CardFooter>
         </Card>
       )}
     </div>

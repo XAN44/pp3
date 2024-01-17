@@ -13,7 +13,7 @@ import {
 } from '@/lib/actions/user.follow'
 import { fetchUserProfileByID } from '@/lib/actions/user.post'
 import { getCurrentUser } from '@/lib/session'
-import { Container } from '@radix-ui/themes'
+import { Divider } from '@nextui-org/react'
 import { redirect } from 'next/navigation'
 import { Suspense } from 'react'
 
@@ -38,20 +38,13 @@ export default async function Page({ params }: { params: { id: string } }) {
   if (!userInfo) redirect('/sign-in') // ! และถ้าหากว่าไม่มี Prarams.id จะทำการ redireact ไปที่หน้า Sign-ins
 
   return (
-    <Container className="relative mt-44">
-      <div className=" flex flex-col place-items-center justify-center lg:flex-row ">
-        {userInfo.map((Account) => (
+    <div className="relative mb-96 flex h-32 gap-0">
+      {userInfo &&
+        userInfo.map((Account) => (
           <>
-            <div
-              className="
-                            fixed
-                            inset-x-0 
-                            inset-y-[20%]
-                            left-[32px]
-                            grid
-                            h-32 w-96 flex-grow  place-items-start 
-                            bg-base-200
-                            "
+            <aside
+              className=" 
+            fixed inset-x-0  left-[32px] w-56 place-items-start px-3 ring-1 ring-black"
             >
               <ProfileHeader
                 key={Account.id}
@@ -71,38 +64,37 @@ export default async function Page({ params }: { params: { id: string } }) {
                   tiktok: Account.Tiktok || '',
                 }}
               />
-            </div>
-
-            <div className="relative h-32 place-items-center justify-center text-center">
-              <TabmenuinProfile
-                activity={false}
-                content={false}
-                article={false}
-                product={false}
-              />
-              <Tabs defaultValue="post">
-                <TabsList>
-                  <TabsTrigger value="post"> POST</TabsTrigger>
-                  <TabsTrigger value="article"> ARTICLE</TabsTrigger>
-                </TabsList>
-                <TabsContent value="post">
-                  <div className="place-items-start text-center ">
-                    {userInfo.map((Account) => (
-                      <>
-                        <PostForm
-                          key={Account.id}
-                          accountId={Account.id}
-                          authUserId={user.id}
-                          imagePost={''}
-                          content={''}
-                        />
-                      </>
-                    ))}
-                    {Account.post.map((PostBy) => (
-                      //*ส่วนแสดงเนื้อหาโพสต์
-                      //Todo:ใช้ Params จากการ Login ในการแสดงข้อมูล
-                      <>
-                        <div className="place-items-start text-start">
+            </aside>
+            <Divider orientation="vertical" />
+            <main className="w-[690px]">
+              <div className="relative place-items-center justify-center text-center ">
+                <div className=" ">
+                  <Tabs defaultValue="post">
+                    <TabsList className="">
+                      <TabsTrigger value="post"> POST</TabsTrigger>
+                      <TabsTrigger value="article"> ARTICLE</TabsTrigger>
+                    </TabsList>
+                    <TabsContent value="post">
+                      <div
+                        key={Account.id}
+                        className="place-items-center text-center"
+                      >
+                        {userInfo.map((Account) => (
+                          <>
+                            <PostForm
+                              key={Account.id}
+                              accountId={Account.id}
+                              authUserId={user.id}
+                              imagePost={''}
+                              content={''}
+                            />
+                          </>
+                        ))}
+                      </div>
+                      {Account.post.map((PostBy) => (
+                        //*ส่วนแสดงเนื้อหาโพสต์
+                        //Todo:ใช้ Params จากการ Login ในการแสดงข้อมูล
+                        <div key={Account.id} className="text-start ">
                           <Suspense fallback={<p> LOADING </p>}>
                             <PostCard
                               key={PostBy.id}
@@ -118,48 +110,45 @@ export default async function Page({ params }: { params: { id: string } }) {
                             />
                           </Suspense>
                         </div>
-                      </>
-                    ))}
-                  </div>
-                </TabsContent>
-                <TabsContent value="article">
-                  <div className="place-items-start text-center">
-                    <ArticleForm
-                      key={Account.id}
-                      accountId={Account.id}
-                      authUserId={user.id}
-                      ArticleImage={''}
-                      articleContent={''}
-                      tag={''}
-                      title={''}
-                    />
-                  </div>
-
-                  {Account.Article.map((ArticleBy) => (
-                    <div
-                      key={ArticleBy.id}
-                      className="place-items-start text-start"
-                    >
-                      <ArticleCard
-                        key={ArticleBy.id}
-                        id={ArticleBy.id}
-                        title={ArticleBy.title}
-                        articleContent={ArticleBy.articleContent}
-                        ArticleImage={ArticleBy.ArticleImage}
-                        tag={ArticleBy.tag}
-                        authorId={ArticleBy.authorId}
-                        author={ArticleBy.author}
-                        comments={ArticleBy.comment}
-                        createAt={new Date(ArticleBy.createAt).toLocaleString()}
-                      />
-                    </div>
-                  ))}
-                </TabsContent>
-              </Tabs>
-            </div>
+                      ))}
+                    </TabsContent>
+                    <TabsContent value="article">
+                      <div className="place-items-center text-center">
+                        <ArticleForm
+                          key={Account.id}
+                          accountId={Account.id}
+                          authUserId={user.id}
+                          ArticleImage={''}
+                          articleContent={''}
+                          tag={''}
+                          title={''}
+                        />
+                      </div>
+                      {Account.Article.map((ArticleBy) => (
+                        <div key={ArticleBy.id}>
+                          <ArticleCard
+                            key={ArticleBy.id}
+                            id={ArticleBy.id}
+                            title={ArticleBy.title}
+                            articleContent={ArticleBy.articleContent}
+                            ArticleImage={ArticleBy.ArticleImage}
+                            tag={ArticleBy.tag}
+                            authorId={ArticleBy.authorId}
+                            author={ArticleBy.author}
+                            comments={ArticleBy.comment}
+                            createAt={new Date(
+                              ArticleBy.createAt
+                            ).toLocaleString()}
+                          />
+                        </div>
+                      ))}
+                    </TabsContent>
+                  </Tabs>
+                </div>
+              </div>
+            </main>
           </>
         ))}
-      </div>
-    </Container>
+    </div>
   )
 }
