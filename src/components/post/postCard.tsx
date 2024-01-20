@@ -68,7 +68,7 @@ const PostCard = ({
             )}
           </Avatar>
         </Link>
-        <Grid align="start" gap="3">
+        <Grid align="start" gap="4">
           <Flex direction="column">
             <Link href={`/profile/${author?.id}`} className="">
               <Text size="7">{author && author.name}</Text>
