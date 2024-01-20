@@ -11,7 +11,9 @@ import {
   getTotalFollowers,
   getTotalFollowing,
 } from '@/lib/actions/user.follow'
+import { getLike, checkLike } from '@/lib/actions/user.like'
 import { fetchUserProfileByID } from '@/lib/actions/user.post'
+import { TotalVisit, TotalVisit1 } from '@/lib/actions/user.visit'
 import { getCurrentUser } from '@/lib/session'
 import { Divider } from '@nextui-org/react'
 import { redirect } from 'next/navigation'
@@ -34,7 +36,6 @@ export default async function Page({ params }: { params: { id: string } }) {
   const userfollow = await getTotalFollowers(params.id)
   const userfollowing = await getTotalFollowing(params.id)
   const checkFollower = await CheckFollow(params.id, user.id)
-
   if (!userInfo) redirect('/sign-in') // ! และถ้าหากว่าไม่มี Prarams.id จะทำการ redireact ไปที่หน้า Sign-ins
 
   return (
@@ -91,7 +92,7 @@ export default async function Page({ params }: { params: { id: string } }) {
                           </>
                         ))}
                       </div>
-                      {Account.post.map((PostBy) => (
+                      {Account.post.map(async (PostBy) => (
                         //*ส่วนแสดงเนื้อหาโพสต์
                         //Todo:ใช้ Params จากการ Login ในการแสดงข้อมูล
                         <div key={Account.id} className="text-start ">
@@ -99,6 +100,7 @@ export default async function Page({ params }: { params: { id: string } }) {
                             <PostCard
                               key={PostBy.id}
                               id={PostBy.id}
+                              current={user.id}
                               content={PostBy.content}
                               ImagePost={PostBy.ImagePost}
                               authorId={PostBy.authorId}
@@ -107,6 +109,9 @@ export default async function Page({ params }: { params: { id: string } }) {
                               ).toLocaleString()}
                               author={PostBy.author}
                               comments={PostBy.comments}
+                              checkLike={await checkLike(PostBy.id, user.id)}
+                              totalLike={await getLike(PostBy.id)}
+                              totalVisit={await TotalVisit(PostBy.id)}
                             />
                           </Suspense>
                         </div>
@@ -124,7 +129,7 @@ export default async function Page({ params }: { params: { id: string } }) {
                           title={''}
                         />
                       </div>
-                      {Account.Article.map((ArticleBy) => (
+                      {Account.Article.map(async (ArticleBy) => (
                         <div key={ArticleBy.id}>
                           <ArticleCard
                             key={ArticleBy.id}
@@ -139,6 +144,7 @@ export default async function Page({ params }: { params: { id: string } }) {
                             createAt={new Date(
                               ArticleBy.createAt
                             ).toLocaleString()}
+                            totalVisit={await TotalVisit1(ArticleBy.id)}
                           />
                         </div>
                       ))}

@@ -9,7 +9,7 @@ export const ArticlePost = z.object({
   title: z.string().nonempty().optional(),
   articleContent: z.string().nonempty().optional(),
   tag: z.string().nonempty().optional(),
-  articleImage: z.string().url().nonempty().optional(),
+  articleImage: z.string().url().nonempty()
 });
 
 export const commentPost = z.object({

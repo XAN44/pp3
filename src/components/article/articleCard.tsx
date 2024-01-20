@@ -7,9 +7,12 @@ import {
   CardFooter,
   CardHeader,
   Image,
+  Slider,
 } from '@nextui-org/react'
-import { Flex, Grid, Heading, Text } from '@radix-ui/themes'
 import Link from 'next/link'
+import { Badge } from '@chakra-ui/react'
+import VisitBtn from '../visit/visitBtn'
+import VisitBtnArticle from '../visit/visitArticle'
 
 interface Props {
   id: string
@@ -37,6 +40,7 @@ interface Props {
     } | null
   }[]
   isComment?: boolean
+  totalVisit: number
 }
 
 export default function ArticleCard({
@@ -50,9 +54,10 @@ export default function ArticleCard({
   comments,
   createAt,
   isComment,
+  totalVisit,
 }: Props) {
   return (
-    <div className=" grid w-full items-center  justify-center ">
+    <div className="  grid h-full w-full items-center justify-center p-3  ">
       {ArticleImage && (
         <Card
           shadow="sm"
@@ -60,7 +65,7 @@ export default function ArticleCard({
           isFooterBlurred
           key={ArticleImage}
           isPressable
-          className="bg-zinc-300  "
+          className="  bg-zinc-300 "
         >
           <CardBody className=" overflow-visible p-0 pt-0">
             <Image
@@ -72,23 +77,35 @@ export default function ArticleCard({
               className="h-[140px] w-full rounded-xl object-cover"
             />
           </CardBody>
-          <CardFooter className="flex justify-between px-3 text-small">
-            <aside>
+          <CardFooter className="text-small flex place-items-center items-center justify-between px-3">
+            <aside className="w-full border">
               <div className="w-40">
-                <b>{title}</b>
-                <p className="text-default-500">{articleContent}</p>
+                <b className="">{title}</b>
+                <p className="text-default-500 text-start">{articleContent}</p>
               </div>
             </aside>
-            <main>
-              {author?.image && (
-                <Avatar alt="profile" src={author?.image} isBordered />
-              )}
-              <footer>
-                <Link href={`/article/${id}`}>
-                  <Button>READ MORE</Button>
+            <div className=" grid place-items-center items-center justify-center">
+              <main className="w-10 border">
+                <Link href={`/profile/${author?.id}`}>
+                  {author?.image && (
+                    <Avatar alt="profile" src={author?.image} />
+                  )}
                 </Link>
+              </main>
+              <footer className="mt-3">
+                <VisitBtnArticle articleId={id} userId={authorId || ''} />
+                {tag ? (
+                  tag.map((hashTag) => (
+                    <div className="badge badge-neutral  " key={hashTag.id}>
+                      {hashTag.tag}
+                    </div>
+                  ))
+                ) : (
+                  <Badge>ไม่มีแฮชแท็ก</Badge>
+                )}
+                <p>ยอดผู้เข้าชม {totalVisit}</p>
               </footer>
-            </main>
+            </div>
           </CardFooter>
         </Card>
       )}

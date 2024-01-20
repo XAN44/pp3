@@ -1,9 +1,11 @@
 const {nextui} = require("@nextui-org/react");
 
+import daisyui from 'daisyui'
 /** @type {import('tailwindcss').Config} */
 
 module.exports = {
   darkMode: ["class"],
+  
   content: [
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/**/*.{js,ts,jsx,tsx,mdx}",
@@ -83,8 +85,8 @@ module.exports = {
     },
   },
   plugins: [require("tailwindcss-animate")],
-  plugins: [require("daisyui")],
   plugins: [nextui()],
+  plugins: [daisyui],
 
   daisyui: {
     themes:[
@@ -108,7 +110,7 @@ module.exports = {
     base: true, // applies background color and foreground color for root element by default
     styled: true, // include daisyUI colors and design decisions for all components
     utils: true, // adds responsive and modifier utility classes
-    prefix: true, // prefix for daisyUI classnames (components, modifiers and responsive class names. Not colors)
+    prefix: "true", // prefix for daisyUI classnames (components, modifiers and responsive class names. Not colors)
     logs: true, // Shows info about daisyUI version and used config in the console when building your CSS
     themeRoot: ":root", // The element that receives theme color CSS variables
   },

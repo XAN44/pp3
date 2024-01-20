@@ -64,6 +64,8 @@ model User {
     followers     Follows[]      @relation("following")
     following     Follows[]      @relation("follower")
     Article       Article[]
+    Like          Like[]
+    Visit         Visit[]
 }
 
 model Follows {
@@ -85,6 +87,32 @@ model Post {
     authorId  String?
     createdAt DateTime  @default(now())
     comments  Comment[]
+    Like      Like[]
+    Visit     Visit[]
+}
+
+model Visit {
+    id        String   @id @default(cuid())
+    pageId    String?
+    userId    String?
+    articleId String?
+    count     Int
+    post      Post?    @relation(fields: [pageId], references: [id])
+    user      User?    @relation(fields: [userId], references: [id])
+    Article   Article? @relation(fields: [articleId], references: [id])
+}
+
+model Like {
+    id        String   @id @default(cuid())
+    postId    String
+    userId    String
+    isLiked   Boolean  @default(false)
+    createdAt DateTime @default(now())
+
+    post Post @relation(fields: [postId], references: [id])
+    user User @relation(fields: [userId], references: [id])
+
+    @@unique([postId, userId])
 }
 
 model Article {
@@ -97,6 +125,7 @@ model Article {
     createAt       DateTime     @default(now())
     comment        Comment[]
     tag            ArticleTag[]
+    Visit          Visit[]
 }
 
 model ArticleTag {

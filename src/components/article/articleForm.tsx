@@ -154,7 +154,7 @@ export default function ArticleForm({
                           <FormLabel> TITLE </FormLabel>
                           <FormControl className=" border-dark-4 border">
                             <Input
-                              className=" w-full resize-none rounded-lg bg-base-300 pl-3 pr-3 pt-3 ring-1 ring-black"
+                              className=" bg-base-300 w-full resize-none rounded-lg pl-3 pr-3 pt-3 ring-1 ring-black"
                               {...field}
                             />
                           </FormControl>
