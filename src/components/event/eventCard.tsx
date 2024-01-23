@@ -13,6 +13,7 @@ import Link from 'next/link'
 import { Badge } from '@chakra-ui/react'
 import VisitBtn from '../visit/visitBtn'
 import VisitBtnArticle from '../visit/visitArticle'
+import VisitEvent from '../visit/visitEvent'
 
 interface Props {
   id: string
@@ -43,7 +44,7 @@ interface Props {
   totalVisit: number
 }
 
-export default function ArticleCard({
+export default function EventCard({
   id,
   title,
   articleContent,
@@ -93,9 +94,7 @@ export default function ArticleCard({
                 </Link>
               </main>
               <footer className="mt-3">
-                <Link href={`/article/${id}`}>
-                  <VisitBtnArticle articleId={id} userId={authorId || ''} />
-                </Link>
+                <VisitEvent eventId={id} userId={authorId || ''} />
                 {tag ? (
                   tag.map((hashTag) => (
                     <div className="badge badge-neutral  " key={hashTag.id}>

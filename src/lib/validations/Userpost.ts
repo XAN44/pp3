@@ -12,6 +12,13 @@ export const ArticlePost = z.object({
   articleImage: z.string().url().nonempty()
 });
 
+export const EventPost = z.object({
+  title: z.string().nonempty().optional(),
+  eventContent: z.string().nonempty().optional(),
+  tag: z.string().nonempty().optional(),
+  eventImage: z.string().url().nonempty()
+});
+
 export const commentPost = z.object({
   comment: z.string().nonempty(),
 });

@@ -66,6 +66,7 @@ model User {
     Article       Article[]
     Like          Like[]
     Visit         Visit[]
+    Event         Event[]
 }
 
 model Follows {
@@ -100,6 +101,8 @@ model Visit {
     post      Post?    @relation(fields: [pageId], references: [id])
     user      User?    @relation(fields: [userId], references: [id])
     Article   Article? @relation(fields: [articleId], references: [id])
+    Event     Event?   @relation(fields: [eventId], references: [id])
+    eventId   String?
 }
 
 model Like {
@@ -128,11 +131,26 @@ model Article {
     Visit          Visit[]
 }
 
+model Event {
+    id           String       @id @default(cuid())
+    title        String?
+    eventContent String?
+    eventImage   String?
+    author       User?        @relation(fields: [authorId], references: [id])
+    authorId     String?
+    createAt     DateTime     @default(now())
+    comment      Comment[]
+    tag          ArticleTag[]
+    Visit        Visit[]
+}
+
 model ArticleTag {
     id        String   @id @default(cuid())
     tag       String?
     Article   Article? @relation(fields: [articleId], references: [id])
     articleId String?
+    Event     Event?   @relation(fields: [eventId], references: [id])
+    eventId   String?
 }
 
 model Comment {
@@ -146,6 +164,8 @@ model Comment {
     Reply     Reply[]
     Article   Article? @relation(fields: [articleId], references: [id])
     articleId String?
+    Event     Event?   @relation(fields: [eventId], references: [id])
+    eventId   String?
 }
 
 model Reply {

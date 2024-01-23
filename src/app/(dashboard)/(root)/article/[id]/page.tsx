@@ -1,26 +1,26 @@
-import ArticleCardPage from "@/components/article/articlePage";
-import CommentInarticle from "@/components/article/commentinArticle";
-import CommentCard from "@/components/post/commentCard";
-import Reply from "@/components/post/replyForm";
-import { fetchUser } from "@/lib/actions/user.action";
-import { FetchArticleByID } from "@/lib/actions/user.article";
-import { getCurrentUser } from "@/lib/session";
-import { Container, Heading } from "@radix-ui/themes";
-import { redirect } from "next/navigation";
+import ArticleCardPage from '@/components/article/articlePage'
+import CommentInarticle from '@/components/article/commentinArticle'
+import CommentCard from '@/components/post/commentCard'
+import Reply from '@/components/post/replyForm'
+import { fetchUser } from '@/lib/actions/user.action'
+import { FetchArticleByID } from '@/lib/actions/user.article'
+import { getCurrentUser } from '@/lib/session'
+import { Container, Heading } from '@radix-ui/themes'
+import { redirect } from 'next/navigation'
 
 const Page = async ({ params }: { params: { id: string } }) => {
-  if (!params.id) return null;
+  if (!params.id) return null
 
-  const user = await getCurrentUser();
-  if (!user) return null;
+  const user = await getCurrentUser()
+  if (!user) return null
 
-  const userInfo = await fetchUser(user.id);
-  if (!userInfo) redirect("/profile");
+  const userInfo = await fetchUser(user.id)
+  if (!userInfo) redirect('/profile')
 
-  const ArticleBy = await FetchArticleByID(params.id);
+  const ArticleBy = await FetchArticleByID(params.id)
 
   return (
-    <Container className=" mt-32 inset-y-28 h-full top-24 place-items-start ">
+    <Container className=" inset-y-28 top-24 mt-32 h-full place-items-start ">
       <div className="">
         <ArticleCardPage
           key={ArticleBy?.id}
@@ -35,7 +35,7 @@ const Page = async ({ params }: { params: { id: string } }) => {
           createAt={new Date(ArticleBy.createAt).toLocaleString()}
         />
       </div>
-      <div className="mt-7 left-3 ">
+      <div className="left-3 mt-7 ">
         <CommentInarticle
           articleId={params.id}
           currentUserImage={user.image}
@@ -54,7 +54,7 @@ const Page = async ({ params }: { params: { id: string } }) => {
               comment={comment.text}
               authorId={comment.authorId}
               createAt={new Date(comment.createdAt).toLocaleString()}
-              author={comment.author || { id: "", name: "", image: "" }}
+              author={comment.author || { id: '', name: '', image: '' }}
               reply={comment.Reply}
               isComment
               isReply
@@ -70,7 +70,7 @@ const Page = async ({ params }: { params: { id: string } }) => {
         ))}
       </div>
     </Container>
-  );
-};
+  )
+}
 
-export default Page;
+export default Page

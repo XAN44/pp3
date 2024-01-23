@@ -13,7 +13,7 @@ import { useToast } from '@/components/ui/use-toast'
 import { POSTARTILE } from '@/lib/actions/user.article'
 import { useUploadThing } from '@/lib/uploadthing'
 import { isBase64Image } from '@/lib/utils'
-import { ArticlePost } from '@/lib/validations/Userpost'
+import { ArticlePost, EventPost } from '@/lib/validations/Userpost'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Select, SelectItem } from '@nextui-org/react'
 import { Loader2 } from 'lucide-react'
@@ -36,22 +36,23 @@ import {
   AlertDialogOverlay,
   useDisclosure,
 } from '@chakra-ui/react'
+import { EVENTPOST } from '@/lib/actions/user.event'
 
 interface Props {
   accountId: string
   authUserId: string
   title: string
-  articleContent: string
-  ArticleImage: string
+  eventContent: string
+  eventImage: string
   tag: string
 }
 
-export default function ArticleForm({
+export default function EventForm({
   accountId,
   authUserId,
   title,
-  articleContent,
-  ArticleImage,
+  eventContent,
+  eventImage,
   tag,
 }: Props) {
   const [files, setFiles] = useState<File[]>([])
@@ -63,32 +64,30 @@ export default function ArticleForm({
   const { toast } = useToast()
 
   const pathname = usePathname()
-  const postArticle = useForm<z.infer<typeof ArticlePost>>({
-    resolver: zodResolver(ArticlePost),
+  const postArticle = useForm<z.infer<typeof EventPost>>({
+    resolver: zodResolver(EventPost),
     defaultValues: {},
   })
 
-  const onSubmitPost = async (values: z.infer<typeof ArticlePost>) => {
+  const onSubmitPost = async (values: z.infer<typeof EventPost>) => {
     setIsloading(true)
 
-    const blob = values.articleImage
+    const blob = values.eventImage
     if (blob) {
       const hasImageChange = isBase64Image(blob)
       if (hasImageChange) {
         const imgRes = await startUpload(files)
         if (imgRes && imgRes[0].url) {
-          values.articleImage = imgRes[0].url
+          values.eventImage = imgRes[0].url
         }
       }
     }
 
-    await POSTARTILE({
+    await EVENTPOST({
       authorId: authUserId,
       title: values.title ? String(values.title) : '',
-      articleContent: values.articleContent
-        ? String(values.articleContent)
-        : '',
-      ArticleImage: values.articleImage ? String(values.articleImage) : '',
+      eventContent: values.eventContent ? String(values.eventContent) : '',
+      eventImage: values.eventImage ? String(values.eventImage) : '',
       tag: values.tag ? String(values.tag) : '',
       path: pathname,
     })
@@ -164,7 +163,7 @@ export default function ArticleForm({
                     />
                     <FormField
                       control={postArticle.control}
-                      name="articleContent"
+                      name="eventContent"
                       render={({ field }) => (
                         <FormItem className="flex flex-col place-items-center items-center justify-center gap-3  ">
                           <FormLabel> CONTENT </FormLabel>
@@ -210,7 +209,7 @@ export default function ArticleForm({
                     />
                     <FormField
                       control={postArticle.control}
-                      name="articleImage"
+                      name="eventImage"
                       render={({ field }) => (
                         <FormItem className="flex w-full flex-col items-center  justify-center gap-2 ">
                           <FormLabel className="text-base-semibold text-light-2"></FormLabel>

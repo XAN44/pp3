@@ -1,6 +1,8 @@
 // import FollowerCard from "@/components/follow/followerCard";
 import ArticleCard from '@/components/article/articleCard'
 import ArticleForm from '@/components/article/articleForm'
+import EventCard from '@/components/event/eventCard'
+import EventForm from '@/components/event/eventForm'
 import PostCard from '@/components/post/postCard'
 import { PostForm } from '@/components/post/postForm'
 import ProfileHeader from '@/components/profile/ProfileHeader'
@@ -13,7 +15,11 @@ import {
 } from '@/lib/actions/user.follow'
 import { getLike, checkLike } from '@/lib/actions/user.like'
 import { fetchUserProfileByID } from '@/lib/actions/user.post'
-import { TotalVisit, TotalVisit1 } from '@/lib/actions/user.visit'
+import {
+  TotalVisit,
+  TotalVisit1,
+  TotalVisitEvent,
+} from '@/lib/actions/user.visit'
 import { getCurrentUser } from '@/lib/session'
 import { Divider } from '@nextui-org/react'
 import { redirect } from 'next/navigation'
@@ -36,6 +42,7 @@ export default async function Page({ params }: { params: { id: string } }) {
   const userfollow = await getTotalFollowers(params.id)
   const userfollowing = await getTotalFollowing(params.id)
   const checkFollower = await CheckFollow(params.id, user.id)
+
   if (!userInfo) redirect('/sign-in') // ! และถ้าหากว่าไม่มี Prarams.id จะทำการ redireact ไปที่หน้า Sign-ins
 
   return (
@@ -45,7 +52,7 @@ export default async function Page({ params }: { params: { id: string } }) {
           <>
             <aside
               className=" 
-            fixed inset-x-0  left-[32px] w-56 place-items-start px-3 ring-1 ring-black"
+              fixed inset-x-0  left-[32px] w-56 place-items-start px-3 ring-1 ring-black"
             >
               <ProfileHeader
                 key={Account.id}
@@ -73,7 +80,8 @@ export default async function Page({ params }: { params: { id: string } }) {
                   <Tabs defaultValue="post">
                     <TabsList className="">
                       <TabsTrigger value="post"> POST</TabsTrigger>
-                      <TabsTrigger value="article"> ARTICLE</TabsTrigger>
+                      <TabsTrigger value="article"> บทความ</TabsTrigger>
+                      <TabsTrigger value="event"> กิจกรรม</TabsTrigger>
                     </TabsList>
                     <TabsContent value="post">
                       <div
@@ -148,6 +156,34 @@ export default async function Page({ params }: { params: { id: string } }) {
                           />
                         </div>
                       ))}
+                    </TabsContent>
+                    <TabsContent value="event">
+                      <div className="place-items-center text-center">
+                        <EventForm
+                          key={Account.id}
+                          accountId={Account.id}
+                          authUserId={user.id}
+                          eventImage={''}
+                          eventContent={''}
+                          tag={''}
+                          title={''}
+                        />
+                        {Account.Event.map(async (Event) => (
+                          <EventCard
+                            key={Event.id}
+                            id={Event.id}
+                            title={Event.title}
+                            articleContent={Event.eventContent}
+                            ArticleImage={Event.eventImage}
+                            tag={Event.tag}
+                            authorId={Event.authorId}
+                            author={Event.author}
+                            comments={Event.comment}
+                            createAt={new Date(Event.createAt).toLocaleString()}
+                            totalVisit={await TotalVisitEvent(Event.id)}
+                          />
+                        ))}
+                      </div>
                     </TabsContent>
                   </Tabs>
                 </div>

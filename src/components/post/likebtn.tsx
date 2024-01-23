@@ -29,30 +29,6 @@ export default function Likebtn({
     }
   }
 
-  // async function handleLike() {
-  //   try {
-  //     if (checkLike) {
-  //       const res = await fetch('/api/like', {
-  //         method: 'DELETE',
-  //         body: JSON.stringify({
-  //           postId,
-  //           userId,
-  //           checkLike,
-  //         }),
-  //       })
-  //     } else {
-  //       const res = await fetch('/api/like', {
-  //         method: 'POST',
-  //         body: JSON.stringify({
-  //           postId,
-  //           userId,
-  //           checkLike,
-  //         }),
-  //       })
-  //     }
-  //   } catch (error) {}
-  // }
-
   return (
     <div>
       <Button
