@@ -1,18 +1,6 @@
-import { ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable'
-import {
-  Avatar,
-  Button,
-  Card,
-  CardBody,
-  CardFooter,
-  CardHeader,
-  Image,
-  Slider,
-} from '@nextui-org/react'
-import Link from 'next/link'
 import { Badge } from '@chakra-ui/react'
-import VisitBtn from '../visit/visitBtn'
-import VisitBtnArticle from '../visit/visitArticle'
+import { Avatar, Card, CardBody, CardFooter, Image } from '@nextui-org/react'
+import Link from 'next/link'
 import VisitEvent from '../visit/visitEvent'
 
 interface Props {
@@ -94,7 +82,9 @@ export default function EventCard({
                 </Link>
               </main>
               <footer className="mt-3">
-                <VisitEvent eventId={id} userId={authorId || ''} />
+                <Link href={`/event/${id}`}>
+                  <VisitEvent eventId={id} userId={authorId || ''} />
+                </Link>
                 {tag ? (
                   tag.map((hashTag) => (
                     <div className="badge badge-neutral  " key={hashTag.id}>

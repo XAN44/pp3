@@ -7,8 +7,8 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
-import { CommentinArticles } from '@/lib/actions/user.article'
-import { commentArticle } from '@/lib/validations/Userpost'
+import { CommentinEvent } from '@/lib/actions/user.event'
+import { commentEvent } from '@/lib/validations/Userpost'
 import { zodResolver } from '@hookform/resolvers/zod'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
@@ -17,28 +17,28 @@ import * as z from 'zod'
 import { Button } from '../ui/button'
 
 interface Props {
-  articleId: string
+  eventId: string
   currentUserImage: string
   currentUserId: string
 }
 
-export default function CommentInarticle({
-  articleId,
+export default function CommentIEvent({
+  eventId,
   currentUserImage,
   currentUserId,
 }: Props) {
   const path = usePathname() ?? ''
 
-  const commentTimeLine = useForm<z.infer<typeof commentArticle>>({
-    resolver: zodResolver(commentArticle),
+  const commentTimeLine = useForm<z.infer<typeof commentEvent>>({
+    resolver: zodResolver(commentEvent),
     defaultValues: {
       commentz: '',
     },
   })
 
-  const onSubmitPost = async (values: z.infer<typeof commentArticle>) => {
-    await CommentinArticles(
-      articleId,
+  const onSubmitPost = async (values: z.infer<typeof commentEvent>) => {
+    await CommentinEvent(
+      eventId,
       values.commentz,
       JSON.parse(currentUserId),
       path

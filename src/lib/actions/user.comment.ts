@@ -1,22 +1,22 @@
-"use server";
+'use server'
 
-import { revalidatePath } from "next/cache";
-import { db } from "../db";
+import { revalidatePath } from 'next/cache'
+import { db } from '../db'
 
 export async function CommentInPost(
   postId: string,
   comment: string,
   authorId: string,
-  path: string,
+  path: string
 ) {
   try {
     const Inpost = await db.post.findUnique({
       where: {
         id: postId,
       },
-    });
+    })
     if (!Inpost) {
-      throw new Error("Dont have post");
+      throw new Error('Dont have post')
     }
 
     const newComment = await db.comment.create({
@@ -25,10 +25,20 @@ export async function CommentInPost(
         postId: postId,
         authorid: authorId,
       },
-    });
-    revalidatePath(path);
+    })
+
+    await db.notification.create({
+      data: {
+        body: `${Inpost.authorId} commented on your post.`,
+        userId: Inpost.authorId,
+        commentId: newComment.id,
+        postId: postId,
+      },
+    })
+
+    revalidatePath(path)
   } catch (error: any) {
-    throw new Error(`Failed to create/update user: ${error.message}`);
+    throw new Error(`Failed to create/update user: ${error.message}`)
   }
 }
 
@@ -48,7 +58,7 @@ export async function fetchPostByID(id: string) {
         },
         comments: {
           orderBy: {
-            createdAt: "asc",
+            createdAt: 'asc',
           },
           select: {
             id: true,
@@ -90,16 +100,16 @@ export async function fetchPostByID(id: string) {
           },
         },
       },
-    });
+    })
 
     if (!post) {
-      throw new Error("Post not found");
+      throw new Error('Post not found')
     }
 
-    return post;
+    return post
   } catch (error) {
-    console.error("Error fetching comments:", error);
-    throw error;
+    console.error('Error fetching comments:', error)
+    throw error
   }
 }
 
@@ -107,16 +117,16 @@ export async function replyComments(
   commentId: string,
   reply: string,
   authorId: string,
-  path: string,
+  path: string
 ) {
   try {
     const findComment = await db.comment.findUnique({
       where: {
         id: commentId,
       },
-    });
+    })
     if (findComment) {
-      console.log("Attempting to create reply...");
+      console.log('Attempting to create reply...')
 
       const repy = await db.reply.create({
         data: {
@@ -124,13 +134,13 @@ export async function replyComments(
           replytext: reply,
           authorid: authorId,
         },
-      });
-      console.log("Created reply:", repy);
+      })
+      console.log('Created reply:', repy)
 
-      revalidatePath(path);
-      console.log("Path revalidated:", path);
+      revalidatePath(path)
+      console.log('Path revalidated:', path)
     }
 
-    return reply;
+    return reply
   } catch (error) {}
 }

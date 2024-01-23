@@ -81,15 +81,16 @@ model Follows {
 }
 
 model Post {
-    id        String    @id @default(cuid())
-    content   String?
-    ImagePost String?
-    author    User?     @relation(fields: [authorId], references: [id])
-    authorId  String?
-    createdAt DateTime  @default(now())
-    comments  Comment[]
-    Like      Like[]
-    Visit     Visit[]
+    id           String         @id @default(cuid())
+    content      String?
+    ImagePost    String?
+    author       User?          @relation(fields: [authorId], references: [id])
+    authorId     String?
+    createdAt    DateTime       @default(now())
+    comments     Comment[]
+    Like         Like[]
+    Visit        Visit[]
+    Notification Notification[]
 }
 
 model Visit {
@@ -119,29 +120,31 @@ model Like {
 }
 
 model Article {
-    id             String       @id @default(cuid())
+    id             String         @id @default(cuid())
     title          String?
     articleContent String?
     ArticleImage   String?
-    author         User?        @relation(fields: [authorId], references: [id])
+    author         User?          @relation(fields: [authorId], references: [id])
     authorId       String?
-    createAt       DateTime     @default(now())
+    createAt       DateTime       @default(now())
     comment        Comment[]
     tag            ArticleTag[]
     Visit          Visit[]
+    Notification   Notification[]
 }
 
 model Event {
-    id           String       @id @default(cuid())
+    id           String         @id @default(cuid())
     title        String?
     eventContent String?
     eventImage   String?
-    author       User?        @relation(fields: [authorId], references: [id])
+    author       User?          @relation(fields: [authorId], references: [id])
     authorId     String?
-    createAt     DateTime     @default(now())
+    createAt     DateTime       @default(now())
     comment      Comment[]
     tag          ArticleTag[]
     Visit        Visit[]
+    Notification Notification[]
 }
 
 model ArticleTag {
@@ -154,18 +157,19 @@ model ArticleTag {
 }
 
 model Comment {
-    id        String   @id @default(cuid())
-    text      String
-    createdAt DateTime @default(now())
-    author    User?    @relation(fields: [authorid], references: [id])
-    authorid  String?
-    Post      Post?    @relation(fields: [postId], references: [id])
-    postId    String?
-    Reply     Reply[]
-    Article   Article? @relation(fields: [articleId], references: [id])
-    articleId String?
-    Event     Event?   @relation(fields: [eventId], references: [id])
-    eventId   String?
+    id           String         @id @default(cuid())
+    text         String
+    createdAt    DateTime       @default(now())
+    author       User?          @relation(fields: [authorid], references: [id])
+    authorid     String?
+    Post         Post?          @relation(fields: [postId], references: [id])
+    postId       String?
+    Reply        Reply[]
+    Article      Article?       @relation(fields: [articleId], references: [id])
+    articleId    String?
+    Event        Event?         @relation(fields: [eventId], references: [id])
+    eventId      String?
+    Notification Notification[]
 }
 
 model Reply {
@@ -178,11 +182,19 @@ model Reply {
 }
 
 model Notification {
-    id       String   @id @default(cuid())
-    body     String
-    userId   String
-    createAt DateTime
-    user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    id        String   @id @default(cuid())
+    body      String
+    userId    String?
+    createAt  DateTime @default(now())
+    commentId String?
+    postId    String?
+    articleId String?
+    eventId   String?
+    user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+    comment   Comment? @relation(fields: [commentId], references: [id])
+    post      Post?    @relation(fields: [postId], references: [id])
+    article   Article? @relation(fields: [articleId], references: [id])
+    event     Event?   @relation(fields: [eventId], references: [id])
 }
 
 model VerificationToken {

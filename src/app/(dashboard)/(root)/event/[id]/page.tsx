@@ -1,11 +1,11 @@
+import ArticleCardPage from '@/components/article/articlePage'
+import CommentIEvent from '@/components/event/commentinEvent'
 import CommentCard from '@/components/post/commentCard'
-import Comment from '@/components/post/commentForm'
-import PostCard from '@/components/post/postCard'
 import Reply from '@/components/post/replyForm'
 import { fetchUser } from '@/lib/actions/user.action'
-import { fetchPostByID } from '@/lib/actions/user.comment'
+import { FetchEventByID } from '@/lib/actions/user.event'
 import { getCurrentUser } from '@/lib/session'
-import { Container } from '@radix-ui/themes'
+import { Container, Heading } from '@radix-ui/themes'
 import { redirect } from 'next/navigation'
 
 const Page = async ({ params }: { params: { id: string } }) => {
@@ -17,35 +17,36 @@ const Page = async ({ params }: { params: { id: string } }) => {
   const userInfo = await fetchUser(user.id)
   if (!userInfo) redirect('/profile')
 
-  const postBy = await fetchPostByID(params.id)
+  const ArticleBy = await FetchEventByID(params.id)
 
   return (
     <Container className=" inset-y-28 top-24 mt-32 h-full place-items-start ">
       <div className="">
-        <PostCard
-          key={postBy.id}
-          id={postBy.id}
-          content={postBy.content}
-          ImagePost={postBy.ImagePost}
-          authorId={postBy.authorId}
-          createAt={new Date(postBy.createdAt).toLocaleString()}
-          author={postBy.author}
-          comments={postBy.comments}
-          current={''}
-          checkLike={false}
-          totalLike={0}
-          totalVisit={0}
+        <ArticleCardPage
+          key={ArticleBy?.id}
+          id={ArticleBy?.id}
+          title={ArticleBy?.title}
+          articleContent={ArticleBy?.eventContent}
+          ArticleImage={ArticleBy.eventImage}
+          tag={ArticleBy.tag}
+          authorId={ArticleBy.authorId}
+          author={ArticleBy.author}
+          comments={ArticleBy.comment}
+          createAt={new Date(ArticleBy.createAt).toLocaleString()}
         />
       </div>
       <div className="left-3 mt-7 ">
-        <Comment
-          postId={params.id}
+        <CommentIEvent
+          eventId={params.id}
           currentUserImage={user.image}
           currentUserId={JSON.stringify(user.id)}
         />
       </div>
       <div className="mt-10">
-        {postBy.comments.map((comment: any) => (
+        <Heading align="center" trim="normal">
+          ความคิดเห็นทั้งหมด
+        </Heading>
+        {ArticleBy.comment.map((comment: any) => (
           <>
             <CommentCard
               key={comment.id}

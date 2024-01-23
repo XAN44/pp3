@@ -1,10 +1,11 @@
-import { Avatar, AvatarImage } from "@/components/ui/avatar";
-import { HandMetal } from "lucide-react";
-import Link from "next/link";
-import UserAccountnav from "./UserAccountnav";
+import { Avatar, AvatarImage } from '@/components/ui/avatar'
+import { HandMetal } from 'lucide-react'
+import Link from 'next/link'
+import UserAccountnav from './UserAccountnav'
 
-import { getCurrentUser } from "@/lib/session";
-import { ImgProfilee } from "./profile-image/imgProfile";
+import { getCurrentUser } from '@/lib/session'
+import Notification from './Notification'
+import { ImgProfilee } from './profile-image/imgProfile'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -14,20 +15,22 @@ import {
   DropdownMenuSeparator,
   DropdownMenuShortcut,
   DropdownMenuTrigger,
-} from "./ui/dropdown-menu";
+} from './ui/dropdown-menu'
 
 const Navbar = async ({ params }: { params: { id: string } }) => {
-  const user = await getCurrentUser();
+  const user = await getCurrentUser()
 
   return (
     <>
-      <div className=" bg-zinc-100 py-2 border-b border-s-zinc-200 fixed w-full z-10 top-0">
+      <div className=" fixed top-0 z-10 w-full border-b border-s-zinc-200 bg-zinc-100 py-2">
         <div className="container flex items-center justify-between ">
           <Link href="/">
             <HandMetal />
           </Link>
 
           <DropdownMenu>
+            <Notification />
+
             <DropdownMenuTrigger>
               {user && user.image ? (
                 <Avatar>
@@ -39,6 +42,7 @@ const Navbar = async ({ params }: { params: { id: string } }) => {
                 </Avatar>
               )}
             </DropdownMenuTrigger>
+            {/* Notification */}
             <DropdownMenuContent>
               <DropdownMenuSeparator />
 
@@ -64,15 +68,15 @@ const Navbar = async ({ params }: { params: { id: string } }) => {
                     <DropdownMenuItem>
                       <ImgProfilee
                         user={{
-                          image: "",
-                          id: "",
-                          bio: "",
-                          nickname: "",
-                          name: "",
-                          facebookUrl: "",
-                          igUrl: "",
-                          tiktokUrl: "",
-                          twitterUrl: "",
+                          image: '',
+                          id: '',
+                          bio: '',
+                          nickname: '',
+                          name: '',
+                          facebookUrl: '',
+                          igUrl: '',
+                          tiktokUrl: '',
+                          twitterUrl: '',
                         }}
                       />
                       <DropdownMenuShortcut>(ตั้งค่า)</DropdownMenuShortcut>
@@ -100,7 +104,7 @@ const Navbar = async ({ params }: { params: { id: string } }) => {
         </div>
       </div>
     </>
-  );
-};
+  )
+}
 
-export default Navbar;
+export default Navbar

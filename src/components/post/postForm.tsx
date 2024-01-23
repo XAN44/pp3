@@ -1,14 +1,5 @@
 'use client'
 import {
-  AlertDialog,
-  AlertDialogBody,
-  AlertDialogCloseButton,
-  AlertDialogContent,
-  AlertDialogHeader,
-  AlertDialogOverlay,
-  useDisclosure,
-} from '@chakra-ui/react'
-import {
   Form,
   FormControl,
   FormField,
@@ -20,7 +11,18 @@ import { userPost } from '@/lib/actions/user.post'
 import { useUploadThing } from '@/lib/uploadthing'
 import { isBase64Image } from '@/lib/utils'
 import { TimeLinePost } from '@/lib/validations/Userpost'
+import {
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogCloseButton,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogOverlay,
+  useDisclosure,
+  useToast,
+} from '@chakra-ui/react'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { Textarea } from '@nextui-org/react'
 import { Loader2 } from 'lucide-react'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
@@ -29,7 +31,6 @@ import { useForm } from 'react-hook-form'
 import { CiImageOn } from 'react-icons/ci'
 import * as z from 'zod'
 import { Button } from '../ui/button'
-import { Textarea } from '@nextui-org/react'
 
 interface Props {
   content: string
@@ -45,6 +46,7 @@ export function PostForm({ content, imagePost, accountId, authUserId }: Props) {
   const [isLoading, setIsloading] = useState(false)
   const [isText, setIsText] = useState('บันทึก')
   const [imageSelected, setImageSelected] = useState(false)
+  const toast = useToast()
 
   const pathname = usePathname()
   const PostTimeline = useForm<z.infer<typeof TimeLinePost>>({
@@ -65,13 +67,24 @@ export function PostForm({ content, imagePost, accountId, authUserId }: Props) {
         }
       }
     }
-
-    await userPost({
+    const userPostPromise = userPost({
       authorid: authUserId,
       content: values.content ? String(values.content) : '',
       ImagePost: values.imagePost ? String(values.imagePost) : '',
       path: pathname,
     })
+
+    toast.promise(userPostPromise, {
+      success: { title: 'สำเร็จ !', description: 'สร้างโพสต์สำเร็จ' },
+      error: {
+        title: 'เกิดข้อผิดพลาด !',
+        description: 'เกิดข้อผิดพลาดบางอย่าง',
+      },
+      loading: { title: 'กำลังโพสต์ ..', description: 'โปรดรอสักครู่' },
+    })
+
+    const result = await userPostPromise
+
     setIsloading(false)
     setIsText('บันทึกสำเร็จ')
   }

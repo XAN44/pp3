@@ -9,13 +9,22 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
-import { useToast } from '@/components/ui/use-toast'
 import { POSTARTILE } from '@/lib/actions/user.article'
 import { useUploadThing } from '@/lib/uploadthing'
 import { isBase64Image } from '@/lib/utils'
 import { ArticlePost } from '@/lib/validations/Userpost'
+import {
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogCloseButton,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogOverlay,
+  useDisclosure,
+  useToast,
+} from '@chakra-ui/react'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Select, SelectItem } from '@nextui-org/react'
+import { Select, SelectItem, Textarea } from '@nextui-org/react'
 import { Loader2 } from 'lucide-react'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
@@ -26,16 +35,6 @@ import * as z from 'zod'
 import { HASHTAG } from '../tag/hashtag'
 import { Button } from '../ui/button'
 import { Input } from '../ui/input'
-import { Textarea } from '@nextui-org/react'
-import {
-  AlertDialog,
-  AlertDialogBody,
-  AlertDialogCloseButton,
-  AlertDialogContent,
-  AlertDialogHeader,
-  AlertDialogOverlay,
-  useDisclosure,
-} from '@chakra-ui/react'
 
 interface Props {
   accountId: string
@@ -60,7 +59,7 @@ export default function ArticleForm({
   const [isLoading, setIsloading] = useState(false)
   const [isText, setIsText] = useState('บันทึก')
   const [imageSelected, setImageSelected] = useState(false)
-  const { toast } = useToast()
+  const toast = useToast()
 
   const pathname = usePathname()
   const postArticle = useForm<z.infer<typeof ArticlePost>>({
@@ -82,7 +81,7 @@ export default function ArticleForm({
       }
     }
 
-    await POSTARTILE({
+    const UserPromise = POSTARTILE({
       authorId: authUserId,
       title: values.title ? String(values.title) : '',
       articleContent: values.articleContent
@@ -92,9 +91,15 @@ export default function ArticleForm({
       tag: values.tag ? String(values.tag) : '',
       path: pathname,
     })
-    toast({
-      title: 'Creat Article success',
+
+    toast.promise(UserPromise, {
+      success: { title: 'สำเร็จ!', description: 'สร้างบล็อกสำเร็จแล้ว' },
+      error: { title: 'เกิดข้อผิดพลาด', description: 'เกิดข้อผิดพลาดบางอย่าง' },
+      loading: { title: 'กำลังโพสต์ ...', description: 'โปรดรอสักครู่' },
     })
+
+    const promise = await UserPromise
+
     setIsloading(false)
     setIsText('บันทึกสำเร็จ')
     console.log('NEW ARTICLE', POSTARTILE)
