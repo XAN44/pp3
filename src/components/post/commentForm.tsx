@@ -1,4 +1,4 @@
-"use client";
+'use client'
 import {
   Form,
   FormControl,
@@ -6,20 +6,21 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { CommentInPost } from "@/lib/actions/user.comment";
-import { commentPost } from "@/lib/validations/Userpost";
-import { zodResolver } from "@hookform/resolvers/zod";
-import Image from "next/image";
-import { usePathname } from "next/navigation";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
-import { Button } from "../ui/button";
+} from '@/components/ui/form'
+import { CommentInPost } from '@/lib/actions/user.comment'
+import { commentPost } from '@/lib/validations/Userpost'
+import { zodResolver } from '@hookform/resolvers/zod'
+import Image from 'next/image'
+import { usePathname } from 'next/navigation'
+import { useForm } from 'react-hook-form'
+import * as z from 'zod'
+import { Button } from '../ui/button'
+import { Notification } from '@/lib/actions/user.notification'
 
 interface Props {
-  postId: string;
-  currentUserImage: string;
-  currentUserId: string;
+  postId: string
+  currentUserImage: string
+  currentUserId: string
 }
 
 export default function Comment({
@@ -27,23 +28,19 @@ export default function Comment({
   currentUserImage,
   currentUserId,
 }: Props) {
-  const path = usePathname() ?? "";
+  const path = usePathname() ?? ''
 
   const commentTimeLine = useForm<z.infer<typeof commentPost>>({
     resolver: zodResolver(commentPost),
     defaultValues: {
-      comment: "",
+      comment: '',
     },
-  });
+  })
 
   const onSubmitPost = async (values: z.infer<typeof commentPost>) => {
-    await CommentInPost(
-      postId,
-      values.comment,
-      JSON.parse(currentUserId),
-      path,
-    );
-  };
+    await CommentInPost(postId, values.comment, JSON.parse(currentUserId), path)
+    await Notification(JSON.parse(currentUserId), postId, values.comment, path)
+  }
 
   return (
     <div className="">
@@ -83,8 +80,8 @@ export default function Comment({
                   <input
                     placeholder="Comment.."
                     className=" 
-                    bg-base-300
-                     rounded-lg w-full p-3"
+                    w-full
+                     rounded-lg bg-base-300 p-3"
                     {...field}
                   />
                 </FormControl>
@@ -93,11 +90,11 @@ export default function Comment({
             )}
           />
 
-          <Button type="submit" className="w-32 ml-3 mt-1 flex">
+          <Button type="submit" className="ml-3 mt-1 flex w-32">
             Comment
           </Button>
         </form>
       </Form>
     </div>
-  );
+  )
 }

@@ -27,14 +27,6 @@ export async function CommentInPost(
       },
     })
 
-    await db.notification.create({
-      data: {
-        body: `${Inpost.authorId} commented on your post.`,
-        userId: Inpost.authorId,
-        commentId: newComment.id,
-        postId: postId,
-      },
-    })
 
     revalidatePath(path)
   } catch (error: any) {
