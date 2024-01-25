@@ -20,9 +20,9 @@ export default function Likebtn({
   const onLike = async () => {
     try {
       if (checkLike) {
-        await unLike(postId, userId, pathname)
+        await unLike(postId, userId, pathname || '')
       } else {
-        await Like(postId, userId, pathname)
+        await Like(postId, userId, pathname || '')
       }
     } catch (error) {
       console.error('Error:', error)

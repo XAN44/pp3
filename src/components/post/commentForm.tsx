@@ -15,7 +15,6 @@ import { usePathname } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 import * as z from 'zod'
 import { Button } from '../ui/button'
-import { Notification } from '@/lib/actions/user.notification'
 
 interface Props {
   postId: string
@@ -39,7 +38,6 @@ export default function Comment({
 
   const onSubmitPost = async (values: z.infer<typeof commentPost>) => {
     await CommentInPost(postId, values.comment, JSON.parse(currentUserId), path)
-    await Notification(JSON.parse(currentUserId), postId, values.comment, path)
   }
 
   return (

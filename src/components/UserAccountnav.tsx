@@ -1,11 +1,11 @@
-"use client";
+'use client'
 
-import { signOut } from "next-auth/react";
-import { Button } from "./ui/button";
+import { signOut } from 'next-auth/react'
+import { Button } from './ui/button'
 import {
   DropdownMenuShortcut,
   DropdownMenuItem,
-} from "@/components/ui/dropdown-menu";
+} from '@/components/ui/dropdown-menu'
 const UserAccountnav = () => {
   return (
     <DropdownMenuItem className=" ">
@@ -20,7 +20,7 @@ const UserAccountnav = () => {
         Log Out
       </Button>
     </DropdownMenuItem>
-  );
-};
+  )
+}
 
-export default UserAccountnav;
+export default UserAccountnav

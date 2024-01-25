@@ -1,42 +1,64 @@
-'use client' // Notification.tsx// Notification.tsximport { useEffect, useState } from 'react';
-import { useToast } from '@chakra-ui/react'
-import { useEffect, useState } from 'react'
+'use client'
 
-type NotificationData = {
+import { Notification } from '@/lib/actions/user.notification'
+import { useToast } from '@chakra-ui/react'
+import React, { useEffect, useState } from 'react'
+import {
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Button,
+  useDisclosure,
+} from '@nextui-org/react'
+import { getCurrentUser } from '@/lib/session'
+
+interface Notidata {
+  id: string
+  currenUser: string
+  notificationByUser: string
   body: string
-  userId: string
-  postId?: string
+  post: string
 }
 
-const Notification = ({ body, userId, postId }: NotificationData) => {
+const NotificationPage = ({
+  notificationByUser,
+  body,
+  post,
+  id,
+  currenUser,
+}: Notidata) => {
   const toast = useToast()
-  const [notificationShown, setNotificationShown] = useState(true)
-
   useEffect(() => {
-    // ใช้ useEffect เพื่อทำงานเมื่อ component ถูก mount
-    if (!notificationShown) {
+    if (body) {
       toast({
-        title: 'New Follower',
-        description: body,
-        status: 'info',
-        duration: 5000,
+        title: 'New comment',
+        position: 'bottom',
+        status: 'success',
+        description: `คุณได้รับการแจ้งเตือนจากผู้ใช้ ${notificationByUser} จากโพสต์นี้  ${post} ของคุณ `,
+        duration: 9000,
         isClosable: true,
       })
-
-      // ตั้งค่า state เพื่อไม่ให้แสดง Notification อีกครั้ง
-      setNotificationShown(false)
     }
-  }, [notificationShown, body, toast])
+
+    return () => {}
+  }, [body, notificationByUser, post, toast])
 
   return (
     <>
       <div className="">
-        <h1>{body}</h1>
-        <h1>{userId}</h1>
-        <h1>{postId}</h1>
+        <h1>Noti By User</h1>
+        {notificationByUser}
+
+        <h1>current User</h1>
+        {currenUser}
+
+        <h1>BODY</h1>
+        {body}
       </div>
     </>
   )
 }
 
-export default Notification
+export default NotificationPage

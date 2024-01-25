@@ -1,4 +1,3 @@
-// import FollowerCard from "@/components/follow/followerCard";
 import ArticleCard from '@/components/article/articleCard'
 import ArticleForm from '@/components/article/articleForm'
 import EventCard from '@/components/event/eventCard'

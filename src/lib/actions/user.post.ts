@@ -108,12 +108,52 @@ export async function fetchUserProfileByID(id: string) {
   if (!id) {
     return null;
   }
-  if (id) {
+
     const fetchUser = await db.user.findMany({
       where: {
         id: id,
       },
       include: {
+        notifications:{
+          select:{
+            id:true,
+            userId:true,
+            current:true,
+            body:true,
+            createAt:true,
+            event:{
+            select:{
+              id:true,
+              title:true
+            },
+            
+            },
+            article:{
+              select:{
+                id:true,
+                title:true
+              }
+            },
+            user:{
+              select:{
+              id:true,
+              name:true
+              }
+            },
+            post:{
+              select:{
+                id:true,
+                content:true
+              }
+            },
+            comment:{
+              select:{
+                text:true
+              }
+            }
+          }
+        },
+        // Todo:Event
         Event:{
           select:{
             id:true,
@@ -223,4 +263,3 @@ export async function fetchUserProfileByID(id: string) {
     });
     return fetchUser;
   }
-}

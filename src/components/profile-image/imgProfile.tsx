@@ -1,6 +1,6 @@
-"use client";
+'use client'
 
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogContent,
@@ -9,7 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
+} from '@/components/ui/dialog'
 import {
   Form,
   FormControl,
@@ -17,10 +17,10 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { useToast } from "@/components/ui/use-toast";
+} from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
+import { useToast } from '@/components/ui/use-toast'
 import {
   Facebook,
   IG,
@@ -30,9 +30,9 @@ import {
   updateImage,
   updateName,
   updateNickname,
-} from "@/lib/actions/user.action";
-import { useUploadThing } from "@/lib/uploadthing";
-import { isBase64Image } from "@/lib/utils";
+} from '@/lib/actions/user.action'
+import { useUploadThing } from '@/lib/uploadthing'
+import { isBase64Image } from '@/lib/utils'
 import {
   FOrmImage,
   UrlFacebookFORM,
@@ -42,102 +42,102 @@ import {
   UserBio,
   UserName,
   UserNickName,
-} from "@/lib/validations/user";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Avatar } from "@radix-ui/react-avatar";
-import { Loader2 } from "lucide-react";
-import { useSession } from "next-auth/react";
-import { usePathname } from "next/navigation";
-import { ChangeEvent, useState } from "react";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
-import { AvatarImage } from "../ui/avatar";
+} from '@/lib/validations/user'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { Avatar } from '@radix-ui/react-avatar'
+import { Loader2 } from 'lucide-react'
+import { useSession } from 'next-auth/react'
+import { usePathname } from 'next/navigation'
+import { ChangeEvent, useState } from 'react'
+import { useForm } from 'react-hook-form'
+import * as z from 'zod'
+import { AvatarImage } from '../ui/avatar'
 
 interface Props {
   user: {
-    image: string;
-    id: string;
-    bio: string;
-    nickname: string;
-    name: string;
-    facebookUrl: string;
-    igUrl: string;
-    tiktokUrl: string;
-    twitterUrl: string;
-  };
+    image: string
+    id: string
+    bio: string
+    nickname: string
+    name: string
+    facebookUrl: string
+    igUrl: string
+    tiktokUrl: string
+    twitterUrl: string
+  }
 }
 export function ImgProfilee({ user }: Props) {
-  const pathname = usePathname();
-  const { data: session, status, update } = useSession();
-  const { startUpload } = useUploadThing("media");
-  const [isLoading, setIsloading] = useState(false);
-  const [isText, setIsText] = useState("บันทึก");
+  const pathname = usePathname()
+  const { data: session, status, update } = useSession()
+  const { startUpload } = useUploadThing('media')
+  const [isLoading, setIsloading] = useState(false)
+  const [isText, setIsText] = useState('บันทึก')
 
-  const [files, setFiles] = useState<File[]>([]);
-  const { toast } = useToast();
+  const [files, setFiles] = useState<File[]>([])
+  const { toast } = useToast()
 
   const imageform = useForm<z.infer<typeof FOrmImage>>({
     resolver: zodResolver(FOrmImage),
     defaultValues: {
-      image: user?.image ? user.image : "",
+      image: user?.image ? user.image : '',
     },
-  });
+  })
   const bioForm = useForm<z.infer<typeof UserBio>>({
     resolver: zodResolver(UserBio),
     defaultValues: {
-      bio: user?.bio ? user.bio : "",
+      bio: user?.bio ? user.bio : '',
     },
-  });
+  })
   const nameForm = useForm<z.infer<typeof UserName>>({
     resolver: zodResolver(UserName),
     defaultValues: {
-      name: user?.name ? user.name : " ",
+      name: user?.name ? user.name : ' ',
     },
-  });
+  })
   const nicknameForm = useForm<z.infer<typeof UserNickName>>({
     resolver: zodResolver(UserNickName),
     defaultValues: {
-      nickname: user?.nickname ? user.nickname : " ",
+      nickname: user?.nickname ? user.nickname : ' ',
     },
-  });
+  })
 
   const UrlFacebook = useForm<z.infer<typeof UrlFacebookFORM>>({
     resolver: zodResolver(UrlFacebookFORM),
     defaultValues: {
-      facebookUrl: user?.facebookUrl ? user.facebookUrl : " ",
+      facebookUrl: user?.facebookUrl ? user.facebookUrl : ' ',
     },
-  });
+  })
 
   const UrlIg = useForm<z.infer<typeof UrlIGFORM>>({
     resolver: zodResolver(UrlIGFORM),
     defaultValues: {
-      igUrl: user?.igUrl ? user.igUrl : " ",
+      igUrl: user?.igUrl ? user.igUrl : ' ',
     },
-  });
+  })
 
   const UrlTwitter = useForm<z.infer<typeof UrlTwiiterFORM>>({
     resolver: zodResolver(UrlTwiiterFORM),
     defaultValues: {
-      twitterUrl: user?.twitterUrl ? user.twitterUrl : " ",
+      twitterUrl: user?.twitterUrl ? user.twitterUrl : ' ',
     },
-  });
+  })
 
   const UrlTiktok = useForm<z.infer<typeof UrlTiktokFORM>>({
     resolver: zodResolver(UrlTiktokFORM),
     defaultValues: {
-      tiktokUrl: user?.tiktokUrl ? user.tiktokUrl : " ",
+      tiktokUrl: user?.tiktokUrl ? user.tiktokUrl : ' ',
     },
-  });
+  })
   const onSubmitImg = async (values: z.infer<typeof FOrmImage>) => {
-    setIsloading(true);
-    const blob = values.image;
+    setIsloading(true)
+    const blob = values.image
 
-    const hasImageChanged = isBase64Image(blob);
+    const hasImageChanged = isBase64Image(blob)
     if (hasImageChanged) {
-      const imgRes = await startUpload(files);
+      const imgRes = await startUpload(files)
 
       if (imgRes && imgRes[0].url) {
-        values.image = imgRes[0].url;
+        values.image = imgRes[0].url
       }
     }
 
@@ -145,137 +145,137 @@ export function ImgProfilee({ user }: Props) {
       userId: user?.id,
       image: values.image,
       path: pathname,
-    });
+    })
     toast({
-      title: "อัพเดทโปรไฟล์สําเร็จ",
-      description: "อัพเดทโปรไฟล์สําเร็จ",
-      variant: "default",
-    });
+      title: 'อัพเดทโปรไฟล์สําเร็จ',
+      description: 'อัพเดทโปรไฟล์สําเร็จ',
+      variant: 'default',
+    })
     update({
       image: values.image,
-    });
-    setIsloading(false);
-    setIsText("บันทึกสำเร็จ");
-  };
+    })
+    setIsloading(false)
+    setIsText('บันทึกสำเร็จ')
+  }
 
   const onSubmitBio = async (values: z.infer<typeof UserBio>) => {
     await updateBio({
       userId: user?.id,
       path: pathname,
       bio: values.bio,
-    });
+    })
 
     toast({
-      title: "อัพเดท BIO สำเร็จ",
-      description: "อัพเดทโปรไฟล์สําเร็จ",
-      variant: "default",
-    });
+      title: 'อัพเดท BIO สำเร็จ',
+      description: 'อัพเดทโปรไฟล์สําเร็จ',
+      variant: 'default',
+    })
     update({
       bio: values.bio,
-    });
-  };
+    })
+  }
 
   const onSubmitName = async (values: z.infer<typeof UserName>) => {
     await updateName({
       userId: user?.id,
       name: values.name,
       path: pathname,
-    });
+    })
     toast({
-      title: "อัพเดท name สำเร็จ",
-      description: "อัพเดทโปรไฟล์สําเร็จ",
-      variant: "default",
-    });
+      title: 'อัพเดท name สำเร็จ',
+      description: 'อัพเดทโปรไฟล์สําเร็จ',
+      variant: 'default',
+    })
     update({
       name: values.name,
-    });
-  };
+    })
+  }
 
   const onCreateUrlFacebook = async (
-    values: z.infer<typeof UrlFacebookFORM>,
+    values: z.infer<typeof UrlFacebookFORM>
   ) => {
     await Facebook({
       userId: user?.id,
       Facebook: values.facebookUrl,
       path: pathname,
-    });
+    })
     toast({
-      description: "Your message has been sent.",
-    });
-  };
+      description: 'Your message has been sent.',
+    })
+  }
 
   const onCreateUrlIg = async (values: z.infer<typeof UrlIGFORM>) => {
     await IG({
       userId: user?.id,
       IG: values.igUrl,
       path: pathname,
-    });
+    })
     toast({
-      description: "Your message has been sent.",
-    });
-  };
+      description: 'Your message has been sent.',
+    })
+  }
   const onCreateUrlTwitter = async (values: z.infer<typeof UrlTwiiterFORM>) => {
     await twitter({
       userId: user?.id,
       Twitter: values.twitterUrl,
       path: pathname,
-    });
+    })
     toast({
-      description: "Your message has been sent.",
-    });
-  };
+      description: 'Your message has been sent.',
+    })
+  }
 
   const onCreateUrlTiktok = async (values: z.infer<typeof UrlTiktokFORM>) => {
     await tiktok({
       userId: user?.id,
       Tiktok: values.tiktokUrl,
       path: pathname,
-    });
+    })
     toast({
-      description: "Your message has been sent.",
-    });
-  };
+      description: 'Your message has been sent.',
+    })
+  }
 
   const onSubmitNickname = async (values: z.infer<typeof UserNickName>) => {
     await updateNickname({
       userId: user?.id,
       nickname: values.nickname,
       path: pathname,
-    });
+    })
     toast({
-      title: "อัพเดท BIO สำเร็จ",
-      description: "อัพเดทโปรไฟล์สําเร็จ",
-      variant: "default",
-    });
+      title: 'อัพเดท BIO สำเร็จ',
+      description: 'อัพเดทโปรไฟล์สําเร็จ',
+      variant: 'default',
+    })
     update({
       nickname: values.nickname,
-    });
-  };
+    })
+  }
 
   const handleImage = (
     e: ChangeEvent<HTMLInputElement>,
-    fieldChange: (value: string) => void,
+    fieldChange: (value: string) => void
   ) => {
-    e.preventDefault();
+    e.preventDefault()
 
-    const fileReader = new FileReader();
+    const fileReader = new FileReader()
 
     if (e.target.files && e.target.files.length > 0) {
-      const file = e.target.files[0];
-      setFiles(Array.from(e.target.files));
+      const file = e.target.files[0]
+      setFiles(Array.from(e.target.files))
 
-      if (!file.type.includes("image")) return;
+      if (!file.type.includes('image')) return
 
       fileReader.onload = async (event) => {
-        const imageDataUrl = event.target?.result?.toString() || "";
-        fieldChange(imageDataUrl);
-      };
+        const imageDataUrl = event.target?.result?.toString() || ''
+        fieldChange(imageDataUrl)
+      }
 
-      fileReader.readAsDataURL(file);
+      fileReader.readAsDataURL(file)
     }
-  };
+  }
 
-  if (status === "authenticated") {
+  if (status === 'authenticated') {
     return (
       <>
         <Dialog>
@@ -302,9 +302,9 @@ export function ImgProfilee({ user }: Props) {
                         <FormItem className="">
                           <FormLabel
                             className="
+                          mb-6
                           grid
                           justify-items-center
-                          mb-6
                         "
                           >
                             <Avatar className="w-40 ">
@@ -312,13 +312,13 @@ export function ImgProfilee({ user }: Props) {
                                 <AvatarImage
                                   src={field.value}
                                   alt="profile_icon"
-                                  className="rounded-full object object-contain"
+                                  className="object rounded-full object-contain"
                                 />
                               ) : (
                                 <AvatarImage
                                   src="/defaultAvatar.png"
                                   alt="profile_icon"
-                                  className="object-contain rounded-full"
+                                  className="rounded-full object-contain"
                                 />
                               )}
                             </Avatar>
@@ -579,6 +579,6 @@ export function ImgProfilee({ user }: Props) {
           </DialogContent>
         </Dialog>
       </>
-    );
+    )
   }
 }
