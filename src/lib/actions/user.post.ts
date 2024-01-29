@@ -1,13 +1,13 @@
-"use server";
-import { revalidatePath } from "next/cache";
-import { db } from "../db";
-import { getCurrentUser } from "../session";
+'use server'
+import { revalidatePath } from 'next/cache'
+import { db } from '../db'
+import { getCurrentUser } from '../session'
 
 interface userPost {
-  authorid: string;
-  path: string;
-  ImagePost: string;
-  content: string;
+  authorid: string
+  path: string
+  ImagePost: string
+  content: string
 }
 
 export async function userPost({
@@ -18,7 +18,7 @@ export async function userPost({
 }: userPost): Promise<void> {
   try {
     if (!authorid) {
-      throw new Error("ไม่มีผู้ใช้");
+      throw new Error('ไม่มีผู้ใช้')
     }
     await db.post.create({
       data: {
@@ -26,18 +26,18 @@ export async function userPost({
         content,
         ImagePost,
       },
-    });
-    revalidatePath(path);
+    })
+    revalidatePath(path)
   } catch (error: any) {
-    throw new Error(`Failed to create/update user: ${error.message}`);
+    throw new Error(`Failed to create/update user: ${error.message}`)
   }
 }
 
 export async function FetchUserPost() {
   try {
-    const user = await getCurrentUser();
+    const user = await getCurrentUser()
     if (!user?.id) {
-      throw new Error("not have dung");
+      throw new Error('not have dung')
     }
     if (user?.id) {
       const fetchUser = await db.post.findMany({
@@ -45,7 +45,7 @@ export async function FetchUserPost() {
           authorId: user.id,
         },
         orderBy: {
-          createdAt: "desc",
+          createdAt: 'desc',
         },
         include: {
           author: {
@@ -69,11 +69,11 @@ export async function FetchUserPost() {
             },
           },
         },
-      });
-      return fetchUser;
+      })
+      return fetchUser
     }
   } catch (error) {
-    console.error("Error fetching user posts:", error);
+    console.error('Error fetching user posts:', error)
   }
 }
 
@@ -95,171 +95,172 @@ export async function Fetchusercomment() {
         },
       },
       orderBy: {
-        createdAt: "desc",
+        createdAt: 'desc',
       },
-    });
-    return fetchcomment;
+    })
+    return fetchcomment
   } catch (error) {
-    console.error("Error fetching user posts:", error); // หรือใช้วิธีที่ต้องการเพื่อจัดการข้อผิดพลาดที่เกิดขึ้น
+    console.error('Error fetching user posts:', error) // หรือใช้วิธีที่ต้องการเพื่อจัดการข้อผิดพลาดที่เกิดขึ้น
   }
 }
 
 export async function fetchUserProfileByID(id: string) {
   if (!id) {
-    return null;
+    return null
   }
 
-    const fetchUser = await db.user.findMany({
-      where: {
-        id: id,
+  const user = await getCurrentUser()
+  const fetchUser = await db.user.findMany({
+    where: {
+      id: id,
+    },
+    include: {
+      //Todo: Notification
+      notifications: {
+        select: {
+          id: true,
+          userId: true,
+          current: true,
+          body: true,
+          createAt: true,
+          event: {
+            select: {
+              id: true,
+              title: true,
+            },
+          },
+          article: {
+            select: {
+              id: true,
+              title: true,
+            },
+          },
+          user: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+          post: {
+            select: {
+              id: true,
+              content: true,
+            },
+          },
+          comment: {
+            select: {
+              text: true,
+            },
+          },
+        },
       },
-      include: {
-        notifications:{
-          select:{
-            id:true,
-            userId:true,
-            current:true,
-            body:true,
-            createAt:true,
-            event:{
-            select:{
-              id:true,
-              title:true
-            },
-            
-            },
-            article:{
-              select:{
-                id:true,
-                title:true
-              }
-            },
-            user:{
-              select:{
-              id:true,
-              name:true
-              }
-            },
-            post:{
-              select:{
-                id:true,
-                content:true
-              }
-            },
-            comment:{
-              select:{
-                text:true
-              }
-            }
-          }
-        },
-        // Todo:Event
-        Event:{
-          select:{
-            id:true,
-            title:true,
-            eventContent:true,
-            eventImage:true,
-            createAt:true,
-            authorId:true,
-            author:{
-              select:{
-                id:true,
-                name:true,
-                image:true
-              }
-            },
-            tag:{
-              select:{
-                id:true,
-                tag:true
-              }
-            },
-            comment:{
-              include:{
-                author:{
-                  select:{
-                    id:true,
-                    name:true,
-                    image:true
-                  }
-                }
-              }
-            }
-          }
-        },
-        // TODO:Article
-        Article: {
-          select: {
-            id: true,
-            title: true,
-            articleContent: true,
-            ArticleImage: true,
-            createAt: true,
-            authorId: true,
-            author: {
-              select: {
-                id: true,
-                name: true,
-                image: true,
-              },
-            },
-            tag: {
-              select: {
-                id: true,
-                tag: true,
-              },
-            },
-            comment: {
-              include: {
-                author: {
-                  select: {
-                    id: true,
-                    name: true,
-                    image: true,
-                  },
-                },
-              },
+      // Todo:Event
+      Event: {
+        select: {
+          id: true,
+          title: true,
+          eventContent: true,
+          eventImage: true,
+          createAt: true,
+          authorId: true,
+          author: {
+            select: {
+              id: true,
+              name: true,
+              image: true,
             },
           },
-        },
-        // TODO: POST
-        post: {
-          orderBy: {
-            createdAt: "desc",
-          },
-          select: {
-            id: true,
-            content: true,
-            ImagePost: true,
-            createdAt: true,
-            authorId: true,
-            author: {
-              select: {
-                id: true,
-                name: true,
-                image: true,
-                Facebook: true,
-                Tiktok: true,
-                IG: true,
-                Twitter: true,
-              },
+          tag: {
+            select: {
+              id: true,
+              tag: true,
             },
-            // TODO:COMMENT
-            comments: {
-              include: {
-                author: {
-                  select: {
-                    id: true,
-                    name: true,
-                    image: true,
-                  },
+          },
+          comment: {
+            include: {
+              author: {
+                select: {
+                  id: true,
+                  name: true,
+                  image: true,
                 },
               },
             },
           },
         },
       },
-    });
-    return fetchUser;
-  }
+      // TODO:Article
+      Article: {
+        select: {
+          id: true,
+          title: true,
+          articleContent: true,
+          ArticleImage: true,
+          createAt: true,
+          authorId: true,
+          author: {
+            select: {
+              id: true,
+              name: true,
+              image: true,
+            },
+          },
+          tag: {
+            select: {
+              id: true,
+              tag: true,
+            },
+          },
+          comment: {
+            include: {
+              author: {
+                select: {
+                  id: true,
+                  name: true,
+                  image: true,
+                },
+              },
+            },
+          },
+        },
+      },
+      // TODO: POST
+      post: {
+        orderBy: {
+          createdAt: 'desc',
+        },
+        select: {
+          id: true,
+          content: true,
+          ImagePost: true,
+          createdAt: true,
+          authorId: true,
+          author: {
+            select: {
+              id: true,
+              name: true,
+              image: true,
+              Facebook: true,
+              Tiktok: true,
+              IG: true,
+              Twitter: true,
+            },
+          },
+          // TODO:COMMENT
+          comments: {
+            include: {
+              author: {
+                select: {
+                  id: true,
+                  name: true,
+                  image: true,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  })
+  return fetchUser
+}

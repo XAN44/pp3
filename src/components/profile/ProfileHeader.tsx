@@ -1,26 +1,26 @@
-import { Avatar, Text } from "@radix-ui/themes";
-import Link from "next/link";
-import { AiFillInstagram } from "react-icons/ai";
-import { FaFacebook, FaTiktok } from "react-icons/fa";
-import { FaXTwitter } from "react-icons/fa6";
-import Followbtn from "../follow/followbtn";
+import { Avatar, Text } from '@radix-ui/themes'
+import Link from 'next/link'
+import { AiFillInstagram } from 'react-icons/ai'
+import { FaFacebook, FaTiktok } from 'react-icons/fa'
+import { FaXTwitter } from 'react-icons/fa6'
+import Followbtn from '../follow/followbtn'
 
 interface Props {
-  accountId: string;
-  authUserId: string;
-  name: string;
-  nickname: string;
-  image: string;
-  bio: string;
-  totalFollower: number;
-  totalFollowing: number;
-  isFollow: boolean;
+  accountId: string
+  authUserId: string
+  name: string
+  nickname: string
+  image: string
+  bio: string
+  totalFollower: number
+  totalFollowing: number
+  isFollow: boolean
   contact: {
-    facebook: string;
-    ig: string;
-    twitter: string;
-    tiktok: string;
-  };
+    facebook: string
+    ig: string
+    twitter: string
+    tiktok: string
+  }
 }
 
 function ProfileHeader({
@@ -37,7 +37,7 @@ function ProfileHeader({
 }: Props) {
   return (
     <>
-      <div className="card bg-base-200 w-full grid grid-flow-row items-center justify-center place-items-center ">
+      <div className="card grid w-full grid-flow-row place-items-center items-center justify-center bg-base-200 ">
         {/* TOTOD:AVATAR */}
         <div className="flex">
           <Avatar
@@ -48,7 +48,7 @@ function ProfileHeader({
             className="ring-1 ring-black"
           />
         </div>
-        <div className="justify-center items-center text-center place-items-center">
+        <div className="place-items-center items-center justify-center text-center">
           <Text size="3" weight="regular" as="div">
             {name}
           </Text>
@@ -70,11 +70,11 @@ function ProfileHeader({
           />
         )}
 
-        <div className="text-center items-center justify-center placeitemce ring-1 ring-black">
+        <div className="placeitemce items-center justify-center text-center ring-1 ring-black">
           {/* Facebook contact */}
           {contact.facebook && (
             <Link href={contact.facebook}>
-              <div className="flex items-center justify-center place-items-center">
+              <div className="flex place-items-center items-center justify-center">
                 <Text>FACEBOOK : </Text>
                 <FaFacebook />
               </div>
@@ -84,7 +84,7 @@ function ProfileHeader({
 
           {contact?.ig && (
             <Link href={contact.ig}>
-              <div className="flex items-center justify-center place-items-center">
+              <div className="flex place-items-center items-center justify-center">
                 <Text>INSTAGRAM : </Text>
                 <AiFillInstagram />
               </div>
@@ -94,7 +94,7 @@ function ProfileHeader({
 
           {contact.tiktok && (
             <Link href={contact.tiktok}>
-              <div className="flex items-center justify-center place-items-center">
+              <div className="flex place-items-center items-center justify-center">
                 <Text>TIKTOK : </Text>
                 <FaTiktok />
               </div>
@@ -104,7 +104,7 @@ function ProfileHeader({
 
           {contact.twitter && (
             <Link href={contact.twitter}>
-              <div className="flex items-center justify-center place-items-center">
+              <div className="flex place-items-center items-center justify-center">
                 <Text>TWITTER : </Text>
                 <FaXTwitter />
               </div>
@@ -118,7 +118,7 @@ function ProfileHeader({
         </div>
       </div>
     </>
-  );
+  )
 }
 
-export default ProfileHeader;
+export default ProfileHeader

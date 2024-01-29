@@ -275,310 +275,302 @@ export function ImgProfilee({ user }: Props) {
     }
   }
 
-  if (status === 'authenticated') {
-    return (
-      <>
-        <Dialog>
-          <DialogTrigger>ตั้งค่า</DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle> ตั้งค่าโปรไฟล์ </DialogTitle>
-              <DialogDescription>แก้ไขเนื้อหาของคุณได้</DialogDescription>
-            </DialogHeader>
+  return (
+    <>
+      <Dialog>
+        <DialogTrigger>ตั้งค่า</DialogTrigger>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle> ตั้งค่าโปรไฟล์ </DialogTitle>
+            <DialogDescription>แก้ไขเนื้อหาของคุณได้</DialogDescription>
+          </DialogHeader>
 
-            <Dialog>
-              <DialogTrigger>เปลี่ยรูปโปรไฟล์</DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>เปลี่ยนรูปโปรไฟล์</DialogTitle>
-                  <DialogDescription>เลือกรูปโปรไฟล์ของคุณ</DialogDescription>
-                </DialogHeader>
-                <Form {...imageform}>
-                  <form onSubmit={imageform.handleSubmit(onSubmitImg)}>
-                    <FormField
-                      control={imageform.control}
-                      name="image"
-                      render={({ field }) => (
-                        <FormItem className="">
-                          <FormLabel
-                            className="
+          <Dialog>
+            <DialogTrigger>เปลี่ยรูปโปรไฟล์</DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>เปลี่ยนรูปโปรไฟล์</DialogTitle>
+                <DialogDescription>เลือกรูปโปรไฟล์ของคุณ</DialogDescription>
+              </DialogHeader>
+              <Form {...imageform}>
+                <form onSubmit={imageform.handleSubmit(onSubmitImg)}>
+                  <FormField
+                    control={imageform.control}
+                    name="image"
+                    render={({ field }) => (
+                      <FormItem className="">
+                        <FormLabel
+                          className="
                           mb-6
                           grid
                           justify-items-center
                         "
-                          >
-                            <Avatar className="w-40 ">
-                              {field.value ? (
-                                <AvatarImage
-                                  src={field.value}
-                                  alt="profile_icon"
-                                  className="object rounded-full object-contain"
-                                />
-                              ) : (
-                                <AvatarImage
-                                  src="/defaultAvatar.png"
-                                  alt="profile_icon"
-                                  className="rounded-full object-contain"
-                                />
-                              )}
-                            </Avatar>
-                          </FormLabel>
-                          <FormControl className="">
-                            <Input
-                              type="file"
-                              accept="image/*"
-                              placeholder="Add profile photo"
-                              className="hidden"
-                              onChange={(e) => handleImage(e, field.onChange)}
-                            />
-                          </FormControl>
-                        </FormItem>
+                        >
+                          <Avatar className="w-40 ">
+                            {field.value ? (
+                              <AvatarImage
+                                src={field.value}
+                                alt="profile_icon"
+                                className="object rounded-full object-contain"
+                              />
+                            ) : (
+                              <AvatarImage
+                                src="/defaultAvatar.png"
+                                alt="profile_icon"
+                                className="rounded-full object-contain"
+                              />
+                            )}
+                          </Avatar>
+                        </FormLabel>
+                        <FormControl className="">
+                          <Input
+                            type="file"
+                            accept="image/*"
+                            placeholder="Add profile photo"
+                            className="hidden"
+                            onChange={(e) => handleImage(e, field.onChange)}
+                          />
+                        </FormControl>
+                      </FormItem>
+                    )}
+                  />
+                  <DialogFooter>
+                    <Button type="submit" className="mt-3" disabled={isLoading}>
+                      {isLoading ? (
+                        <>
+                          <Button disabled>
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            Please wait
+                          </Button>
+                        </>
+                      ) : (
+                        isText
                       )}
-                    />
-                    <DialogFooter>
-                      <Button
-                        type="submit"
-                        className="mt-3"
-                        disabled={isLoading}
-                      >
-                        {isLoading ? (
-                          <>
-                            <Button disabled>
-                              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                              Please wait
-                            </Button>
-                          </>
-                        ) : (
-                          isText
-                        )}
-                      </Button>
-                    </DialogFooter>
-                    {/* เปลี่ยนชื่อเล่น */}
-                  </form>
-                </Form>
-              </DialogContent>
-            </Dialog>
-            <Dialog>
-              <DialogTrigger>เปลี่ยนชื่อ</DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>เปลี่ยนชื่อของคุณ</DialogTitle>
-                  <DialogDescription>ชื่อของคุณ</DialogDescription>
-                </DialogHeader>
-                <Form {...nameForm}>
-                  <form onSubmit={nameForm.handleSubmit(onSubmitName)}>
-                    <FormField
-                      control={nameForm.control}
-                      name="name"
-                      render={({ field }) => (
+                    </Button>
+                  </DialogFooter>
+                  {/* เปลี่ยนชื่อเล่น */}
+                </form>
+              </Form>
+            </DialogContent>
+          </Dialog>
+          <Dialog>
+            <DialogTrigger>เปลี่ยนชื่อ</DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>เปลี่ยนชื่อของคุณ</DialogTitle>
+                <DialogDescription>ชื่อของคุณ</DialogDescription>
+              </DialogHeader>
+              <Form {...nameForm}>
+                <form onSubmit={nameForm.handleSubmit(onSubmitName)}>
+                  <FormField
+                    control={nameForm.control}
+                    name="name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-sm">ชื่อ</FormLabel>
+                        <FormControl>
+                          <Textarea
+                            placeholder="ชื่อ"
+                            className="w-full"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <Button type="submit" className="mt-3">
+                    บันทึก
+                  </Button>
+                </form>
+              </Form>
+            </DialogContent>
+          </Dialog>
+          <Dialog>
+            <DialogTrigger>เปลี่ยนชื่อเล่น</DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>เปลี่ยนชื่อเล่นของคุณ</DialogTitle>
+                <DialogDescription>ชื่อเล่นของคุณ</DialogDescription>
+              </DialogHeader>
+              <Form {...nicknameForm}>
+                <form onSubmit={nicknameForm.handleSubmit(onSubmitNickname)}>
+                  <FormField
+                    control={nicknameForm.control}
+                    name="nickname"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-sm">ชื่อเล่น</FormLabel>
+                        <FormControl>
+                          <Textarea
+                            placeholder="ชื่อเล่น"
+                            className="w-full"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <Button type="submit" className="mt-3">
+                    บันทึก
+                  </Button>
+                </form>
+              </Form>
+            </DialogContent>
+          </Dialog>
+          <Dialog>
+            <DialogTrigger>เปลี่ยนประวัติสังเขป</DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>เปลี่ยนชื่อประวัติสังเขปของคุณ</DialogTitle>
+                <DialogDescription>ประวัติของคุณ</DialogDescription>
+              </DialogHeader>
+              <Form {...bioForm}>
+                <form onSubmit={bioForm.handleSubmit(onSubmitBio)}>
+                  <FormField
+                    control={bioForm.control}
+                    name="bio"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-sm">Bio</FormLabel>
+                        <FormControl>
+                          <Textarea
+                            placeholder="Bio"
+                            className="w-full"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <Button type="submit" className="mt-3">
+                    บันทึก
+                  </Button>
+                </form>
+              </Form>
+            </DialogContent>
+          </Dialog>
+          <Dialog>
+            <DialogTrigger>เพิ่มช่องทางการติดต่อ</DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>ช่องทางติดต่อจากแพลตฟอร์มต่างๆ</DialogTitle>
+                <DialogDescription>
+                  คุณสามารถคัดลอกลิงค์โปรไฟล์ของตัวเองจากแพลตฟอร์มต่างๆมาใส่ในช่องกรอกข้อมูลด้านล่างนี้ได้
+                  เพื่อความหลากหลายที่ให้ผู้อื่นสามารถรู้จักคุณได้มากขึน
+                </DialogDescription>
+              </DialogHeader>
+              <Form {...UrlFacebook}>
+                <form onSubmit={UrlFacebook.handleSubmit(onCreateUrlFacebook)}>
+                  <FormField
+                    control={UrlFacebook.control}
+                    name="facebookUrl"
+                    render={({ field }) => (
+                      <>
                         <FormItem>
-                          <FormLabel className="text-sm">ชื่อ</FormLabel>
+                          <FormLabel className="text-sm">FACEBOOK</FormLabel>
                           <FormControl>
                             <Textarea
-                              placeholder="ชื่อ"
+                              placeholder="FACEBOOK URL"
                               className="w-full"
                               {...field}
                             />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
-                      )}
-                    />
-                    <Button type="submit" className="mt-3">
-                      บันทึก
-                    </Button>
-                  </form>
-                </Form>
-              </DialogContent>
-            </Dialog>
-            <Dialog>
-              <DialogTrigger>เปลี่ยนชื่อเล่น</DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>เปลี่ยนชื่อเล่นของคุณ</DialogTitle>
-                  <DialogDescription>ชื่อเล่นของคุณ</DialogDescription>
-                </DialogHeader>
-                <Form {...nicknameForm}>
-                  <form onSubmit={nicknameForm.handleSubmit(onSubmitNickname)}>
-                    <FormField
-                      control={nicknameForm.control}
-                      name="nickname"
-                      render={({ field }) => (
+                      </>
+                    )}
+                  />
+                  <Button type="submit" className="mt-3">
+                    บันทึก
+                  </Button>
+                </form>
+              </Form>
+              <Form {...UrlIg}>
+                <form onSubmit={UrlIg.handleSubmit(onCreateUrlIg)}>
+                  <FormField
+                    control={UrlIg.control}
+                    name="igUrl"
+                    render={({ field }) => (
+                      <>
                         <FormItem>
-                          <FormLabel className="text-sm">ชื่อเล่น</FormLabel>
+                          <FormLabel className="text-sm">IG</FormLabel>
                           <FormControl>
                             <Textarea
-                              placeholder="ชื่อเล่น"
+                              placeholder="IG URL"
                               className="w-full"
                               {...field}
                             />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
-                      )}
-                    />
-                    <Button type="submit" className="mt-3">
-                      บันทึก
-                    </Button>
-                  </form>
-                </Form>
-              </DialogContent>
-            </Dialog>
-            <Dialog>
-              <DialogTrigger>เปลี่ยนประวัติสังเขป</DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>เปลี่ยนชื่อประวัติสังเขปของคุณ</DialogTitle>
-                  <DialogDescription>ประวัติของคุณ</DialogDescription>
-                </DialogHeader>
-                <Form {...bioForm}>
-                  <form onSubmit={bioForm.handleSubmit(onSubmitBio)}>
-                    <FormField
-                      control={bioForm.control}
-                      name="bio"
-                      render={({ field }) => (
+                      </>
+                    )}
+                  />
+                  <Button type="submit" className="mt-3">
+                    บันทึก
+                  </Button>
+                </form>
+              </Form>
+              <Form {...UrlTiktok}>
+                <form onSubmit={UrlTiktok.handleSubmit(onCreateUrlTiktok)}>
+                  <FormField
+                    control={UrlTiktok.control}
+                    name="tiktokUrl"
+                    render={({ field }) => (
+                      <>
                         <FormItem>
-                          <FormLabel className="text-sm">Bio</FormLabel>
+                          <FormLabel className="text-sm">TIKTOK</FormLabel>
                           <FormControl>
                             <Textarea
-                              placeholder="Bio"
+                              placeholder="TIKTOK URL"
                               className="w-full"
                               {...field}
                             />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
-                      )}
-                    />
-                    <Button type="submit" className="mt-3">
-                      บันทึก
-                    </Button>
-                  </form>
-                </Form>
-              </DialogContent>
-            </Dialog>
-            <Dialog>
-              <DialogTrigger>เพิ่มช่องทางการติดต่อ</DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>ช่องทางติดต่อจากแพลตฟอร์มต่างๆ</DialogTitle>
-                  <DialogDescription>
-                    คุณสามารถคัดลอกลิงค์โปรไฟล์ของตัวเองจากแพลตฟอร์มต่างๆมาใส่ในช่องกรอกข้อมูลด้านล่างนี้ได้
-                    เพื่อความหลากหลายที่ให้ผู้อื่นสามารถรู้จักคุณได้มากขึน
-                  </DialogDescription>
-                </DialogHeader>
-                <Form {...UrlFacebook}>
-                  <form
-                    onSubmit={UrlFacebook.handleSubmit(onCreateUrlFacebook)}
-                  >
-                    <FormField
-                      control={UrlFacebook.control}
-                      name="facebookUrl"
-                      render={({ field }) => (
-                        <>
-                          <FormItem>
-                            <FormLabel className="text-sm">FACEBOOK</FormLabel>
-                            <FormControl>
-                              <Textarea
-                                placeholder="FACEBOOK URL"
-                                className="w-full"
-                                {...field}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        </>
-                      )}
-                    />
-                    <Button type="submit" className="mt-3">
-                      บันทึก
-                    </Button>
-                  </form>
-                </Form>
-                <Form {...UrlIg}>
-                  <form onSubmit={UrlIg.handleSubmit(onCreateUrlIg)}>
-                    <FormField
-                      control={UrlIg.control}
-                      name="igUrl"
-                      render={({ field }) => (
-                        <>
-                          <FormItem>
-                            <FormLabel className="text-sm">IG</FormLabel>
-                            <FormControl>
-                              <Textarea
-                                placeholder="IG URL"
-                                className="w-full"
-                                {...field}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        </>
-                      )}
-                    />
-                    <Button type="submit" className="mt-3">
-                      บันทึก
-                    </Button>
-                  </form>
-                </Form>
-                <Form {...UrlTiktok}>
-                  <form onSubmit={UrlTiktok.handleSubmit(onCreateUrlTiktok)}>
-                    <FormField
-                      control={UrlTiktok.control}
-                      name="tiktokUrl"
-                      render={({ field }) => (
-                        <>
-                          <FormItem>
-                            <FormLabel className="text-sm">TIKTOK</FormLabel>
-                            <FormControl>
-                              <Textarea
-                                placeholder="TIKTOK URL"
-                                className="w-full"
-                                {...field}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        </>
-                      )}
-                    />
-                    <Button type="submit" className="mt-3">
-                      บันทึก
-                    </Button>
-                  </form>
-                </Form>
-                {/*  */}
-                <Form {...UrlTwitter}>
-                  <form onSubmit={UrlTwitter.handleSubmit(onCreateUrlTwitter)}>
-                    <FormField
-                      control={UrlTwitter.control}
-                      name="twitterUrl"
-                      render={({ field }) => (
-                        <>
-                          <FormItem>
-                            <FormLabel className="text-sm">TWITTER</FormLabel>
-                            <FormControl>
-                              <Textarea
-                                placeholder="TWITTER URL"
-                                className="w-full"
-                                {...field}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        </>
-                      )}
-                    />
-                    <Button type="submit" className="mt-3">
-                      บันทึก
-                    </Button>
-                  </form>
-                </Form>
-              </DialogContent>
-            </Dialog>
-          </DialogContent>
-        </Dialog>
-      </>
-    )
-  }
+                      </>
+                    )}
+                  />
+                  <Button type="submit" className="mt-3">
+                    บันทึก
+                  </Button>
+                </form>
+              </Form>
+              {/*  */}
+              <Form {...UrlTwitter}>
+                <form onSubmit={UrlTwitter.handleSubmit(onCreateUrlTwitter)}>
+                  <FormField
+                    control={UrlTwitter.control}
+                    name="twitterUrl"
+                    render={({ field }) => (
+                      <>
+                        <FormItem>
+                          <FormLabel className="text-sm">TWITTER</FormLabel>
+                          <FormControl>
+                            <Textarea
+                              placeholder="TWITTER URL"
+                              className="w-full"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      </>
+                    )}
+                  />
+                  <Button type="submit" className="mt-3">
+                    บันทึก
+                  </Button>
+                </form>
+              </Form>
+            </DialogContent>
+          </Dialog>
+        </DialogContent>
+      </Dialog>
+    </>
+  )
 }

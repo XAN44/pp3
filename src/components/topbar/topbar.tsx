@@ -1,11 +1,20 @@
-import { Avatar } from '@nextui-org/react'
+import {
+  Avatar,
+  Navbar,
+  NavbarBrand,
+  NavbarContent,
+  NavbarItem,
+} from '@nextui-org/react'
 import { HandMetal } from 'lucide-react'
 import Link from 'next/link'
 
 import { getCurrentUser } from '@/lib/session'
 
+import { GetNotification } from '@/lib/actions/user.notification'
 import { fetchUserProfileByID } from '@/lib/actions/user.post'
-import NotificationPage from '../Notification'
+import UserAccountnav from '../UserAccountnav'
+import NotificationCard from '../notification/notificationCard'
+import { ImgProfilee } from '../profile-image/imgProfile'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,63 +25,53 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu'
-import { ImgProfilee } from '../profile-image/imgProfile'
-import UserAccountnav from '../UserAccountnav'
-import { GetNotification } from '@/lib/actions/user.notification'
 
 interface params {
-  params: {
-    id: string
-  }
+  id: string
 }
 
-export async function Topbar({ params }: params) {
-  if (!params.id) return null
+export async function Topbar({ id }: params) {
+  if (!id) return null
 
   const user = await getCurrentUser()
+
   if (!user) return null
+  const notification = await GetNotification(user?.id)
   const account = await fetchUserProfileByID(user.id)
-  const notification = await GetNotification(user.id)
-  return (
+
+  user === user ? (
     <>
-      <div className=" fixed top-0 z-10 w-full border-b border-s-zinc-200 bg-zinc-100 py-2">
-        {account &&
-          account?.map((noti) => (
-            <div
-              className="container flex items-center justify-between "
-              key={noti.id}
-            >
-              <Link href="/">
-                <HandMetal />
-              </Link>
-
-              {notification.map((notis) => (
-                <>
-                  <div className="" key={notis.id}>
-                    <NotificationPage
-                      id={notis.id}
-                      key={user.id}
-                      currenUser={user.name}
-                      notificationByUser={notis.current}
-                      body={notis.body}
-                      post={notis.post?.content || ''}
+      {account &&
+        account?.map((acc) => (
+          <>
+            <Navbar shouldHideOnScroll>
+              <NavbarBrand>
+                <p className="font-bold text-inherit">ACME</p>
+              </NavbarBrand>
+              <NavbarContent className="hidden gap-4 sm:flex" justify="center">
+                <NavbarItem>
+                  {acc.notifications.map((noi) => (
+                    <NotificationCard
+                      key="notification"
+                      body={noi.body}
+                      id={noi.id}
+                      currentId={user.id}
+                      userId={user.id}
+                      current={noi.current}
                     />
-                  </div>
-                </>
-              ))}
+                  ))}
+                </NavbarItem>
+                <DropdownMenu>
+                  <DropdownMenuTrigger>
+                    <Avatar color="default" isBordered src={user.image} />
+                  </DropdownMenuTrigger>
+                  {/* Notification */}
+                  <DropdownMenuContent>
+                    <DropdownMenuSeparator />
 
-              <DropdownMenu>
-                <DropdownMenuTrigger>
-                  <Avatar color="default" isBordered src={noti.image || ''} />
-                </DropdownMenuTrigger>
-                {/* Notification */}
-                <DropdownMenuContent>
-                  <DropdownMenuSeparator />
-
-                  {user ? (
                     <DropdownMenu>
                       <DropdownMenuLabel className="text-center">
-                        {user.name}
+                        {acc.name}
                       </DropdownMenuLabel>
                       <DropdownMenuSeparator />
                       <DropdownMenuGroup>
@@ -84,6 +83,7 @@ export async function Topbar({ params }: params) {
                             </DropdownMenuShortcut>
                           </DropdownMenuItem>
                         </Link>
+                        <DropdownMenuItem></DropdownMenuItem>
                         <Link href="/profile/cart">
                           <DropdownMenuItem>
                             Cart
@@ -95,41 +95,60 @@ export async function Topbar({ params }: params) {
                         <DropdownMenuItem>
                           <ImgProfilee
                             user={{
-                              image: '',
-                              id: '',
-                              bio: '',
-                              nickname: '',
-                              name: '',
-                              facebookUrl: '',
-                              igUrl: '',
-                              tiktokUrl: '',
-                              twitterUrl: '',
+                              image: acc.image || '',
+                              id: acc.id || '',
+                              bio: acc.bio || '',
+                              nickname: acc.nickname || '',
+                              name: acc.name || '',
+                              facebookUrl: acc.Facebook || '',
+                              igUrl: acc.IG || '',
+                              tiktokUrl: acc.Tiktok || '',
+                              twitterUrl: acc.Twitter || '',
                             }}
                           />
                           <DropdownMenuShortcut>(ตั้งค่า)</DropdownMenuShortcut>
                         </DropdownMenuItem>
+                        <DropdownMenuItem></DropdownMenuItem>
                         <DropdownMenuSeparator />
                         <UserAccountnav />
                       </DropdownMenuGroup>
                     </DropdownMenu>
-                  ) : (
-                    <DropdownMenu>
-                      <DropdownMenuLabel className="text-center">
-                        Unknow
-                        <DropdownMenuShortcut className="text-red-600">
-                          (Plse login)
-                        </DropdownMenuShortcut>
-                      </DropdownMenuLabel>
-                      <DropdownMenuSeparator />
-                      <Link href="/sign-in">
-                        <DropdownMenuItem>Sign in</DropdownMenuItem>
-                      </Link>
-                    </DropdownMenu>
-                  )}
-                </DropdownMenuContent>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </NavbarContent>
+            </Navbar>
+          </>
+        ))}
+    </>
+  ) : (
+    <>
+      <div className=" fixed top-0 z-10 w-full border-b border-s-zinc-200 bg-zinc-100 py-2">
+        <div className="container flex w-full items-center justify-between ">
+          <Link href="/">
+            <HandMetal />
+          </Link>
+          <DropdownMenu>
+            <DropdownMenuTrigger>
+              <Avatar color="default" isBordered src="/defaultAvatar.png" />
+            </DropdownMenuTrigger>
+            {/* Notification */}
+            <DropdownMenuContent>
+              <DropdownMenuSeparator />
+              <DropdownMenu>
+                <DropdownMenuLabel className="text-center">
+                  Unknow
+                  <DropdownMenuShortcut className="text-red-600">
+                    (Plse login)
+                  </DropdownMenuShortcut>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <Link href="/sign-in">
+                  <DropdownMenuItem>Sign in</DropdownMenuItem>
+                </Link>
               </DropdownMenu>
-            </div>
-          ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </div>
     </>
   )

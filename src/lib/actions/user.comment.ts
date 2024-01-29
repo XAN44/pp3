@@ -2,11 +2,8 @@
 
 import { revalidatePath } from 'next/cache'
 import { db } from '../db'
-import { Notification } from './user.notification'
-import { text } from 'body-parser'
 import { getCurrentUser } from '../session'
-
-
+import { Notification } from './user.notification'
 
 export async function CommentInPost(
   postId: string,
@@ -29,34 +26,38 @@ export async function CommentInPost(
       data: {
         text: comment,
         postId: postId,
-        authorid: authorId
+        authorid: authorId,
       },
-      include:{
-        author:{
-          select:{
-            name:true
-          }
+      include: {
+        author: {
+          select: {
+            name: true,
+          },
         },
-        Post:{
-        select:{
-          content:true,
-          author:{
-            select:{
-            name:true
-            }
-          }
-        }
-        }
-      }
+        Post: {
+          select: {
+            content: true,
+            author: {
+              select: {
+                name: true,
+              },
+            },
+          },
+        },
+      },
     })
 
-  if (Inpost && Inpost.authorId) {
-        // แจ้งเตือนเจ้าของโพสต์
-        const auth = newComment.author?.name
-          await Notification(Inpost.authorId, postId, 
-          `ผู้ใช้ ${auth} ได้แสดงความคิดเห็นในโพสต์ ${newComment.Post?.content} ของ ${newComment.Post?.author?.name} ด้วยข้อความ ${comment}` ,path  );
-    }
+    if (Inpost && Inpost.authorId && user && user.id !== Inpost.authorId) {
+      // แจ้งเตือนเจ้าของโพสต์
+      const auth = newComment.author?.name
 
+      await Notification(
+        Inpost.authorId,
+        postId,
+        `ผู้ใช้ ${auth} ได้แสดงความคิดเห็นในโพสต์ ${newComment.Post?.content} ของ ${newComment.Post?.author?.name} ด้วยข้อความ ${comment}`,
+        path
+      )
+    }
 
     revalidatePath(path)
   } catch (error: any) {

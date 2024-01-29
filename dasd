@@ -1,160 +1,205 @@
-import { ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable'
-import { Button } from '@nextui-org/react'
-import { Flex, Grid, Text } from '@radix-ui/themes'
-import Image from 'next/image'
-import Link from 'next/link'
-import { Avatar, AvatarImage } from '../ui/avatar'
+import ArticleCard from '@/components/article/articleCard'
+import ArticleForm from '@/components/article/articleForm'
+import EventCard from '@/components/event/eventCard'
+import EventForm from '@/components/event/eventForm'
+import NotificationCard from '@/components/notification/notificationCard'
+import PostCard from '@/components/post/postCard'
+import { PostForm } from '@/components/post/postForm'
+import ProfileHeader from '@/components/profile/ProfileHeader'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import {
+  CheckFollow,
+  getTotalFollowers,
+  getTotalFollowing,
+} from '@/lib/actions/user.follow'
+import { checkLike, getLike } from '@/lib/actions/user.like'
+import { fetchUserProfileByID } from '@/lib/actions/user.post'
+import {
+  TotalVisit,
+  TotalVisit1,
+  TotalVisitEvent,
+} from '@/lib/actions/user.visit'
+import { getCurrentUser } from '@/lib/session'
+import { Divider } from '@nextui-org/react'
+import { redirect } from 'next/navigation'
+import { Suspense } from 'react'
 
-interface Props {
-  id: string
-  title: string | null
-  articleContent: string | null
-  ArticleImage: string | null
-  createAt: string
-  tag: {
-    id: string | null
-    tag: string | null
-  }[]
-  authorId: string | null
-  author: {
-    id: string
-    name: string | null
-    image: string | null
-  } | null
-  comments: {
-    id: string
-    text: string
-    author: {
-      id: string
-      name: string | null
-      image: string | null
-    } | null
-  }[]
-  isComment?: boolean
-}
+export default async function Page({ params }: { params: { id: string } }) {
+  if (!params.id) return null
 
-export default function ArticleCard({
-  id,
-  title,
-  articleContent,
-  ArticleImage,
-  tag,
-  author,
-  authorId,
-  comments,
-  createAt,
-  isComment,
-}: Props) {
+  const user = await getCurrentUser()
+  if (!user) return null
+
+  //Todo: ตรวจสอบ user พื่อดึงข้อมูลผู้ใช้มาแสดงผล โดยตัวแปร user จะดึงค่า session จาก getCurrentUser เพื่อใช้ในการยืนยันว่าผู้ใช้ที่เข้าถึง Profile Page เป็นเจ้าของหรือไม่
+  //* หากเป็นเจ้าของ จะสามารถเข้าถึงหน้าต่างบางอย่างได้ เช่น ตั้งค่า และอื่นๆ
+
+  const userInfo = await fetchUserProfileByID(params.id)
+  if (!userInfo) redirect('/')
+
+  //Todo: โดยใช้ Params.id ในการยืนยันจากฐานข้อมูล หากข้อมูลตรงกัน จะทำการแสดงเนื้อหาต่างๆที่โค้ดด้านล่าง
+  // TODO:แสดงการติดตาม
+  const userfollow = await getTotalFollowers(params.id)
+  const userfollowing = await getTotalFollowing(params.id)
+  const checkFollower = await CheckFollow(params.id, user.id)
+
+  if (!userInfo) redirect('/sign-in') // ! และถ้าหากว่าไม่มี Prarams.id จะทำการ redireact ไปที่หน้า Sign-ins
+
   return (
-    <div>
-      <div className="card mb-3 w-96 bg-base-200 shadow-xl ring-1 ring-black">
-        <figure>
-          {ArticleImage && (
-            <Image
-              className="
-             rounded-xl
-            "
-              src={ArticleImage}
-              alt="image"
-              width={1080}
-              height={1080}
-            />
-          )}
-        </figure>
-        <div className="card-body mb-10  mt-3 text-center">
-          <div className="card-title">
-            <p>{title}</p>
-          </div>
-
-          <ResizablePanelGroup
-            direction="horizontal"
-            className="min-h-[200px] max-w-md rounded-lg "
-          >
-            <ResizablePanel defaultSize={65}>
-              <div className="flex h-full items-center justify-center p-6">
-                <div className="flex place-items-start items-start justify-start gap-3 text-start">
-                  <span className="font-semibold">
-                    <p>{articleContent}</p>
-
-                    <Text size="1">สร้างเมื่อ {createAt}</Text>
-                  </span>
-                </div>
-              </div>
-            </ResizablePanel>
-            <ResizablePanel defaultSize={25}>
-              <div className="flex h-full items-center justify-center p-6">
-                <span className="font-semibold">
-                  <Flex gap="3">
-                    <Grid align="start" gap="3">
-                      <Flex direction="column">
-                        <Link href={`/profile/${author?.id}`}>
-                          <Avatar className="h-14 w-14">
-                            {author?.image && (
-                              <AvatarImage
-                                src={author?.image || ''}
-                                alt="profileImage"
-                                width={250}
-                                height={250}
-                              />
-                            )}
-                          </Avatar>
-                        </Link>
-                        <Link href={`/profile/${author?.id}`} className="">
-                          <Text size="7">{author && author.name}</Text>
-                        </Link>
-                      </Flex>
-                    </Grid>
-                  </Flex>
-                  <div className="grid place-items-end items-end justify-end ">
-                    <Link href={`/article/${id}`}>
-                      <Button
-                        radius="full"
-                        className="bg-gradient-to-tr from-pink-500 to-yellow-500 text-white shadow-lg"
+    <div className="relative mb-96 flex h-32 gap-0">
+      {userInfo &&
+        userInfo.map((Account) => (
+          <>
+            <aside
+              className=" 
+              fixed inset-x-0  left-[32px] w-56 place-items-start px-3 ring-1 ring-black"
+            >
+              <ProfileHeader
+                key={Account.id}
+                accountId={Account.id}
+                authUserId={user.id}
+                name={Account.name || ''}
+                nickname={Account.nickname || ''}
+                image={Account.image || ' '}
+                bio={Account.bio || ''}
+                totalFollower={userfollow}
+                totalFollowing={userfollowing}
+                isFollow={checkFollower}
+                contact={{
+                  facebook: Account.Facebook || '',
+                  ig: Account.IG || '',
+                  twitter: Account.Twitter || '',
+                  tiktok: Account.Tiktok || '',
+                }}
+              />
+              {Account.notifications.map((noi) => (
+                <NotificationCard
+                  key="notification"
+                  body={noi.body}
+                  id={noi.id}
+                  currentId={noi.userId || ''}
+                  userId={user.id}
+                  current={noi.current}
+                />
+              ))}
+            </aside>
+            <Divider orientation="vertical" />
+            <main className="w-[690px]">
+              <div className="relative place-items-center justify-center text-center ">
+                <div className=" ">
+                  <Tabs defaultValue="post">
+                    <TabsList className="">
+                      <TabsTrigger value="post"> POST</TabsTrigger>
+                      <TabsTrigger value="article"> บทความ</TabsTrigger>
+                      <TabsTrigger value="event"> กิจกรรม</TabsTrigger>
+                    </TabsList>
+                    <TabsContent value="post">
+                      <div
+                        key={Account.id}
+                        className="place-items-center text-center"
                       >
-                        เยี่ยมชม
-                      </Button> 
-                    </Link>
-                  </div>
-
-                  {!isComment && comments.length > 0 && (
-                    <div className="ml-1 mt-3 flex items-center gap-5">
-                      {comments.slice(0, 2).map((comment, index) => (
-                        <>
-                          <Image
-                            key={index}
-                            src={comment.author?.image || ''}
-                            alt={`user_${index}`}
-                            width={24}
-                            height={24}
-                            className={`${
-                              index !== 0 && '-ml-5'
-                            } rounded-full object-cover`}
-                          />
-                        </>
+                        {userInfo.map((Account) => (
+                          <>
+                            <PostForm
+                              key={Account.id}
+                              accountId={Account.id}
+                              authUserId={user.id}
+                              imagePost={''}
+                              content={''}
+                            />
+                          </>
+                        ))}
+                      </div>
+                      {Account.post.map(async (PostBy) => (
+                        //*ส่วนแสดงเนื้อหาโพสต์
+                        //Todo:ใช้ Params จากการ Login ในการแสดงข้อมูล
+                        <div key={Account.id} className="text-start ">
+                          <Suspense fallback={<p> LOADING </p>}>
+                            <PostCard
+                              key={PostBy.id}
+                              id={PostBy.id}
+                              current={user.id}
+                              content={PostBy.content}
+                              ImagePost={PostBy.ImagePost}
+                              authorId={PostBy.authorId}
+                              createAt={new Date(
+                                PostBy.createdAt
+                              ).toLocaleString()}
+                              author={PostBy.author}
+                              comments={PostBy.comments}
+                              checkLike={await checkLike(PostBy.id, user.id)}
+                              totalLike={await getLike(PostBy.id)}
+                              totalVisit={await TotalVisit(PostBy.id)}
+                            />
+                          </Suspense>
+                        </div>
                       ))}
-                    </div>
-                  )}
-                  <Link href={`/article/${id}`}>
-                    <p className="text-subtle-medium text-gray-1 mt-1 place-items-center items-center justify-center text-center">
-                      {comments.length} repl
-                      {comments.length > 1 ? 'ies' : 'y'}
-                    </p>
-                  </Link>
-                </span>
-              </div>
-            </ResizablePanel>
-          </ResizablePanelGroup>
-          <div className="justify-startr card-actions">
-            {tag.map((tag) => (
-              <>
-                <div className="badge badge-outline" key={tag.id}>
-                  #{tag.tag}
+                    </TabsContent>
+                    <TabsContent value="article">
+                      <div className="place-items-center text-center">
+                        <ArticleForm
+                          key={Account.id}
+                          accountId={Account.id}
+                          authUserId={user.id}
+                          ArticleImage={''}
+                          articleContent={''}
+                          tag={''}
+                          title={''}
+                        />
+                      </div>
+                      {Account.Article.map(async (ArticleBy) => (
+                        <div key={ArticleBy.id}>
+                          <ArticleCard
+                            key={ArticleBy.id}
+                            id={ArticleBy.id}
+                            title={ArticleBy.title}
+                            articleContent={ArticleBy.articleContent}
+                            ArticleImage={ArticleBy.ArticleImage}
+                            tag={ArticleBy.tag}
+                            authorId={ArticleBy.authorId}
+                            author={ArticleBy.author}
+                            comments={ArticleBy.comment}
+                            createAt={new Date(
+                              ArticleBy.createAt
+                            ).toLocaleString()}
+                            totalVisit={await TotalVisit1(ArticleBy.id)}
+                          />
+                        </div>
+                      ))}
+                    </TabsContent>
+                    <TabsContent value="event">
+                      <div className="place-items-center text-center">
+                        <EventForm
+                          key={Account.id}
+                          accountId={Account.id}
+                          authUserId={user.id}
+                          eventImage={''}
+                          eventContent={''}
+                          tag={''}
+                          title={''}
+                        />
+                        {Account.Event.map(async (Event) => (
+                          <EventCard
+                            key={Event.id}
+                            id={Event.id}
+                            title={Event.title}
+                            articleContent={Event.eventContent}
+                            ArticleImage={Event.eventImage}
+                            tag={Event.tag}
+                            authorId={Event.authorId}
+                            author={Event.author}
+                            comments={Event.comment}
+                            createAt={new Date(Event.createAt).toLocaleString()}
+                            totalVisit={await TotalVisitEvent(Event.id)}
+                          />
+                        ))}
+                      </div>
+                    </TabsContent>
+                  </Tabs>
                 </div>
-              </>
-            ))}
-          </div>
-        </div>
-      </div>
+              </div>
+            </main>
+          </>
+        ))}
     </div>
   )
 }

@@ -2,17 +2,17 @@ import ArticleCard from '@/components/article/articleCard'
 import ArticleForm from '@/components/article/articleForm'
 import EventCard from '@/components/event/eventCard'
 import EventForm from '@/components/event/eventForm'
+import NotificationCard from '@/components/notification/notificationCard'
 import PostCard from '@/components/post/postCard'
 import { PostForm } from '@/components/post/postForm'
 import ProfileHeader from '@/components/profile/ProfileHeader'
-import TabmenuinProfile from '@/components/profile/tabmenuinProfile'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
   CheckFollow,
   getTotalFollowers,
   getTotalFollowing,
 } from '@/lib/actions/user.follow'
-import { getLike, checkLike } from '@/lib/actions/user.like'
+import { checkLike, getLike } from '@/lib/actions/user.like'
 import { fetchUserProfileByID } from '@/lib/actions/user.post'
 import {
   TotalVisit,
@@ -45,13 +45,14 @@ export default async function Page({ params }: { params: { id: string } }) {
   if (!userInfo) redirect('/sign-in') // ! และถ้าหากว่าไม่มี Prarams.id จะทำการ redireact ไปที่หน้า Sign-ins
 
   return (
-    <div className="relative mb-96 flex h-32 gap-0">
+    <div className=" mb-96 flex h-32 flex-col gap-0 xl:flex-row ">
       {userInfo &&
         userInfo.map((Account) => (
           <>
             <aside
               className=" 
-              fixed inset-x-0  left-[32px] w-56 place-items-start px-3 ring-1 ring-black"
+
+              inset-x-0  left-[32px]  h-[600px] w-full place-items-start   px-3 xl:fixed xl:h-64 xl:w-64"
             >
               <ProfileHeader
                 key={Account.id}

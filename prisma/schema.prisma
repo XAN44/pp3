@@ -161,7 +161,7 @@ model Comment {
     text         String
     createdAt    DateTime?      @default(now())
     author       User?          @relation(fields: [authorid], references: [id])
-    authorid     String?
+    authorid     String?        @unique
     Post         Post?          @relation(fields: [postId], references: [id])
     postId       String?
     Reply        Reply[]
@@ -172,20 +172,11 @@ model Comment {
     Notification Notification[]
 }
 
-model Reply {
-    id             String   @id @default(cuid())
-    replytext      String
-    author         User?    @relation(fields: [authorid], references: [id])
-    authorid       String?
-    replyCommet    Comment? @relation(fields: [replyCommentid], references: [id])
-    replyCommentid String?
-}
-
 model Notification {
     id        String   @id @default(cuid())
-    current   String
     body      String
     userId    String?
+    current   String?
     createAt  DateTime @default(now())
     commentId String?
     postId    String?
@@ -196,6 +187,15 @@ model Notification {
     post      Post?    @relation(fields: [postId], references: [id])
     article   Article? @relation(fields: [articleId], references: [id])
     event     Event?   @relation(fields: [eventId], references: [id])
+}
+
+model Reply {
+    id             String   @id @default(cuid())
+    replytext      String
+    author         User?    @relation(fields: [authorid], references: [id])
+    authorid       String?
+    replyCommet    Comment? @relation(fields: [replyCommentid], references: [id])
+    replyCommentid String?
 }
 
 model VerificationToken {
