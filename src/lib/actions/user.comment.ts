@@ -51,12 +51,7 @@ export async function CommentInPost(
       // แจ้งเตือนเจ้าของโพสต์
       const auth = newComment.author?.name
 
-      await Notification(
-        Inpost.authorId,
-        postId,
-        `ผู้ใช้ ${auth} ได้แสดงความคิดเห็นในโพสต์ ${newComment.Post?.content} ของ ${newComment.Post?.author?.name} ด้วยข้อความ ${comment}`,
-        path
-      )
+      await Notification(Inpost.authorId, postId, comment, path)
     }
 
     revalidatePath(path)

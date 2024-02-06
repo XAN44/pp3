@@ -26,6 +26,7 @@ import {
   NavbarItem,
 } from '@nextui-org/react'
 import NotificationCard from './notification/notificationCard'
+import SearchBar from './SearchBar'
 
 interface User {
   userId: string
@@ -45,27 +46,10 @@ const Navbars = async ({ userId }: User) => {
           </Link>
           <NavbarContent className="hidden gap-4 sm:flex" justify="center">
             <NavbarBrand>
-              {notification && notification.length > 0 ? (
-                notification.map((noi) => (
-                  <NotificationCard
-                    key={noi.id}
-                    body={noi.body}
-                    id={noi.post?.id || ''}
-                    currentId={noi.user?.id || ''}
-                    userId={user?.id || ''}
-                    current={user?.id || ''}
-                  />
-                ))
-              ) : (
-                <NotificationCard
-                  key="notification"
-                  body={''}
-                  id={''}
-                  currentId={''}
-                  userId={''}
-                  current={''}
-                />
-              )}
+              <NotificationCard />
+            </NavbarBrand>
+            <NavbarBrand>
+              <SearchBar />
             </NavbarBrand>
 
             <DropdownMenu>
@@ -74,9 +58,6 @@ const Navbars = async ({ userId }: User) => {
               </DropdownMenuTrigger>
               <DropdownMenuContent>
                 <DropdownMenuSeparator />
-
-                {/* if dont login */}
-
                 {user?.id ? (
                   <>
                     {account?.map((acc) => (
@@ -121,6 +102,11 @@ const Navbars = async ({ userId }: User) => {
                               (ตั้งค่า)
                             </DropdownMenuShortcut>
                           </DropdownMenuItem>
+
+                          <DropdownMenuItem>
+                            <NotificationCard />
+                          </DropdownMenuItem>
+
                           <DropdownMenuSeparator />
                           <UserAccountnav />
                         </DropdownMenuGroup>

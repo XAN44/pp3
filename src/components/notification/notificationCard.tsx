@@ -1,69 +1,54 @@
-'use client'
-
-import {
-  Button,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  useDisclosure,
-} from '@nextui-org/react'
-import Link from 'next/link'
+import { GetNotification } from '@/lib/actions/user.notification'
+import { fetchUserProfileByID } from '@/lib/actions/user.post'
+import { getCurrentUser } from '@/lib/session'
 import React from 'react'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog'
+import { Link } from '@nextui-org/react'
 
-interface notification {
-  id: string
-  body: string
-  userId: string
-  currentId: string
-  current: string
-}
+export default async function NotificationCard() {
+  const user = await getCurrentUser()
+  if (!user?.id) return <></>
 
-export default function NotificationCard({
-  id,
-  body,
-  userId,
-  currentId,
-  current,
-}: notification) {
-  const { isOpen, onOpen, onClose } = useDisclosure()
-  const [backdrop, setBackdrop] = React.useState('opaque')
+  const account = await fetchUserProfileByID(user.id)
+  const notifications = await GetNotification(user?.id || '')
 
   return (
     <>
-      <div className="flex flex-wrap gap-3">
-        <Button className="capitalize" onPress={onOpen}>
-          Notification
-        </Button>
-      </div>
-      <Modal backdrop="blur" isOpen={isOpen} onClose={onClose}>
-        <ModalContent>
-          {(onClose) => (
-            <div>
-              <ModalHeader className="flex flex-col gap-1">
-                การแจ้งเตือนที่คุณได้รับ
-              </ModalHeader>
-              <ModalBody>
-                {body ? (
-                  <>
-                    <Link href={`/post/${id}`}>
-                      <div className="">
-                        <p>{body}</p>
+      <Dialog>
+        <DialogTrigger>Notification</DialogTrigger>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle> การแจ้งเตือน </DialogTitle>
+            <DialogDescription>
+              <div>
+                {notifications.length > 0 ? (
+                  account?.map((acc) =>
+                    acc.notifications.map((noi) => (
+                      <div key={noi.id} className="">
+                        <Link href={`/post/${noi.post?.id}`}>
+                          <p>
+                            ผู้ใช้ {noi.current} ได้แสดงความคิดเห็นในโพสต์
+                            {noi.post?.content} ของคุณด้วยข้อความ {noi.body}
+                          </p>
+                        </Link>
                       </div>
-                    </Link>
-                  </>
+                    ))
+                  )
                 ) : (
-                  <>
-                    <p>Dont have noti</p>
-                  </>
+                  <p>Dont have notification</p>
                 )}
-              </ModalBody>
-              <ModalFooter>อย่าลืมตรวจสอบการแจ้งเตือนของคุณละ</ModalFooter>
-            </div>
-          )}
-        </ModalContent>
-      </Modal>
+              </div>
+            </DialogDescription>
+          </DialogHeader>
+        </DialogContent>
+      </Dialog>
     </>
   )
 }
