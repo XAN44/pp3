@@ -17,6 +17,8 @@ module.exports = {
     './src/**/*.{js,jsx,ts,tsx}',
     './src/**/*.{html,js}',
     './node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}',
+    './node_modules/@nextui-org/theme/dist/components/(button|snippet|code|input).js',
+    './node_modules/@nextui-org/theme/dist/components/button.js',
   ],
 
   theme: {
@@ -103,7 +105,9 @@ module.exports = {
   },
   plugins: [require('tailwindcss-animate')],
   plugins: [nextui()],
-  plugins: [daisyui],
+  darkMode: 'class',
+
+  plugins: [require('daisyui')],
 
   daisyui: {
     themes: 'false',

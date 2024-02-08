@@ -1,74 +1,72 @@
 'use client'
 
-import {
-  Button,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  useDisclosure,
-} from '@nextui-org/react'
+import { Button, Input } from '@nextui-org/react'
 import Link from 'next/link'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog'
 
-interface notification {
-  id: string
-  userId: string
-  currentId: string
-  current: string
-  notiCom: string
-  inPost: string
-}
+export default function SearchBar() {
+  const [query, setQuery] = React.useState('')
+  const [searchResult, setSearchResult] = React.useState<any[]>([])
 
-export default function NotificationCard({
-  id,
-  userId,
-  currentId,
-  current,
-  notiCom,
-  inPost,
-}: notification) {
-  const { isOpen, onOpen, onClose } = useDisclosure()
-  const [backdrop, setBackdrop] = React.useState('opaque')
+  useEffect(() => {
+    const fetchSearchResult = async () => {
+      if (query.trim() !== '') {
+        const response = await fetch('/api/search?q=' + query)
+        const json = await response.json()
+        setSearchResult(json)
+      } else {
+        setSearchResult([])
+      }
+    }
+    fetchSearchResult()
+  }, [query])
+
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    setQuery(event.currentTarget.q.value)
+  }
 
   return (
     <>
-      <div className="flex flex-wrap gap-3">
-        <Button className="capitalize" onPress={onOpen}>
-          Notification
-        </Button>
-      </div>
-      <Modal backdrop="blur" isOpen={isOpen} onClose={onClose}>
-        <ModalContent>
-          {(onClose) => (
-            <div>
-              <ModalHeader className="flex flex-col gap-1">
-                การแจ้งเตือนที่คุณได้รับ
-              </ModalHeader>
-              <ModalBody>
-                {body ? (
-                  <>
-                    <Link href={`/post/${id}`}>
-                      <div className="">
-                        <p>
-                          ผู้ใช้ {current}ได้แสดงความคิดเห็นในโพสต์ {inPost}
-                          ของคุณด้วยข้อความ {notiCom}
-                        </p>
-                      </div>
-                    </Link>
-                  </>
-                ) : (
-                  <>
-                    <p>Dont have noti</p>
-                  </>
-                )}
-              </ModalBody>
-              <ModalFooter>อย่าลืมตรวจสอบการแจ้งเตือนของคุณละ</ModalFooter>
-            </div>
-          )}
-        </ModalContent>
-      </Modal>
+      <Dialog>
+        <DialogTrigger>Search</DialogTrigger>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle> Example Search </DialogTitle>
+            <DialogDescription>
+              <div>
+                <form onSubmit={handleSubmit} className="py-4">
+                  <Input
+                    variant="underlined"
+                    size="md"
+                    color="secondary"
+                    type="text"
+                    name="q"
+                    placeholder="ค้นหา"
+                    onChange={(event) => setQuery(event.target.value)}
+                  />
+                  <Button type="submit">Search</Button>
+                  {searchResult.map((article) => (
+                    <div className="" key={article}>
+                      <Link href={`/article/${article.id}`}>
+                        <div className="">{article.title}</div>
+                      </Link>
+                    </div>
+                  ))}
+                </form>
+              </div>
+            </DialogDescription>
+          </DialogHeader>
+        </DialogContent>
+      </Dialog>
     </>
   )
 }

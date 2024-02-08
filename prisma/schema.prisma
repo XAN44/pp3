@@ -5,7 +5,7 @@ generator client {
 
 datasource db {
     provider = "postgresql"
-    url      = env("SUPABASEE")
+    url      = env("SUPABASE")
 }
 
 model Account {
@@ -61,12 +61,13 @@ model User {
     comments      Comment[]
     notifications Notification[]
     Reply         Reply[]
-    followers     Follows[]      @relation("following")
-    following     Follows[]      @relation("follower")
+    followers     Follows[]       @relation("following")
+    following     Follows[]       @relation("follower")
     Article       Article[]
     Like          Like[]
     Visit         Visit[]
     Event         Event[]
+    SearchHistory SearchHistory[]
 }
 
 model Follows {
@@ -106,6 +107,16 @@ model Visit {
     eventId   String?
 }
 
+model SearchHistory {
+    id        String   @id @default(cuid())
+    getSearch String
+    timestamp DateTime @default(now())
+    userId    String?
+    user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+    article   Article? @relation(fields: [articleId], references: [id])
+    articleId String?
+}
+
 model Like {
     id        String   @id @default(cuid())
     postId    String
@@ -120,17 +131,18 @@ model Like {
 }
 
 model Article {
-    id             String         @id @default(cuid())
+    id             String          @id @default(cuid())
     title          String?
     articleContent String?
     ArticleImage   String?
-    author         User?          @relation(fields: [authorId], references: [id])
+    author         User?           @relation(fields: [authorId], references: [id])
     authorId       String?
-    createAt       DateTime       @default(now())
+    createAt       DateTime        @default(now())
     comment        Comment[]
     tag            ArticleTag[]
     Visit          Visit[]
     Notification   Notification[]
+    SearchHistory  SearchHistory[]
 }
 
 model Event {
