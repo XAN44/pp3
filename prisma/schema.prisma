@@ -115,6 +115,8 @@ model SearchHistory {
     user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
     article   Article? @relation(fields: [articleId], references: [id])
     articleId String?
+    event     Event?   @relation(fields: [eventId], references: [id])
+    eventId   String?
 }
 
 model Like {
@@ -146,17 +148,18 @@ model Article {
 }
 
 model Event {
-    id           String         @id @default(cuid())
-    title        String?
-    eventContent String?
-    eventImage   String?
-    author       User?          @relation(fields: [authorId], references: [id])
-    authorId     String?
-    createAt     DateTime       @default(now())
-    comment      Comment[]
-    tag          ArticleTag[]
-    Visit        Visit[]
-    Notification Notification[]
+    id            String          @id @default(cuid())
+    title         String?
+    eventContent  String?
+    eventImage    String?
+    author        User?           @relation(fields: [authorId], references: [id])
+    authorId      String?
+    createAt      DateTime        @default(now())
+    comment       Comment[]
+    tag           ArticleTag[]
+    Visit         Visit[]
+    Notification  Notification[]
+    SearchHistory SearchHistory[]
 }
 
 model ArticleTag {

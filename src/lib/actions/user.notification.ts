@@ -49,10 +49,6 @@ export async function Notification(
 export async function GetNotification(accountId: string) {
   try {
     const user = await getCurrentUser()
-    console.log(
-      'Fetching notifications for accountId:',
-      user?.id === accountId ? 'Mine' : accountId
-    )
 
     const getNoti = await db.notification.findMany({
       where: {
@@ -78,7 +74,6 @@ export async function GetNotification(accountId: string) {
         },
       },
     })
-    console.log('Fetched notifications:', getNoti)
     return getNoti
   } catch (error: any) {
     console.error(`Error fetching notifications: ${error.message}`)

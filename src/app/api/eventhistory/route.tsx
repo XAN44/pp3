@@ -6,16 +6,13 @@ export async function GET(request: Request) {
   try {
     const user = await getCurrentUser()
     if (user?.id) {
-      const article = await db.searchHistory.findMany({
-        where: {
-          userId: user.id,
-        },
+      const event = await db.searchHistory.findMany({
         select: {
           id: true,
-          article: {
+          event: {
             select: {
               id: true,
-              ArticleImage: true,
+              eventImage: true,
               title: true,
               author: {
                 select: {
@@ -27,7 +24,7 @@ export async function GET(request: Request) {
           },
         },
       })
-      return NextResponse.json(article)
+      return NextResponse.json(event)
     }
   } catch (error) {
     console.error(error)
@@ -47,7 +44,7 @@ export async function POST(request: Request) {
       data: {
         userId: user?.id,
         getSearch: id,
-        articleId: id,
+        eventId: id,
       },
     })
     console.log(history)

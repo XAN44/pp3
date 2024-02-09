@@ -18,7 +18,8 @@ import {
   Avatar,
 } from '@nextui-org/react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import useSWR from 'swr'
+import useSWR, { mutate } from 'swr'
+import { getCurrentUser } from '@/lib/session'
 
 async function fetcher(url: string) {
   const response = await fetch(url)
@@ -30,21 +31,58 @@ async function fetcher(url: string) {
 }
 
 export default function SearchBar() {
-  const [query, setQuery] = React.useState('')
+  const [queryArticle, setQueryArticle] = React.useState('')
+  const [queryEvent, setQueryEvent] = React.useState('')
+  const [queryProfile, setQueryProfile] = React.useState('')
+
   const [searchResult, setSearchResult] = React.useState<any[]>([])
+  const [searchEvent, setSearchEvent] = React.useState<any[]>([])
+  const [searchProfile, setSearchProfile] = React.useState<any[]>([])
 
-  const {
-    data: search,
-    isLoading,
-    error,
-  } = useSWR<any[]>('/api/search-toptier', fetcher)
+  // TODO: 3 อันดับ
+  // * blog - 3 อันดับ
+  const { data: search } = useSWR<any[]>('/api/search-toptier', fetcher)
 
+  const { data: EventSearch } = useSWR<any[]>(
+    '/api/eventsearchtoptier',
+    fetcher
+  )
+
+  const { data: ProfileSearch } = useSWR<any[]>(
+    '/api/searchprofiletoptier',
+    fetcher
+  )
+
+  // TODO: ประวัติ
   const { data: searchHistory } = useSWR<any[]>('/api/searchhistory', fetcher)
+
+  const { data: eventHistory } = useSWR<any[]>('/api/eventhistory', fetcher)
+  const { data: profileHistory } = useSWR<any[]>(
+    '/api/searchprofilehistory',
+    fetcher
+  )
+
+  useEffect(() => {
+    const fetchSearchEvent = async () => {
+      if (queryEvent.trim() !== '') {
+        const response = await fetch('/api/eventsearch?q=' + queryEvent, {
+          cache: 'force-cache',
+        })
+        const json = await response.json()
+        setSearchEvent(json)
+      } else {
+        setSearchEvent([])
+      }
+    }
+    fetchSearchEvent()
+  }, [queryEvent])
 
   useEffect(() => {
     const fetchSearchResult = async () => {
-      if (query.trim() !== '') {
-        const response = await fetch('/api/search?q=' + query)
+      if (queryArticle.trim() !== '') {
+        const response = await fetch('/api/search?q=' + queryArticle, {
+          cache: 'force-cache',
+        })
         const json = await response.json()
         setSearchResult(json)
       } else {
@@ -52,11 +90,26 @@ export default function SearchBar() {
       }
     }
     fetchSearchResult()
-  }, [query])
+  }, [queryArticle])
+
+  useEffect(() => {
+    const fetchSearchProfile = async () => {
+      if (queryProfile.trim() !== '') {
+        const response = await fetch('/api/searchprofile?q=' + queryProfile, {
+          cache: 'force-cache',
+        })
+        const json = await response.json()
+        setSearchProfile(json)
+      } else {
+        setSearchProfile([])
+      }
+    }
+    fetchSearchProfile()
+  }, [queryProfile])
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    setQuery(event.currentTarget.q.value)
+    setQueryArticle(event.currentTarget.q.value)
   }
 
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
@@ -71,13 +124,23 @@ export default function SearchBar() {
     })
   }
 
-  const history = async (articleId: string) => {
-    await fetch('/api/searchhistory', {
+  const visitEvent = async (eventId: string) => {
+    await fetch('/api/eventsearch', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ id: articleId }),
+      body: JSON.stringify({ id: eventId }),
+    })
+  }
+
+  const visitProfile = async (profileId: string) => {
+    await fetch('/api/searchprofile', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ id: profileId }),
     })
   }
 
@@ -91,127 +154,317 @@ export default function SearchBar() {
         onOpenChange={onOpenChange}
         placement="top"
         size="5xl"
-        className=" bg-transparent "
+        className="  bg-transparent  "
       >
         <ModalContent>
           {(onClose) => (
             <>
-              <ModalHeader className="flex gap-1">Modal Title</ModalHeader>
-              <ModalBody className="flex flex-row place-items-center items-center justify-center">
-                <div className="  relative top-0 h-full w-full overflow-hidden rounded-md shadow-lg ring-1 ring-black">
-                  <h1>การค้นหายอดนิยม พิเศษ</h1>
-
-                  {search?.map((Article) => (
-                    <>
-                      <div className="relative mt-6 grid place-items-center items-center justify-center text-center">
-                        <div className="w-80 ring-1">
-                          <div className="flex flex-row overflow-hidden text-start">
-                            <Image
-                              isBlurred
-                              src={Article.ArticleImage}
-                              alt={Article.ArticleImage}
-                              radius="md"
-                              width={100}
-                              height={100}
-                              className=" h-43 w-full object-scale-down"
-                            />
-                            <div className="ml-3 grid">
-                              <h1>{Article.title}</h1>
-                              <h1>ผู้เขียน {Article.author.name}</h1>
-                            </div>
-                          </div>
-                        </div>
+              <ModalHeader className="">Modal Title</ModalHeader>
+              <ModalBody>
+                <div className=" flex items-start justify-center space-x-20">
+                  <div className="w-full ">
+                    <Tabs
+                      defaultValue="article"
+                      className=" "
+                      orientation="horizontal"
+                    >
+                      <div className="items-center justify-center text-center">
+                        <TabsList>
+                          <TabsTrigger value="user">ค้นหาผู้คน</TabsTrigger>
+                          <TabsTrigger value="article">ค้นหาบล็อก</TabsTrigger>
+                          <TabsTrigger value="event">ค้นหากิจกรรม</TabsTrigger>
+                        </TabsList>
                       </div>
-                    </>
-                  ))}
-                </div>
-                <Tabs
-                  defaultValue="article"
-                  className="top-3 place-items-center items-center justify-center text-center "
-                  orientation="vertical"
-                >
-                  <TabsList>
-                    <TabsTrigger value="user">ค้นหาผู้คน</TabsTrigger>
-                    <TabsTrigger value="article">ค้นหาบล็อก</TabsTrigger>
-                    <TabsTrigger value="event">ค้นหากิจกรรม</TabsTrigger>
-                  </TabsList>
-                  <TabsContent value="article">
-                    <form onSubmit={handleSubmit} className="py-4">
-                      <div className="flex">
-                        <Input
-                          className="w-full"
-                          variant="faded"
-                          size="lg"
-                          color="primary"
-                          type="text"
-                          name="q"
-                          placeholder="ค้นหา"
-                          onChange={(event) => setQuery(event.target.value)}
-                        />
-
-                        {/* <button type="submit" className="btn-black">
-                          Search
-                        </button> */}
-                      </div>
-                      {searchResult.map((article) => (
-                        <div className="" key={article}>
-                          <Link
-                            href={`/article/${article.id}`}
-                            onClick={() => {
-                              visitHandler(article.id)
-                            }}
-                          >
-                            <div className="relative mt-6 grid place-items-center items-center justify-center text-center">
-                              <div className="w-80 ring-1">
-                                <div className="flex flex-row overflow-hidden text-start">
+                      <TabsContent value="user" className=" ">
+                        <div className="flex justify-center space-x-28">
+                          <div className="mt-5 w-full ring-1">
+                            <h1>การค้นหายอดนิยม</h1>
+                            {/* 
+                            !
+                            */}
+                            {ProfileSearch?.map((Profile) => (
+                              <>
+                                <div className=" mt-6 flex items-start justify-start">
                                   <Image
                                     isBlurred
-                                    src={article.ArticleImage}
-                                    alt={article.ArticleImage}
+                                    src={Profile.image}
+                                    alt={Profile.image}
                                     radius="md"
                                     width={100}
                                     height={100}
                                     className=" h-43 w-full object-scale-down"
                                   />
-                                  <div className="ml-3 grid">
-                                    <h1>{article.title}</h1>
-                                    <h1>ผู้เขียน {article.author.name}</h1>
+                                  <div className="ml-3 ">
+                                    <h1>{Profile.name}</h1>
                                   </div>
                                 </div>
-                              </div>
-                            </div>
-                          </Link>
-                        </div>
-                      ))}
-                    </form>
-                  </TabsContent>
-                </Tabs>
-                <div className="  relative top-0 h-full w-full overflow-hidden rounded-md shadow-lg ring-1 ring-black">
-                  <h1>ประวัติการค้นหา</h1>
+                              </>
+                            ))}
+                          </div>
+                          <div className="w-full">
+                            <form onSubmit={handleSubmit} className="">
+                              <Input
+                                variant="faded"
+                                size="lg"
+                                color="primary"
+                                type="text"
+                                name="q"
+                                placeholder="ค้นหา"
+                                onChange={(event) =>
+                                  setQueryProfile(event.target.value)
+                                }
+                              />
+                              {searchProfile.map((Profile) => (
+                                <div className="" key={Profile}>
+                                  <Link
+                                    href={`/profile/${Profile.id}`}
+                                    onClick={() => {
+                                      visitProfile(Profile.id)
+                                    }}
+                                  >
+                                    <div className="mt-6 flex ">
+                                      <Image
+                                        isBlurred
+                                        src={Profile.image}
+                                        alt={Profile.image}
+                                        radius="md"
+                                        width={100}
+                                        height={100}
+                                        className=" h-43 w-full object-scale-down"
+                                      />
+                                      <div className="ml-5 items-start justify-center ">
+                                        <h1>{Profile.name}</h1>
+                                      </div>
+                                    </div>
+                                  </Link>
+                                </div>
+                              ))}
+                            </form>
+                          </div>
 
-                  {searchHistory?.map((history) => (
-                    <>
-                      <div className="relative mt-6 grid place-items-center items-center justify-center text-center">
-                        <div className="w-80 ring-1">
-                          <div className="flex flex-row overflow-hidden text-start">
-                            <Image
-                              isBlurred
-                              src={history.article.ArticleImage}
-                              alt={history.article.ArticleImage}
-                              radius="md"
-                              width={100}
-                              height={100}
-                              className=" h-43 w-full object-scale-down"
-                            />
-                            <div className="ml-3 grid">
-                              <h1>{history.article.title}</h1>
-                              <h1>ผู้เขียน {history.article.author.name}</h1>
-                            </div>
+                          <div className="mt-5 w-full ring-1">
+                            <h1>ประวัติการค้นหา</h1>
+
+                            {profileHistory?.map((history) => (
+                              <>
+                                {history.user && (
+                                  <div className="mt-6 flex items-start justify-start">
+                                    <Image
+                                      isBlurred
+                                      src={history.user.image}
+                                      alt={history.user.image}
+                                      radius="md"
+                                      width={100}
+                                      height={100}
+                                      className="h-43 w-full object-scale-down"
+                                    />
+                                    <div className="ml-3">
+                                      <h1>{history.user.name}</h1>
+                                    </div>
+                                  </div>
+                                )}
+                              </>
+                            ))}
                           </div>
                         </div>
-                      </div>
-                    </>
-                  ))}
+                      </TabsContent>
+                      <TabsContent value="article" className=" ">
+                        <div className="flex justify-center space-x-28">
+                          <div className="mt-5 w-full ring-1">
+                            <h1>การค้นหายอดนิยม</h1>
+                            {/* 
+                            !
+                            */}
+                            {search?.map((Article) => (
+                              <>
+                                <div className=" mt-6 flex items-start justify-start">
+                                  <Image
+                                    isBlurred
+                                    src={Article.ArticleImage}
+                                    alt={Article.ArticleImage}
+                                    radius="md"
+                                    width={100}
+                                    height={100}
+                                    className=" h-43 w-full object-scale-down"
+                                  />
+                                  <div className="ml-3 ">
+                                    <h1>{Article.title}</h1>
+                                    <h1>ผู้เขียน {Article.author.name}</h1>
+                                  </div>
+                                </div>
+                              </>
+                            ))}
+                          </div>
+                          <div className="w-full">
+                            <form onSubmit={handleSubmit} className="">
+                              <Input
+                                variant="faded"
+                                size="lg"
+                                color="primary"
+                                type="text"
+                                name="q"
+                                placeholder="ค้นหา"
+                                onChange={(event) =>
+                                  setQueryArticle(event.target.value)
+                                }
+                              />
+                              {searchResult.map((article) => (
+                                <div className="" key={article}>
+                                  <Link
+                                    href={`/article/${article.id}`}
+                                    onClick={() => {
+                                      visitHandler(article.id)
+                                    }}
+                                  >
+                                    <div className="mt-6 flex ">
+                                      <Image
+                                        isBlurred
+                                        src={article.ArticleImage}
+                                        alt={article.ArticleImage}
+                                        radius="md"
+                                        width={100}
+                                        height={100}
+                                        className=" h-43 w-full object-scale-down"
+                                      />
+                                      <div className="ml-5 items-start justify-center ">
+                                        <h1>{article.title}</h1>
+                                        <h1>ผู้เขียน {article.author.name}</h1>
+                                      </div>
+                                    </div>
+                                  </Link>
+                                </div>
+                              ))}
+                            </form>
+                          </div>
+
+                          <div className="mt-5 w-full ring-1">
+                            <h1>ประวัติการค้นหา</h1>
+
+                            {searchHistory?.map((history) => (
+                              <>
+                                {history.article && (
+                                  <div className="mt-6 flex items-start justify-start">
+                                    <Image
+                                      isBlurred
+                                      src={history.article.ArticleImage}
+                                      alt={history.article.ArticleImage}
+                                      radius="md"
+                                      width={100}
+                                      height={100}
+                                      className="h-43 w-full object-scale-down"
+                                    />
+                                    <div className="ml-3">
+                                      <h1>{history.article.title}</h1>
+                                      <h1>
+                                        ผู้เขียน {history.article.author.name}
+                                      </h1>
+                                    </div>
+                                  </div>
+                                )}
+                              </>
+                            ))}
+                          </div>
+                        </div>
+                      </TabsContent>
+                      <TabsContent value="event" className=" ">
+                        <div className="flex justify-center space-x-28">
+                          <div className="mt-5 w-full ring-1">
+                            <h1>การค้นหายอดนิยม</h1>
+                            {/* 
+                            !
+                            */}
+                            {EventSearch?.map((Event) => (
+                              <>
+                                <div className=" mt-6 flex items-start justify-start">
+                                  <Image
+                                    isBlurred
+                                    src={Event.eventImage}
+                                    alt={Event.eventImage}
+                                    radius="md"
+                                    width={100}
+                                    height={100}
+                                    className=" h-43 w-full object-scale-down"
+                                  />
+                                  <div className="ml-3 ">
+                                    <h1>{Event.title}</h1>
+                                    <h1>ผู้เขียน {Event.author.name}</h1>
+                                  </div>
+                                </div>
+                              </>
+                            ))}
+                          </div>
+                          <div className="w-full">
+                            <form onSubmit={handleSubmit} className="">
+                              <Input
+                                variant="faded"
+                                size="lg"
+                                color="primary"
+                                type="text"
+                                name="q"
+                                placeholder="ค้นหา"
+                                onChange={(event) =>
+                                  setQueryEvent(event.target.value)
+                                }
+                              />
+                              {searchEvent.map((event) => (
+                                <div className="" key={event}>
+                                  <Link
+                                    href={`/event/${event.id}`}
+                                    onClick={() => {
+                                      visitEvent(event.id)
+                                    }}
+                                  >
+                                    <div className="mt-6 flex ">
+                                      <Image
+                                        isBlurred
+                                        src={event.eventImage}
+                                        alt={event.eventImage}
+                                        radius="md"
+                                        width={100}
+                                        height={100}
+                                        className=" h-43 w-full object-scale-down"
+                                      />
+                                      <div className="ml-5 items-start justify-center ">
+                                        <h1>{event.title}</h1>
+                                        <h1>ผู้เขียน {event.author.name}</h1>
+                                      </div>
+                                    </div>
+                                  </Link>
+                                </div>
+                              ))}
+                            </form>
+                          </div>
+
+                          <div className="mt-5 w-full ring-1">
+                            <h1>ประวัติการค้นหา</h1>
+                            {eventHistory?.map((event) => (
+                              <>
+                                {event.event && (
+                                  <div className="mt-6 flex items-start justify-start">
+                                    <Image
+                                      isBlurred
+                                      src={event.event.eventImage}
+                                      alt={event.event.eventImage}
+                                      radius="md"
+                                      width={100}
+                                      height={100}
+                                      className="h-43 w-full object-scale-down"
+                                    />
+                                    <div className="ml-3">
+                                      <h1>{event.event.title}</h1>
+                                      <h1>
+                                        ผู้เขียน {event.event.author.name}
+                                      </h1>
+                                    </div>
+                                  </div>
+                                )}
+                              </>
+                            ))}
+                          </div>
+                        </div>
+                      </TabsContent>
+                    </Tabs>
+                  </div>
                 </div>
               </ModalBody>
             </>

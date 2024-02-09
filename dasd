@@ -1,20 +1,46 @@
 'use client'
 
-import { Button, Input } from '@nextui-org/react'
 import Link from 'next/link'
 import React, { useEffect, useState } from 'react'
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog'
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Button,
+  useDisclosure,
+  Input,
+  Image,
+  Card,
+  CardBody,
+  CardFooter,
+  Avatar,
+} from '@nextui-org/react'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import useSWR from 'swr'
+import { Flex } from '@radix-ui/themes'
+
+async function fetcher(url: string) {
+  const response = await fetch(url)
+  if (!response.ok) {
+    throw new Error('cannot fetch top article')
+  }
+  console.log(response)
+  return response.json()
+}
 
 export default function SearchBar() {
   const [query, setQuery] = React.useState('')
   const [searchResult, setSearchResult] = React.useState<any[]>([])
+
+  const {
+    data: search,
+    isLoading,
+    error,
+  } = useSWR<any[]>('/api/search-toptier', fetcher)
+
+  const { data: searchHistory } = useSWR<any[]>('/api/searchhistory', fetcher)
 
   useEffect(() => {
     const fetchSearchResult = async () => {
@@ -34,39 +60,152 @@ export default function SearchBar() {
     setQuery(event.currentTarget.q.value)
   }
 
+  const { isOpen, onOpen, onOpenChange } = useDisclosure()
+
+  const visitHandler = async (articleId: string) => {
+    await fetch('/api/search', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ id: articleId }),
+    })
+  }
+
+  const history = async (articleId: string) => {
+    await fetch('/api/searchhistory', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ id: articleId }),
+    })
+  }
+
   return (
     <>
-      <Dialog>
-        <DialogTrigger>Search</DialogTrigger>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle> Example Search </DialogTitle>
-            <DialogDescription>
-              <div>
-                <form onSubmit={handleSubmit} className="py-4">
-                  <Input
-                    variant="underlined"
-                    size="md"
-                    color="secondary"
-                    type="text"
-                    name="q"
-                    placeholder="ค้นหา"
-                    onChange={(event) => setQuery(event.target.value)}
-                  />
-                  <Button type="submit">Search</Button>
-                  {searchResult.map((article) => (
-                    <div className="" key={article}>
-                      <Link href={`/article/${article.id}`}>
-                        <div className="">{article.title}</div>
-                      </Link>
-                    </div>
-                  ))}
-                </form>
-              </div>
-            </DialogDescription>
-          </DialogHeader>
-        </DialogContent>
-      </Dialog>
+      <Button onPress={onOpen}>Open Modal</Button>
+      <Modal
+        scrollBehavior="inside"
+        backdrop="blur"
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        placement="top"
+        size="5xl"
+        className="  bg-transparent  "
+      >
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className="">Modal Title</ModalHeader>
+              <ModalBody>
+                <div className=" flex items-start justify-center space-x-20">
+                  <div className="mt-5 w-full ring-1">
+                    <h1>การค้นหายอดนิยม</h1>
+
+                    {search?.map((Article) => (
+                      <>
+                        <div className=" mt-6 flex items-start justify-start">
+                          <Image
+                            isBlurred
+                            src={Article.ArticleImage}
+                            alt={Article.ArticleImage}
+                            radius="md"
+                            width={100}
+                            height={100}
+                            className=" h-43 w-full object-scale-down"
+                          />
+                          <div className="ml-3 ">
+                            <h1>{Article.title}</h1>
+                            <h1>ผู้เขียน {Article.author.name}</h1>
+                          </div>
+                        </div>
+                      </>
+                    ))}
+                  </div>
+                  <div className="w-full ring-1">
+                    <Tabs
+                      defaultValue="article"
+                      className=" "
+                      orientation="horizontal"
+                    >
+                      <div className="items-center justify-center text-center">
+                        <TabsList>
+                          <TabsTrigger value="user">ค้นหาผู้คน</TabsTrigger>
+                          <TabsTrigger value="article">ค้นหาบล็อก</TabsTrigger>
+                          <TabsTrigger value="event">ค้นหากิจกรรม</TabsTrigger>
+                        </TabsList>
+                      </div>
+                      <TabsContent value="article">
+                        <form onSubmit={handleSubmit} className="">
+                          <Input
+                            variant="faded"
+                            size="lg"
+                            color="primary"
+                            type="text"
+                            name="q"
+                            placeholder="ค้นหา"
+                            onChange={(event) => setQuery(event.target.value)}
+                          />
+                          {searchResult.map((article) => (
+                            <div className="" key={article}>
+                              <Link
+                                href={`/article/${article.id}`}
+                                onClick={() => {
+                                  visitHandler(article.id)
+                                }}
+                              >
+                                <div className="mt-6 flex ">
+                                  <Image
+                                    isBlurred
+                                    src={article.ArticleImage}
+                                    alt={article.ArticleImage}
+                                    radius="md"
+                                    width={100}
+                                    height={100}
+                                    className=" h-43 w-full object-scale-down"
+                                  />
+                                  <div className="ml-5 items-start justify-center ">
+                                    <h1>{article.title}</h1>
+                                    <h1>ผู้เขียน {article.author.name}</h1>
+                                  </div>
+                                </div>
+                              </Link>
+                            </div>
+                          ))}
+                        </form>
+                      </TabsContent>
+                    </Tabs>
+                  </div>
+                  <div className="mt-5 w-full ring-1">
+                    <h1>ประวัติการค้นหา</h1>
+
+                    {searchHistory?.map((history) => (
+                      <>
+                        <div className="mt-6 flex items-start justify-start">
+                          <Image
+                            isBlurred
+                            src={history.article.ArticleImage}
+                            alt={history.article.ArticleImage}
+                            radius="md"
+                            width={100}
+                            height={100}
+                            className=" h-43 w-full object-scale-down"
+                          />
+                          <div className="ml-3">
+                            <h1>{history.article.title}</h1>
+                            <h1>ผู้เขียน {history.article.author.name}</h1>
+                          </div>
+                        </div>
+                      </>
+                    ))}
+                  </div>
+                </div>
+              </ModalBody>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
     </>
   )
 }
