@@ -17,14 +17,16 @@ export async function GET(request: Request) {
             },
           },
         },
+        orderBy: {
+          timestamp: 'desc',
+        },
       })
       return NextResponse.json(event)
     }
   } catch (error) {
-    console.error(error)
-    return {
-      status: 500,
-      body: { error: 'Internal Server Error' },
-    }
+    return NextResponse.json(
+      { message: 'มีข้อผิดพลาดบางอย่าง' },
+      { status: 500 }
+    )
   }
 }

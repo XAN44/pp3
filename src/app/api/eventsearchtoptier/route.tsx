@@ -25,10 +25,6 @@ export async function GET(request: Request) {
     })
     return NextResponse.json(topArticle)
   } catch (error) {
-    console.error(error)
-    return {
-      status: 500,
-      body: { error: 'Internal Server Error' },
-    }
+  return NextResponse.json({ message: 'มีข้อผิดพลาดบางอย่าง' }, { status: 500 })
   }
 }

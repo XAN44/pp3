@@ -52,7 +52,7 @@ const PostCard = ({
       size="4"
       p="6"
       className={`flex w-full flex-col rounded-xl ${
-        isComment ? 'xs:px-7 px-0' : 'bg-dark-2 p-7'
+        isComment ? 'px-0 xs:px-7' : 'bg-dark-2 p-7'
       }`}
     >
       <Flex gap="3">

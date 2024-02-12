@@ -26,15 +26,17 @@ export async function GET(request: Request) {
             },
           },
         },
+        orderBy: {
+          timestamp: 'desc',
+        },
       })
       return NextResponse.json(article)
     }
   } catch (error) {
-    console.error(error)
-    return {
-      status: 500,
-      body: { error: 'Internal Server Error' },
-    }
+    return NextResponse.json(
+      { message: 'มีข้อผิดพลาดบางอย่าง' },
+      { status: 500 }
+    )
   }
 }
 
@@ -53,10 +55,9 @@ export async function POST(request: Request) {
     console.log(history)
     return NextResponse.json(history)
   } catch (error) {
-    console.error(error)
-    return {
-      status: 500,
-      body: { error: 'Internal Server Error' },
-    }
+    return NextResponse.json(
+      { message: 'มีข้อผิดพลาดบางอย่าง' },
+      { status: 500 }
+    )
   }
 }

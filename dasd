@@ -1,211 +1,62 @@
-'use client'
-
-import Link from 'next/link'
-import React, { useEffect, useState } from 'react'
-import {
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  Button,
-  useDisclosure,
-  Input,
-  Image,
-  Card,
-  CardBody,
-  CardFooter,
-  Avatar,
-} from '@nextui-org/react'
+import ArticleCard from '@/components/article/articleCard'
+import ArticleForm from '@/components/article/articleForm'
+import EventCard from '@/components/event/eventCard'
+import EventForm from '@/components/event/eventForm'
+import NotificationCard from '@/components/notification/notificationCard'
+import PostCard from '@/components/post/postCard'
+import { PostForm } from '@/components/post/postForm'
+import ProfileHeader from '@/components/profile/ProfileHeader'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import useSWR from 'swr'
-import { Flex } from '@radix-ui/themes'
+import {
+  CheckFollow,
+  getTotalFollowers,
+  getTotalFollowing,
+} from '@/lib/actions/user.follow'
+import { checkLike, getLike } from '@/lib/actions/user.like'
+import { fetchUserProfileByID } from '@/lib/actions/user.post'
+import {
+  TotalVisit,
+  TotalVisit1,
+  TotalVisitEvent,
+} from '@/lib/actions/user.visit'
+import { getCurrentUser } from '@/lib/session'
+import { Divider } from '@nextui-org/react'
+import { redirect } from 'next/navigation'
+import { Suspense } from 'react'
 
-async function fetcher(url: string) {
-  const response = await fetch(url)
-  if (!response.ok) {
-    throw new Error('cannot fetch top article')
-  }
-  console.log(response)
-  return response.json()
+async function getProjects() {
+  const res = await fetch(' ', { cache: 'no-store' })
+  const projects = await res.json()
+
+  return projects
 }
-
-export default function SearchBar() {
-  const [query, setQuery] = React.useState('')
-  const [searchResult, setSearchResult] = React.useState<any[]>([])
-
-  const {
-    data: search,
-    isLoading,
-    error,
-  } = useSWR<any[]>('/api/search-toptier', fetcher)
-
-  const { data: searchHistory } = useSWR<any[]>('/api/searchhistory', fetcher)
-
-  useEffect(() => {
-    const fetchSearchResult = async () => {
-      if (query.trim() !== '') {
-        const response = await fetch('/api/search?q=' + query)
-        const json = await response.json()
-        setSearchResult(json)
-      } else {
-        setSearchResult([])
-      }
-    }
-    fetchSearchResult()
-  }, [query])
-
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    setQuery(event.currentTarget.q.value)
-  }
-
-  const { isOpen, onOpen, onOpenChange } = useDisclosure()
-
-  const visitHandler = async (articleId: string) => {
-    await fetch('/api/search', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ id: articleId }),
-    })
-  }
-
-  const history = async (articleId: string) => {
-    await fetch('/api/searchhistory', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ id: articleId }),
-    })
-  }
-
+export default async function Page({ params }: { params: { id: string } }) {
   return (
-    <>
-      <Button onPress={onOpen}>Open Modal</Button>
-      <Modal
-        scrollBehavior="inside"
-        backdrop="blur"
-        isOpen={isOpen}
-        onOpenChange={onOpenChange}
-        placement="top"
-        size="5xl"
-        className="  bg-transparent  "
+    <div className=" mb-96 flex h-32 flex-col gap-0 xl:flex-row ">
+      <aside
+        className=" 
+
+              inset-x-0  left-[32px]  h-[600px] w-full place-items-start   px-3 xl:fixed xl:h-64 xl:w-64"
       >
-        <ModalContent>
-          {(onClose) => (
-            <>
-              <ModalHeader className="">Modal Title</ModalHeader>
-              <ModalBody>
-                <div className=" flex items-start justify-center space-x-20">
-                  <div className="mt-5 w-full ring-1">
-                    <h1>การค้นหายอดนิยม</h1>
-
-                    {search?.map((Article) => (
-                      <>
-                        <div className=" mt-6 flex items-start justify-start">
-                          <Image
-                            isBlurred
-                            src={Article.ArticleImage}
-                            alt={Article.ArticleImage}
-                            radius="md"
-                            width={100}
-                            height={100}
-                            className=" h-43 w-full object-scale-down"
-                          />
-                          <div className="ml-3 ">
-                            <h1>{Article.title}</h1>
-                            <h1>ผู้เขียน {Article.author.name}</h1>
-                          </div>
-                        </div>
-                      </>
-                    ))}
-                  </div>
-                  <div className="w-full ring-1">
-                    <Tabs
-                      defaultValue="article"
-                      className=" "
-                      orientation="horizontal"
-                    >
-                      <div className="items-center justify-center text-center">
-                        <TabsList>
-                          <TabsTrigger value="user">ค้นหาผู้คน</TabsTrigger>
-                          <TabsTrigger value="article">ค้นหาบล็อก</TabsTrigger>
-                          <TabsTrigger value="event">ค้นหากิจกรรม</TabsTrigger>
-                        </TabsList>
-                      </div>
-                      <TabsContent value="article">
-                        <form onSubmit={handleSubmit} className="">
-                          <Input
-                            variant="faded"
-                            size="lg"
-                            color="primary"
-                            type="text"
-                            name="q"
-                            placeholder="ค้นหา"
-                            onChange={(event) => setQuery(event.target.value)}
-                          />
-                          {searchResult.map((article) => (
-                            <div className="" key={article}>
-                              <Link
-                                href={`/article/${article.id}`}
-                                onClick={() => {
-                                  visitHandler(article.id)
-                                }}
-                              >
-                                <div className="mt-6 flex ">
-                                  <Image
-                                    isBlurred
-                                    src={article.ArticleImage}
-                                    alt={article.ArticleImage}
-                                    radius="md"
-                                    width={100}
-                                    height={100}
-                                    className=" h-43 w-full object-scale-down"
-                                  />
-                                  <div className="ml-5 items-start justify-center ">
-                                    <h1>{article.title}</h1>
-                                    <h1>ผู้เขียน {article.author.name}</h1>
-                                  </div>
-                                </div>
-                              </Link>
-                            </div>
-                          ))}
-                        </form>
-                      </TabsContent>
-                    </Tabs>
-                  </div>
-                  <div className="mt-5 w-full ring-1">
-                    <h1>ประวัติการค้นหา</h1>
-
-                    {searchHistory?.map((history) => (
-                      <>
-                        <div className="mt-6 flex items-start justify-start">
-                          <Image
-                            isBlurred
-                            src={history.article.ArticleImage}
-                            alt={history.article.ArticleImage}
-                            radius="md"
-                            width={100}
-                            height={100}
-                            className=" h-43 w-full object-scale-down"
-                          />
-                          <div className="ml-3">
-                            <h1>{history.article.title}</h1>
-                            <h1>ผู้เขียน {history.article.author.name}</h1>
-                          </div>
-                        </div>
-                      </>
-                    ))}
-                  </div>
-                </div>
-              </ModalBody>
-            </>
-          )}
-        </ModalContent>
-      </Modal>
-    </>
+        <ProfileHeader
+          accountId={''}
+          authUserId={''}
+          name={''}
+          nickname={''}
+          image={' '}
+          bio={''}
+          totalFollower={1}
+          totalFollowing={2}
+          isFollow={false}
+          contact={{
+            facebook: '',
+            ig: '',
+            twitter: '',
+            tiktok: '',
+          }}
+        />
+      </aside>
+      <Divider orientation="vertical" />
+    </div>
   )
 }

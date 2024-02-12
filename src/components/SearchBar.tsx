@@ -18,8 +18,7 @@ import {
   Avatar,
 } from '@nextui-org/react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import useSWR, { mutate } from 'swr'
-import { getCurrentUser } from '@/lib/session'
+import useSWR from 'swr'
 
 async function fetcher(url: string) {
   const response = await fetch(url)
@@ -35,84 +34,98 @@ export default function SearchBar() {
   const [queryEvent, setQueryEvent] = React.useState('')
   const [queryProfile, setQueryProfile] = React.useState('')
 
-  const [searchResult, setSearchResult] = React.useState<any[]>([])
-  const [searchEvent, setSearchEvent] = React.useState<any[]>([])
-  const [searchProfile, setSearchProfile] = React.useState<any[]>([])
-
   // TODO: 3 อันดับ
   // * blog - 3 อันดับ
-  const { data: search } = useSWR<any[]>('/api/search-toptier', fetcher)
-
-  const { data: EventSearch } = useSWR<any[]>(
-    '/api/eventsearchtoptier',
-    fetcher
+  const { data: ToptierArticle, mutate: MutaSearch } = useSWR<any[]>(
+    '/api/search-toptier',
+    fetcher,
+    {
+      revalidateOnMount: false, // *ปิดระมวลผลเริ่มต้น
+      revalidateOnFocus: false, // *ปิดระมวลผลเมื่อเปิดหน้าเว็บ
+      //TODO: ผลที่เกิดขึ้นคือ จะมีการเรียกใช้ API เมื่อมีการกดปุ่ม SEARCH เท่านั้น
+    }
   )
 
-  const { data: ProfileSearch } = useSWR<any[]>(
+  const { data: ToptierEvent, mutate: MutaEvent } = useSWR<any[]>(
+    '/api/eventsearchtoptier',
+    fetcher,
+    {
+      revalidateOnMount: false,
+      revalidateOnFocus: false,
+    }
+  )
+
+  const { data: ToptierProfile, mutate: mutaProfile } = useSWR<any[]>(
     '/api/searchprofiletoptier',
-    fetcher
+    fetcher,
+    {
+      revalidateOnMount: false,
+      revalidateOnFocus: false,
+    }
   )
 
   // TODO: ประวัติ
-  const { data: searchHistory } = useSWR<any[]>('/api/searchhistory', fetcher)
-
-  const { data: eventHistory } = useSWR<any[]>('/api/eventhistory', fetcher)
-  const { data: profileHistory } = useSWR<any[]>(
+  const { data: searchHistory, mutate: mutateSearch } = useSWR<any[]>(
+    '/api/searchhistory',
+    fetcher,
+    {
+      revalidateOnMount: false,
+      revalidateOnFocus: false,
+    }
+  )
+  const { data: eventHistory, mutate: mutateEvent } = useSWR<any[]>(
+    '/api/eventhistory',
+    fetcher,
+    {
+      revalidateOnMount: false,
+      revalidateOnFocus: false,
+    }
+  )
+  const { data: profileHistory, mutate: mutateProfile } = useSWR<any[]>(
     '/api/searchprofilehistory',
+    fetcher,
+    {
+      revalidateOnMount: false,
+      revalidateOnFocus: false,
+    }
+  )
+
+  // TODO: ค้นหา
+  const { data: searchAT } = useSWR<any[]>(
+    queryArticle.trim() !== '' ? '/api/search?q=' + queryArticle : null,
     fetcher
   )
 
-  useEffect(() => {
-    const fetchSearchEvent = async () => {
-      if (queryEvent.trim() !== '') {
-        const response = await fetch('/api/eventsearch?q=' + queryEvent, {
-          cache: 'force-cache',
-        })
-        const json = await response.json()
-        setSearchEvent(json)
-      } else {
-        setSearchEvent([])
-      }
-    }
-    fetchSearchEvent()
-  }, [queryEvent])
+  const { data: searchEvent } = useSWR<any[]>(
+    queryEvent.trim() !== '' ? '/api/eventsearch?q=' + queryEvent : null,
+    fetcher
+  )
 
-  useEffect(() => {
-    const fetchSearchResult = async () => {
-      if (queryArticle.trim() !== '') {
-        const response = await fetch('/api/search?q=' + queryArticle, {
-          cache: 'force-cache',
-        })
-        const json = await response.json()
-        setSearchResult(json)
-      } else {
-        setSearchResult([])
-      }
-    }
-    fetchSearchResult()
-  }, [queryArticle])
+  const { data: searchProfile } = useSWR<any[]>(
+    queryProfile.trim() !== '' ? '/api/searchprofile?q=' + queryProfile : null,
+    fetcher
+  )
 
-  useEffect(() => {
-    const fetchSearchProfile = async () => {
-      if (queryProfile.trim() !== '') {
-        const response = await fetch('/api/searchprofile?q=' + queryProfile, {
-          cache: 'force-cache',
-        })
-        const json = await response.json()
-        setSearchProfile(json)
-      } else {
-        setSearchProfile([])
-      }
-    }
-    fetchSearchProfile()
-  }, [queryProfile])
-
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleArticle = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     setQueryArticle(event.currentTarget.q.value)
   }
+  MutaSearch()
+  mutateSearch()
 
-  const { isOpen, onOpen, onOpenChange } = useDisclosure()
+  const handleEvent = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    setQueryEvent(event.currentTarget.e.value)
+  }
+  mutateEvent()
+  MutaEvent()
+  const handleProfile = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    setQueryEvent(event.currentTarget.p.value)
+  }
+  mutateProfile()
+  mutaProfile()
+  const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure()
 
   const visitHandler = async (articleId: string) => {
     await fetch('/api/search', {
@@ -182,9 +195,12 @@ export default function SearchBar() {
                             {/* 
                             !
                             */}
-                            {ProfileSearch?.map((Profile) => (
+                            {ToptierProfile?.map((Profile, index) => (
                               <>
-                                <div className=" mt-6 flex items-start justify-start">
+                                <div
+                                  key={index}
+                                  className=" mt-6 flex items-start justify-start"
+                                >
                                   <Image
                                     isBlurred
                                     src={Profile.image}
@@ -202,24 +218,26 @@ export default function SearchBar() {
                             ))}
                           </div>
                           <div className="w-full">
-                            <form onSubmit={handleSubmit} className="">
+                            <form onSubmit={handleProfile} className="">
                               <Input
                                 variant="faded"
                                 size="lg"
                                 color="primary"
                                 type="text"
-                                name="q"
+                                name="p"
                                 placeholder="ค้นหา"
                                 onChange={(event) =>
                                   setQueryProfile(event.target.value)
                                 }
                               />
-                              {searchProfile.map((Profile) => (
-                                <div className="" key={Profile}>
+
+                              {searchProfile?.map((Profile, index) => (
+                                <div className="" key={index}>
                                   <Link
                                     href={`/profile/${Profile.id}`}
                                     onClick={() => {
                                       visitProfile(Profile.id)
+                                      onClose()
                                     }}
                                   >
                                     <div className="mt-6 flex ">
@@ -245,10 +263,13 @@ export default function SearchBar() {
                           <div className="mt-5 w-full ring-1">
                             <h1>ประวัติการค้นหา</h1>
 
-                            {profileHistory?.map((history) => (
+                            {profileHistory?.map((history, index) => (
                               <>
                                 {history.user && (
-                                  <div className="mt-6 flex items-start justify-start">
+                                  <div
+                                    key={index}
+                                    className="mt-6 flex items-start justify-start"
+                                  >
                                     <Image
                                       isBlurred
                                       src={history.user.image}
@@ -275,9 +296,12 @@ export default function SearchBar() {
                             {/* 
                             !
                             */}
-                            {search?.map((Article) => (
+                            {ToptierArticle?.map((Article, index) => (
                               <>
-                                <div className=" mt-6 flex items-start justify-start">
+                                <div
+                                  key={index}
+                                  className=" mt-6 flex items-start justify-start"
+                                >
                                   <Image
                                     isBlurred
                                     src={Article.ArticleImage}
@@ -296,7 +320,7 @@ export default function SearchBar() {
                             ))}
                           </div>
                           <div className="w-full">
-                            <form onSubmit={handleSubmit} className="">
+                            <form onSubmit={handleArticle} className="">
                               <Input
                                 variant="faded"
                                 size="lg"
@@ -308,27 +332,28 @@ export default function SearchBar() {
                                   setQueryArticle(event.target.value)
                                 }
                               />
-                              {searchResult.map((article) => (
-                                <div className="" key={article}>
+                              {searchAT?.map((article, index) => (
+                                <div className="" key={index}>
                                   <Link
                                     href={`/article/${article.id}`}
                                     onClick={() => {
                                       visitHandler(article.id)
+                                      onClose()
                                     }}
                                   >
                                     <div className="mt-6 flex ">
                                       <Image
                                         isBlurred
-                                        src={article.ArticleImage}
-                                        alt={article.ArticleImage}
+                                        src={article?.ArticleImage}
+                                        alt={article?.ArticleImage}
                                         radius="md"
                                         width={100}
                                         height={100}
                                         className=" h-43 w-full object-scale-down"
                                       />
                                       <div className="ml-5 items-start justify-center ">
-                                        <h1>{article.title}</h1>
-                                        <h1>ผู้เขียน {article.author.name}</h1>
+                                        <h1>{article?.title}</h1>
+                                        <h1>ผู้เขียน {article?.author.name}</h1>
                                       </div>
                                     </div>
                                   </Link>
@@ -340,10 +365,13 @@ export default function SearchBar() {
                           <div className="mt-5 w-full ring-1">
                             <h1>ประวัติการค้นหา</h1>
 
-                            {searchHistory?.map((history) => (
+                            {searchHistory?.map((history, index) => (
                               <>
                                 {history.article && (
-                                  <div className="mt-6 flex items-start justify-start">
+                                  <div
+                                    key={index}
+                                    className="mt-6 flex items-start justify-start"
+                                  >
                                     <Image
                                       isBlurred
                                       src={history.article.ArticleImage}
@@ -373,9 +401,12 @@ export default function SearchBar() {
                             {/* 
                             !
                             */}
-                            {EventSearch?.map((Event) => (
+                            {ToptierEvent?.map((Event, index) => (
                               <>
-                                <div className=" mt-6 flex items-start justify-start">
+                                <div
+                                  key={index}
+                                  className=" mt-6 flex items-start justify-start"
+                                >
                                   <Image
                                     isBlurred
                                     src={Event.eventImage}
@@ -394,24 +425,25 @@ export default function SearchBar() {
                             ))}
                           </div>
                           <div className="w-full">
-                            <form onSubmit={handleSubmit} className="">
+                            <form onSubmit={handleEvent} className="">
                               <Input
                                 variant="faded"
                                 size="lg"
                                 color="primary"
                                 type="text"
-                                name="q"
+                                name="e"
                                 placeholder="ค้นหา"
                                 onChange={(event) =>
                                   setQueryEvent(event.target.value)
                                 }
                               />
-                              {searchEvent.map((event) => (
-                                <div className="" key={event}>
+                              {searchEvent?.map((event, index) => (
+                                <div className="" key={index}>
                                   <Link
                                     href={`/event/${event.id}`}
                                     onClick={() => {
                                       visitEvent(event.id)
+                                      onClose()
                                     }}
                                   >
                                     <div className="mt-6 flex ">
@@ -437,10 +469,13 @@ export default function SearchBar() {
 
                           <div className="mt-5 w-full ring-1">
                             <h1>ประวัติการค้นหา</h1>
-                            {eventHistory?.map((event) => (
+                            {eventHistory?.map((event, index) => (
                               <>
                                 {event.event && (
-                                  <div className="mt-6 flex items-start justify-start">
+                                  <div
+                                    key={index}
+                                    className="mt-6 flex items-start justify-start"
+                                  >
                                     <Image
                                       isBlurred
                                       src={event.event.eventImage}

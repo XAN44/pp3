@@ -6,7 +6,7 @@ import { NextResponse } from 'next/server'
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url)
-    const qurey = searchParams.get('q') || ''
+    const qurey = searchParams.get('e') || ''
     const search = await db.event.findMany({
       where: {
         title: {
@@ -28,14 +28,12 @@ export async function GET(request: Request) {
       },
     })
 
-    console.log(search)
     return NextResponse.json(search)
   } catch (error) {
-    console.error(error)
-    return {
-      status: 500,
-      body: { error: 'Internal Server Error' },
-    }
+    return NextResponse.json(
+      { message: 'มีข้อผิดพลาดบางอย่าง' },
+      { status: 500 }
+    )
   }
 }
 
@@ -64,15 +62,12 @@ export async function POST(request: Request) {
           eventId: id,
         },
       })
-      return NextResponse.json(visit)
     }
-    console.log(visit)
     return NextResponse.json(visit)
   } catch (error: any) {
-    console.error(error)
-    return {
-      status: 500,
-      body: { error: 'Internal Server Error' },
-    }
+    return NextResponse.json(
+      { message: 'มีข้อผิดพลาดบางอย่าง' },
+      { status: 500 }
+    )
   }
 }

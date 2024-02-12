@@ -1,7 +1,6 @@
 import { GetNotification } from '@/lib/actions/user.notification'
 import { fetchUserProfileByID } from '@/lib/actions/user.post'
 import { getCurrentUser } from '@/lib/session'
-import { Topbar } from './topbar/topbar'
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 

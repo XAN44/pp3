@@ -27,11 +27,10 @@ export async function GET(request: Request) {
       return NextResponse.json(event)
     }
   } catch (error) {
-    console.error(error)
-    return {
-      status: 500,
-      body: { error: 'Internal Server Error' },
-    }
+    return NextResponse.json(
+      { message: 'มีข้อผิดพลาดบางอย่าง' },
+      { status: 500 }
+    )
   }
 }
 
@@ -47,13 +46,11 @@ export async function POST(request: Request) {
         eventId: id,
       },
     })
-    console.log(history)
     return NextResponse.json(history)
   } catch (error) {
-    console.error(error)
-    return {
-      status: 500,
-      body: { error: 'Internal Server Error' },
-    }
+    return NextResponse.json(
+      { message: 'มีข้อผิดพลาดบางอย่าง' },
+      { status: 500 }
+    )
   }
 }

@@ -7,6 +7,7 @@ import { fetchPostByID } from '@/lib/actions/user.comment'
 import { getCurrentUser } from '@/lib/session'
 import { Container } from '@radix-ui/themes'
 import { redirect } from 'next/navigation'
+import useSWR from 'swr'
 
 const Page = async ({ params }: { params: { id: string } }) => {
   if (!params.id) return null

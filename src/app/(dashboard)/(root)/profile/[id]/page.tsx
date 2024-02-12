@@ -21,6 +21,7 @@ import {
 } from '@/lib/actions/user.visit'
 import { getCurrentUser } from '@/lib/session'
 import { Divider } from '@nextui-org/react'
+import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { Suspense } from 'react'
 
@@ -54,6 +55,7 @@ export default async function Page({ params }: { params: { id: string } }) {
 
               inset-x-0  left-[32px]  h-[600px] w-full place-items-start   px-3 xl:fixed xl:h-64 xl:w-64"
             >
+              <Link href={`/profilez/${Account.id}`}>CLick</Link>
               <ProfileHeader
                 key={Account.id}
                 accountId={Account.id}

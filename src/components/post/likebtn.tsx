@@ -13,7 +13,7 @@ export default function Likebtn({
 }: {
   postId: string
   userId: string
-  checkLike: boolean
+  checkLike?: boolean
 }) {
   const pathname = usePathname()
 

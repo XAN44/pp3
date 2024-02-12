@@ -1,34 +1,33 @@
-"use server";
-import FetchPost from "@/components/post/fetchPost";
-import { PostForm } from "@/components/post/postForm";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+'use server'
+import { PostForm } from '@/components/post/postForm'
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import {
   FetchBio,
   FetchImageProfile,
   FetchName,
   FetchNickname,
   fetchAccount,
-} from "@/lib/actions/user.action";
-import { AlertAuth } from "@/lib/alert/alertSession";
-import { getCurrentUser } from "@/lib/session";
-import { Flex, Grid, Text } from "@radix-ui/themes";
-import { Suspense } from "react";
+} from '@/lib/actions/user.action'
+import { AlertAuth } from '@/lib/alert/alertSession'
+import { getCurrentUser } from '@/lib/session'
+import { Flex, Grid, Text } from '@radix-ui/themes'
+import { Suspense } from 'react'
 
 export default async function Page() {
-  const session = await getCurrentUser();
-  const UserBio = await FetchBio();
-  const UserNickname = await FetchNickname();
-  const UserProfile = await FetchImageProfile();
-  const UserName = await FetchName();
+  const session = await getCurrentUser()
+  const UserBio = await FetchBio()
+  const UserNickname = await FetchNickname()
+  const UserProfile = await FetchImageProfile()
+  const UserName = await FetchName()
 
-  const ac = await fetchAccount();
+  const ac = await fetchAccount()
 
   if (!session?.id) {
     return (
       <>
         <AlertAuth />
       </>
-    );
+    )
   }
 
   if (session.id) {
@@ -40,17 +39,17 @@ export default async function Page() {
             align="center"
             columns="1"
             gap="3"
-            className="shadow-inner text-center ring-1 w-[400px] 
-            p-6
+            className="w-[400px] p-6 text-center shadow-inner 
+            ring-1
             "
           >
             {ac?.image ? (
-              <Avatar className="w-36 h-36 left-1/2 -translate-x-16 ">
+              <Avatar className="left-1/2 h-36 w-36 -translate-x-16 ">
                 <AvatarImage src={ac.image} />
                 <AvatarFallback>{ac?.name}</AvatarFallback>
               </Avatar>
             ) : (
-              <Avatar className="w-36 h-36 left-1/2 -translate-x-14 ">
+              <Avatar className="left-1/2 h-36 w-36 -translate-x-14 ">
                 <AvatarImage src="defaultAvatar.png" />
               </Avatar>
             )}
@@ -69,24 +68,10 @@ export default async function Page() {
           <div className="divider divider-horizontal "></div>
 
           <Grid>
-            <div className="divider font-bold text-lg"> POST </div>
-            <div className="text-center">
-              <PostForm
-                user={{
-                  authorid: "",
-                  content: "",
-                  imagePost: "",
-                }}
-              />
-            </div>
-            <div className="h-32">
-              <Suspense fallback={<p> LOADING </p>}>
-                <FetchPost />
-              </Suspense>
-            </div>
+            <div className="divider text-lg font-bold"> POST </div>
           </Grid>
         </Flex>
       </>
-    );
+    )
   }
 }

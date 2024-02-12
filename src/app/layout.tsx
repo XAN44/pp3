@@ -1,5 +1,4 @@
 import Provider from '@/components/Provider'
-import { Topbar } from '@/components/topbar/topbar'
 import { Toaster } from '@/components/ui/toaster'
 import { getCurrentUser } from '@/lib/session'
 import { Theme } from '@radix-ui/themes'

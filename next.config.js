@@ -7,19 +7,19 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   reactStrictMode: false,
-};
+}
 
 module.exports = {
   images: {
     remotePatterns: [
       {
-        hostname: "**",
-        protocol: "https",
+        hostname: '**',
+        protocol: 'https',
       },
     ],
   },
   webpack: (config) => {
-    config.resolve.alias["@"] = __dirname;
-    return config;
+    config.resolve.alias['@'] = __dirname
+    return config
   },
-};
+}
