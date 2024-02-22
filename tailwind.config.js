@@ -1,24 +1,29 @@
 const { nextui } = require('@nextui-org/react')
 
-import daisyui from 'daisyui'
 /** @type {import('tailwindcss').Config} */
 
 module.exports = {
   darkMode: ['class'],
+  plugins: [require('daisyui')],
+  plugins: [require('tailwindcss-animate')],
+  plugins: [nextui()],
+  darkMode: 'class',
 
+  daisyui: {
+    themes: 'false',
+    darkTheme: 'dark',
+    base: true,
+    styled: true,
+    utils: true,
+    prefix: '',
+    logs: true,
+    themeRoot: ':root',
+  },
   content: [
-    './pages/**/*.{js,ts,jsx,tsx,mdx}',
     './src/**/*.{js,ts,jsx,tsx,mdx}',
-    './components/**/*.{js,ts,jsx,tsx,mdx}',
 
-    './app/**/*.{js,ts,jsx,tsx,mdx}',
-    './src/**/*.{js,jsx}',
-
-    './src/**/*.{js,jsx,ts,tsx}',
-    './src/**/*.{html,js}',
     './node_modules/@nextui-org/theme/dist/**/*.{js,ts,jsx,tsx}',
     './node_modules/@nextui-org/theme/dist/components/(button|snippet|code|input).js',
-    './node_modules/@nextui-org/theme/dist/components/button.js',
   ],
 
   theme: {
@@ -102,21 +107,5 @@ module.exports = {
         'accordion-up': 'accordion-up 0.2s ease-out',
       },
     },
-  },
-  plugins: [require('tailwindcss-animate')],
-  plugins: [nextui()],
-  darkMode: 'class',
-
-  plugins: [require('daisyui')],
-
-  daisyui: {
-    themes: 'false',
-    darkTheme: 'dark', // name of one of the included themes for dark mode
-    base: true, // applies background color and foreground color for root element by default
-    styled: true, // include daisyUI colors and design decisions for all components
-    utils: true, // adds responsive and modifier utility classes
-    prefix: 'true', // prefix for daisyUI classnames (components, modifiers and responsive class names. Not colors)
-    logs: true, // Shows info about daisyUI version and used config in the console when building your CSS
-    themeRoot: ':root', // The element that receives theme color CSS variables
   },
 }

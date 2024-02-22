@@ -2,6 +2,7 @@
 import { revalidatePath } from 'next/cache'
 import { db } from '../db'
 import { getCurrentUser } from '../session'
+import { select } from '@nextui-org/theme'
 
 interface userPost {
   authorid: string
@@ -258,6 +259,60 @@ export async function fetchUserProfileByID(id: string) {
               },
             },
           },
+        },
+      },
+    },
+  })
+  return fetchUser
+}
+
+export async function fetchInBlogPage() {
+  const fetchUser = await db.article.findMany({
+    select: {
+      id: true,
+      title: true,
+      ArticleImage: true,
+      articleContent: true,
+      createAt: true,
+      authorId: true,
+      author: {
+        select: {
+          id: true,
+          name: true,
+          image: true,
+        },
+      },
+      tag: {
+        select: {
+          id: true,
+          tag: true,
+        },
+      },
+    },
+  })
+  return fetchUser
+}
+
+export async function fetchInEnentPage() {
+  const fetchUser = await db.event.findMany({
+    select: {
+      id: true,
+      title: true,
+      eventImage: true,
+      eventContent: true,
+      createAt: true,
+      authorId: true,
+      author: {
+        select: {
+          id: true,
+          name: true,
+          image: true,
+        },
+      },
+      tag: {
+        select: {
+          id: true,
+          tag: true,
         },
       },
     },

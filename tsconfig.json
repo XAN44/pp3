@@ -29,7 +29,11 @@
     ".next/types/**/*.ts",
     "src/app/login/page.tsx",
     "src/app-1/l",
-    "prisma/script.ts"
-, "src/app/api/socket/io.js", "src/app/api/socket/io.js", "src/app/api/socket/io.js", "pages/api/io.mjs"  ],
+    "prisma/script.ts",
+    "src/app/api/socket/io.js",
+    "src/app/api/socket/io.js",
+    "src/app/api/socket/io.js",
+    "pages/api/io.mjs"
+  ],
   "exclude": ["node_modules"]
 }

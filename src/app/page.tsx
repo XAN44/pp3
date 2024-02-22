@@ -1,15 +1,16 @@
-import HomePageContent1 from "@/components/homepage/HomePageContent1";
-import HomePageContent from "../components/homepage/HomePageContent";
-import HomePageHeader from "../components/homepage/HomePageHeader";
+import HomePageContent1 from '@/components/homepage/HomePageContent1'
+import HomePageContent from '../components/homepage/HomePageContent'
+import HomePageHeader from '../components/homepage/HomePageHeader'
+import Footer from '@/components/Footer'
 
 export default function Home() {
   return (
     <>
       <div
         className="
+        -mt-[400px]
         h-96
-        w-screen
-        -mt-[400px] 
+        w-full
       "
       >
         {/* Cover Image */}
@@ -17,13 +18,14 @@ export default function Home() {
           <HomePageHeader />
         </div>
         {/* Main Content Section */}
-        <div className="  grid  text-center items-center justify-center">
+        <div className="  grid  items-center justify-center text-center">
           <HomePageContent />
         </div>
-        <div className="mt-14 text-center items-center justify-center">
+        <div className="mt-14 items-center justify-center text-center">
           <HomePageContent1 />
         </div>
+        <Footer />
       </div>
     </>
-  );
+  )
 }

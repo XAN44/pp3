@@ -34,7 +34,7 @@ export default async function RootLayout({
             <Providers>
               <ChakraProvi>
                 <Navbars userId={user?.id || ''} />
-                <main className="flex h-screen flex-col items-center justify-center">
+                <main className=" flex h-screen flex-col items-center justify-center">
                   {children}
                   <Toaster />
                 </main>

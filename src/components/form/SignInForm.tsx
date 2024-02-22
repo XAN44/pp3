@@ -1,14 +1,14 @@
-"use client";
+'use client'
 
-import { useToast } from "@/components/ui/use-toast";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { signIn } from "next-auth/react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
-import GoogleSignInButton from "../GoogleSignInButton";
-import { Button } from "../ui/button";
+import { useToast } from '@/components/ui/use-toast'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { signIn } from 'next-auth/react'
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { useForm } from 'react-hook-form'
+import * as z from 'zod'
+import GoogleSignInButton from '../GoogleSignInButton'
+import { Button } from '../ui/button'
 import {
   Form,
   FormControl,
@@ -16,46 +16,49 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "../ui/form";
-import { Input } from "../ui/input";
+} from '../ui/form'
+import { Input } from '../ui/input'
+import { useSession } from 'next-auth/react'
 
 const FormSchema = z.object({
-  email: z.string().min(1, "Email is required").email("Invalid email"),
+  email: z.string().min(1, 'Email is required').email('Invalid email'),
   password: z
     .string()
-    .min(1, "Password is required")
-    .min(8, "Password must have than 8 characters"),
-});
+    .min(1, 'Password is required')
+    .min(8, 'Password must have than 8 characters'),
+})
 
 const SignInForm = () => {
-  const router = useRouter();
-  const { toast } = useToast();
+  const router = useRouter()
+  const { toast } = useToast()
+
+  const { data: session, status } = useSession()
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      email: "",
-      password: "",
+      email: '',
+      password: '',
     },
-  });
+  })
 
   const onSubmit = async (values: z.infer<typeof FormSchema>) => {
-    const signInData = await signIn("credentials", {
+    const signInData = await signIn('credentials', {
       email: values.email,
       password: values.password,
       redirect: false,
-    });
+    })
     if (signInData?.error) {
       toast({
-        title: "Error",
-        description: "เกิดปัญหาจากข้อผิดพลาดบางอย่าง",
-        variant: "destructive",
-      });
+        title: 'Error',
+        description: 'เกิดปัญหาจากข้อผิดพลาดบางอย่าง',
+        variant: 'destructive',
+      })
     } else {
-      router.refresh();
-      router.push("/profile");
+      router.refresh()
+      router.push(`/home/${session?.user.id}`)
     }
-  };
+  }
 
   return (
     <Form {...form}>
@@ -92,7 +95,7 @@ const SignInForm = () => {
             )}
           />
         </div>
-        <Button className="w-full mt-6" type="submit">
+        <Button className="mt-6 w-full" type="submit">
           Sign in
         </Button>
       </form>
@@ -100,14 +103,14 @@ const SignInForm = () => {
         or
       </div>
       <GoogleSignInButton>Sign in with Google</GoogleSignInButton>
-      <p className="text-center text-sm text-gray-600 mt-2">
+      <p className="mt-2 text-center text-sm text-gray-600">
         If you don&apos;t have an account, please&nbsp;
         <Link className="text-blue-500 hover:underline" href="/sign-up">
           Sign up
         </Link>
       </p>
     </Form>
-  );
-};
+  )
+}
 
-export default SignInForm;
+export default SignInForm

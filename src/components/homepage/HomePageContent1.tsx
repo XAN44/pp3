@@ -1,24 +1,24 @@
-import Image from "next/image";
-import React from "react";
+import Image from 'next/image'
+import React from 'react'
 
-type Props = {};
+type Props = {}
 
 export default function HomePageContent1({}: Props) {
   return (
     <>
       <div className="grid ">
-        <h1 className="font-bold text-lg">
-          เรามุ่งเน้นที่จะให้ผู้คนแบ่งปันข้อมูลที่มีประโยชน์แก่ชุมชนที่มีความต้องการในการค้นหาข้อมูล{" "}
+        <h1 className="text-lg font-bold">
+          เรามุ่งเน้นที่จะให้ผู้คนแบ่งปันข้อมูลที่มีประโยชน์แก่ชุมชนที่มีความต้องการในการค้นหาข้อมูล{' '}
           <br />
           รวมทั้งกิจกรรมต่างๆที่เกี่ยวข้องกับการเดินทางของพวกเขา
         </h1>
       </div>
-      <div className="flex justify-center items-center place-items-center space-x-3">
+      <div className="flex place-items-center items-center justify-center space-x-3">
         <div
           className=" 
-        w-[490px] shadow-sm shadow-black
-        rounded-lg 
-        p-7 
+        w-[490px] rounded-lg p-7
+        shadow-sm 
+        shadow-black 
         "
         >
           <p className="first-line:whitespace-normal">
@@ -45,5 +45,5 @@ export default function HomePageContent1({}: Props) {
         </div>
       </div>
     </>
-  );
+  )
 }
