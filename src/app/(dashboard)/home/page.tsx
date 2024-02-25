@@ -1,4 +1,3 @@
-import ArticleCard from '@/components/article/articleCard'
 import ArticleForm from '@/components/article/articleForm'
 import EventCard from '@/components/event/eventCard'
 import EventForm from '@/components/event/eventForm'
@@ -6,6 +5,17 @@ import HomePageHeader from '@/components/homepage/HomePageHeader'
 import ProfileHeader from '@/components/profile/ProfileHeader'
 import Fetchprofilehome from '@/components/profile/fetchprofilehome'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import {
+  Avatar,
+  Button,
+  Card,
+  CardBody,
+  CardFooter,
+  CardHeader,
+  Image,
+} from '@nextui-org/react'
+import Link from 'next/link'
+import { Badge } from '@chakra-ui/react'
 import {
   CheckFollow,
   getTotalFollowers,
@@ -18,9 +28,6 @@ import {
 } from '@/lib/actions/user.post'
 import { TotalVisit1, TotalVisitEvent } from '@/lib/actions/user.visit'
 import { getCurrentUser } from '@/lib/session'
-import { Divider, ScrollShadow } from '@nextui-org/react'
-import Link from 'next/link'
-import { redirect } from 'next/navigation'
 import {
   Carousel,
   CarouselContent,
@@ -29,6 +36,18 @@ import {
   CarouselPrevious,
 } from '@/components/ui/carousel'
 import ArticleinHome from '@/components/article/articleinhome'
+import Articleinhomepage from '@/components/compoinhome/articleinhomepage'
+
+import ArticleHome from '@/components/article/articlehome'
+import Reply from '@/components/post/replyForm'
+import CommentCard from '@/components/post/commentCard'
+import { Heading } from '@radix-ui/themes'
+import CommentInarticle from '@/components/article/commentinArticle'
+import { FetchArticleByID } from '@/lib/actions/user.article'
+import CommentArticleInHome from '@/components/article/commentArticleInHome'
+import CommentArticleHome from '@/components/post/commentArticleHome'
+import VisitBtnArticleAll from '@/components/visit/visitArticleAll'
+
 export default async function Page() {
   const user = await getCurrentUser()
 
@@ -49,12 +68,13 @@ export default async function Page() {
       <div
         className="
         mt-[250px]
-        w-full
-        xl:w-full "
+        w-full 
+        xl:w-full
+        "
       >
         <HomePageHeader />
       </div>
-      <div className=" mb-[590px] flex h-32 flex-col gap-0 xl:w-full xl:flex-row ">
+      <div className="  mb-[590px] flex h-32 flex-col gap-0 xl:w-full xl:flex-row ">
         <aside
           className=" 
                 inset-x-0 left-[32px] w-full
@@ -104,8 +124,8 @@ export default async function Page() {
             />
           )}
         </aside>
-        <main className="mt-8 w-[690px] ">
-          <div className="relative place-items-center justify-center text-center ">
+        <main className="ml-16 mt-8 w-[690px]  ">
+          <div className=" place-items-center justify-center text-center ">
             <div className=" ">
               <Tabs defaultValue="article">
                 <TabsList className="">
@@ -114,7 +134,11 @@ export default async function Page() {
                 </TabsList>
 
                 <TabsContent value="article">
-                  <div className="place-items-center text-center">
+                  <div className="mb-6">
+                    <Articleinhomepage />
+                  </div>
+
+                  <div className="mb-3 mt-5 place-items-center p-3 text-center ">
                     {userInfo?.map((Account) => (
                       <>
                         <ArticleForm
@@ -128,25 +152,79 @@ export default async function Page() {
                         />
                       </>
                     ))}
-                  </div>
 
-                  {otherInfo.map(async (ArticleBy: any) => (
-                    <div key={ArticleBy.id}>
-                      <ArticleinHome
-                        key={ArticleBy.id}
-                        id={ArticleBy.id}
-                        title={ArticleBy.title}
-                        articleContent={ArticleBy.articleContent}
-                        ArticleImage={ArticleBy.ArticleImage}
-                        tag={ArticleBy.tag}
-                        authorId={ArticleBy.authorId}
-                        author={ArticleBy.author}
-                        comments={ArticleBy.comment}
-                        createAt={new Date(ArticleBy.createAt).toLocaleString()}
-                        totalVisit={await TotalVisit1(ArticleBy.id)}
-                      />
-                    </div>
-                  ))}
+                    {otherInfo.map(async (ArticleBy: any, index: any) => (
+                      <>
+                        <div className="rounded-lg p-3 shadow-xl">
+                          <div className="">
+                            <ArticleHome
+                              key={ArticleBy?.id}
+                              id={ArticleBy?.id}
+                              title={ArticleBy?.title}
+                              articleContent={ArticleBy?.articleContent}
+                              ArticleImage={ArticleBy.ArticleImage}
+                              isFollow
+                              tag={ArticleBy.tag}
+                              currentId={user?.id || ''}
+                              authorId={ArticleBy.authorId}
+                              author={ArticleBy.author}
+                              comments={ArticleBy.comment}
+                              createAt={new Date(
+                                ArticleBy.createAt
+                              ).toLocaleString()}
+                            />
+                          </div>
+                          <div className="left-3 mt-7 ">
+                            <CommentArticleInHome
+                              articleId={ArticleBy.id}
+                              currentUserImage={user?.image || ''}
+                              currentUserId={user?.id || ''}
+                            />
+                          </div>
+                          <div className="mb-10 mt-10">
+                            {ArticleBy.comment
+                              .slice(0, 4)
+                              .map((comment: any) => (
+                                <>
+                                  <CommentArticleHome
+                                    key={comment.id}
+                                    id={comment.id}
+                                    current={
+                                      user || {
+                                        id: '',
+                                        name: '',
+                                        image: '',
+                                      }
+                                    }
+                                    comment={comment?.text}
+                                    authorId={comment.authorId}
+                                    createAt={new Date(
+                                      comment.createdAt
+                                    ).toLocaleString()}
+                                    author={
+                                      comment.author || {
+                                        id: '',
+                                        name: '',
+                                        image: '',
+                                      }
+                                    }
+                                    reply={comment.Reply}
+                                    isComment
+                                    isReply
+                                  />
+                                </>
+                              ))}
+                            <Link href={`/article/${ArticleBy.id}`}>
+                              <VisitBtnArticleAll
+                                id={ArticleBy.id}
+                                userId={user?.id || ''}
+                              />
+                            </Link>
+                          </div>
+                        </div>
+                      </>
+                    ))}
+                  </div>
                 </TabsContent>
                 <TabsContent value="event">
                   <div className="place-items-center text-center">

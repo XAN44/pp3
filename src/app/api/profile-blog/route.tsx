@@ -5,6 +5,7 @@ import { NextResponse } from 'next/server'
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
   const queryArticle = searchParams.get('id') || ''
+
   try {
     const topArticle = await db.article.findMany({
       where: {

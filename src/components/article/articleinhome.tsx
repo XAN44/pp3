@@ -1,3 +1,5 @@
+'use client'
+
 import { ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable'
 import {
   Avatar,
@@ -7,11 +9,13 @@ import {
   CardFooter,
   CardHeader,
   Image,
+  Pagination,
   Slider,
 } from '@nextui-org/react'
 import Link from 'next/link'
 import { Badge } from '@chakra-ui/react'
 import VisitBtnArticle from '../visit/visitArticle'
+import React from 'react'
 
 interface Props {
   id: string
@@ -75,15 +79,15 @@ export default function ArticleinHome({
             className="h-[140px] w-full rounded-xl object-cover"
           />
         </CardBody>
-        <CardFooter className="flex place-items-center items-center justify-between px-3 text-small">
+        <CardFooter className="text-small flex place-items-center items-center justify-between px-3">
           <aside className="w-full ">
             <div className="w-40">
               <b className="">{title}</b>
-              <p className="text-start text-default-500">{articleContent}</p>
+              <p className="text-default-500 text-start">{articleContent}</p>
             </div>
           </aside>
           <div className=" grid place-items-center items-center justify-center">
-            <main className="w-10 ">
+            <main className="w-10  ">
               <Link href={`/profile/${author?.id}`}>
                 <Avatar alt="profile" src={author?.image || ''} />
               </Link>

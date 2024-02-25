@@ -33,7 +33,7 @@ interface Props {
   isComment?: boolean
 }
 
-export default function ArticleCardPage({
+export default function ArticleHomePage({
   id,
   title,
   articleContent,

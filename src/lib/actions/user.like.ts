@@ -11,13 +11,7 @@ export async function Like(postId: string, userId: string, path: string) {
       },
     })
     if (!isAlreadyLike) {
-      const newLike = await db.like.create({
-        data: {
-          postId,
-          userId,
-        },
-      })
-      console.log('Added new follow:', newLike)
+      console.log('Added new follow:')
 
       revalidatePath(path)
       return true

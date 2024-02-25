@@ -121,13 +121,14 @@ model SearchHistory {
 
 model Like {
     id        String   @id @default(cuid())
-    postId    String
-    userId    String
+    postId    String?
+    userId    String?
+    articleId String?
     isLiked   Boolean  @default(false)
     createdAt DateTime @default(now())
-
-    post Post @relation(fields: [postId], references: [id])
-    user User @relation(fields: [userId], references: [id])
+    article   Article? @relation(fields: [articleId], references: [id])
+    post      Post?    @relation(fields: [postId], references: [id])
+    user      User?    @relation(fields: [userId], references: [id])
 
     @@unique([postId, userId])
 }
@@ -145,6 +146,7 @@ model Article {
     Visit          Visit[]
     Notification   Notification[]
     SearchHistory  SearchHistory[]
+    Like           Like[]
 }
 
 model Event {
@@ -176,7 +178,7 @@ model Comment {
     text         String
     createdAt    DateTime?      @default(now())
     author       User?          @relation(fields: [authorid], references: [id])
-    authorid     String?        @unique
+    authorid     String?
     Post         Post?          @relation(fields: [postId], references: [id])
     postId       String?
     Reply        Reply[]

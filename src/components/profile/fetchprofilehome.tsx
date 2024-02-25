@@ -82,7 +82,7 @@ function Fetchprofilehome({
 
   return (
     <>
-      <div className=" bg-base-200 item-center grid justify-center  ">
+      <div className="  item-center grid justify-center  ">
         <div className="item-center grid place-items-center justify-center ">
           {/* AVATAR */}
           <div className="grid items-center justify-center xl:flex ">

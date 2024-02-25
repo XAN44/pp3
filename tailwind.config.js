@@ -1,12 +1,12 @@
 const { nextui } = require('@nextui-org/react')
+import daisyui from 'daisyui'
 
 /** @type {import('tailwindcss').Config} */
 
 module.exports = {
   darkMode: ['class'],
-  plugins: [require('daisyui')],
   plugins: [require('tailwindcss-animate')],
-  plugins: [nextui()],
+  plugins: [nextui(), daisyui, require('tailwindcss-animate')],
   darkMode: 'class',
 
   daisyui: {

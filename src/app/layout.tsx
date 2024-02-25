@@ -27,7 +27,7 @@ export default async function RootLayout({
   const user = await getCurrentUser()
 
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning={true}>
       <body className="relative">
         <Theme>
           <Provider>

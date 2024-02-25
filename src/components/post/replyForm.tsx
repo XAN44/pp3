@@ -1,4 +1,4 @@
-"use client";
+'use client'
 import {
   Form,
   FormControl,
@@ -6,21 +6,21 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { replyComments } from "@/lib/actions/user.comment";
-import { replyComment } from "@/lib/validations/Userpost";
-import { zodResolver } from "@hookform/resolvers/zod";
-import Image from "next/image";
-import { usePathname } from "next/navigation";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
-import { Button } from "../ui/button";
+} from '@/components/ui/form'
+import { replyComments } from '@/lib/actions/user.comment'
+import { replyComment } from '@/lib/validations/Userpost'
+import { zodResolver } from '@hookform/resolvers/zod'
+import Image from 'next/image'
+import { usePathname } from 'next/navigation'
+import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import * as z from 'zod'
+import { Button } from '../ui/button'
 
 interface Props {
-  commentId: string;
-  currentUserImage: string;
-  currentUserId: string;
+  commentId: string
+  currentUserImage: string
+  currentUserId: string
 }
 
 export default function Reply({
@@ -28,33 +28,28 @@ export default function Reply({
   currentUserImage,
   currentUserId,
 }: Props) {
-  const [replyVisible, setReplyVisible] = useState(false);
+  const [replyVisible, setReplyVisible] = useState(false)
 
   const handleShowReply = () => {
-    setReplyVisible(true);
-  };
+    setReplyVisible(true)
+  }
 
   const handleHideReply = () => {
-    setReplyVisible(false);
-  };
+    setReplyVisible(false)
+  }
 
-  const path = usePathname() ?? "";
+  const path = usePathname() ?? ''
 
   const replyForm = useForm<z.infer<typeof replyComment>>({
     resolver: zodResolver(replyComment),
     defaultValues: {
-      reply: "",
+      reply: '',
     },
-  });
+  })
 
   const onSubmitReply = async (values: z.infer<typeof replyComment>) => {
-    await replyComments(
-      commentId,
-      values.reply,
-      JSON.parse(currentUserId),
-      path,
-    );
-  };
+    await replyComments(commentId, values.reply, currentUserId, path)
+  }
 
   return (
     <>
@@ -85,7 +80,7 @@ export default function Reply({
                     <FormControl className="border-none">
                       <input
                         placeholder="reply.."
-                        className="bg-base-300 rounded-lg w-full p-3"
+                        className="w-full rounded-lg bg-base-300 p-3"
                         {...field}
                       />
                     </FormControl>
@@ -94,7 +89,7 @@ export default function Reply({
                 )}
               />
 
-              <Button type="submit" className="w-32 ml-3 mt-1 flex">
+              <Button type="submit" className="ml-3 mt-1 flex w-32">
                 reply
               </Button>
             </form>
@@ -102,5 +97,5 @@ export default function Reply({
         </>
       )}
     </>
-  );
+  )
 }

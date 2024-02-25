@@ -66,7 +66,7 @@ const CommentCard = ({
 
   return (
     <Container size="4" p="6" className="flex w-full flex-col rounded-xl">
-      <div className="mt-3 mb-7 text-center items-center justify-center  place-items-center"></div>
+      <div className="mb-7 mt-3 place-items-center items-center justify-center  text-center"></div>
       {isComment ? (
         <>
           <Flex gap="3">

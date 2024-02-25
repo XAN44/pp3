@@ -1,15 +1,16 @@
-"use server";
+'use server'
 
-import { revalidatePath } from "next/cache";
-import { db } from "../db";
+import { revalidatePath } from 'next/cache'
+import { db } from '../db'
+import { getCurrentUser } from '../session'
 
 interface Props {
-  authorId: string;
-  title: string;
-  articleContent: string;
-  ArticleImage: string;
-  path: string;
-  tag: string;
+  authorId: string
+  title: string
+  articleContent: string
+  ArticleImage: string
+  path: string
+  tag: string
 }
 
 export async function POSTARTILE({
@@ -22,7 +23,7 @@ export async function POSTARTILE({
 }: Props): Promise<void> {
   try {
     if (!authorId) {
-      throw new Error("Pless LOGIN");
+      throw new Error('Pless LOGIN')
     }
     await db.article.create({
       data: {
@@ -36,12 +37,12 @@ export async function POSTARTILE({
           },
         },
       },
-    });
-    revalidatePath(path);
+    })
+    revalidatePath(path)
   } catch (error: any) {
-    console.error(error); // Log the error for debugging
+    console.error(error) // Log the error for debugging
 
-    throw new Error(`Failed to create/update user: ${error.message}`);
+    throw new Error(`Failed to create/update user: ${error.message}`)
   }
 }
 
@@ -49,16 +50,16 @@ export async function CommentinArticles(
   articleId: string,
   comment: string,
   authorId: string,
-  path: string,
+  path: string
 ) {
   try {
     const inArticle = await db.article.findUnique({
       where: {
         id: articleId,
       },
-    });
+    })
     if (!inArticle) {
-      throw new Error("dont have article");
+      throw new Error('dont have article')
     }
 
     const newCommentInArticle = await db.comment.create({
@@ -67,10 +68,10 @@ export async function CommentinArticles(
         articleId: articleId,
         authorid: authorId,
       },
-    });
-    revalidatePath(path);
+    })
+    revalidatePath(path)
   } catch (error: any) {
-    throw new Error(`Failed to create/update user: ${error.message}`);
+    throw new Error(`Failed to create/update user: ${error.message}`)
   }
 }
 
@@ -96,7 +97,7 @@ export async function FetchArticleByID(id: string) {
         },
         comment: {
           orderBy: {
-            createdAt: "asc",
+            createdAt: 'asc',
           },
           select: {
             id: true,
@@ -139,14 +140,44 @@ export async function FetchArticleByID(id: string) {
           },
         },
       },
-    });
+    })
 
     if (!article) {
-      throw new Error("Article not found");
+      throw new Error('Article not found')
     }
-    return article;
+    return article
   } catch (error) {
-    console.error("Error fetching comments:", error);
-    throw error;
+    console.error('Error fetching comments:', error)
+    throw error
+  }
+}
+
+export async function CommentinArticlesHome(
+  articleId: string,
+  comment: string,
+  authorId: string,
+  path: string
+) {
+  try {
+    const user = await getCurrentUser()
+    const inArticle = await db.article.findFirst({
+      where: {
+        id: articleId,
+      },
+    })
+    if (!inArticle) {
+      throw new Error('dont have article')
+    }
+
+    const newCommentInArticle = await db.comment.create({
+      data: {
+        text: comment,
+        articleId: articleId,
+        authorid: authorId,
+      },
+    })
+    revalidatePath(path)
+  } catch (error: any) {
+    throw new Error(`Faied to creat comment : ${error.message}`)
   }
 }

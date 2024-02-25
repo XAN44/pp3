@@ -11,7 +11,7 @@ const GoogleSignInButton: FC<GoogleSignInButtonProps> = ({ children }) => {
 
   const loginWithGoogle = () =>
     signIn('google', {
-      callbackUrl: `/home/${session?.user.id}`,
+      callbackUrl: `/home`,
     })
 
   return (

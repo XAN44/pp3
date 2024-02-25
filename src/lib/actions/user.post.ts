@@ -275,6 +275,56 @@ export async function fetchInBlogPage() {
       articleContent: true,
       createAt: true,
       authorId: true,
+
+      comment: {
+        orderBy: {
+          createdAt: 'asc',
+        },
+        select: {
+          id: true,
+          text: true,
+          authorid: true,
+          createdAt: true,
+          author: {
+            select: {
+              id: true,
+              name: true,
+              image: true,
+            },
+          },
+          articleId: true,
+          Article: {
+            select: {
+              id: true,
+              title: true,
+              articleContent: true,
+              ArticleImage: true,
+            },
+          },
+          Reply: {
+            select: {
+              replytext: true,
+              author: {
+                select: {
+                  id: true,
+                  name: true,
+                  image: true,
+                },
+              },
+              replyCommet: {
+                select: {
+                  id: true,
+                },
+              },
+            },
+          },
+        },
+      },
+      Visit: {
+        select: {
+          count: true,
+        },
+      },
       author: {
         select: {
           id: true,
