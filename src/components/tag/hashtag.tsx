@@ -4,11 +4,15 @@ export const HASHTAG = [
     value: 'ท่องเที่ยว',
   },
   {
+    label: 'ครอบครัว',
+    value: 'ครอบครัว',
+  },
+  {
     label: 'อาหาร',
     value: 'อาหาร',
   },
   {
-    label: 'อื่นๆ',
-    value: 'อื่นๆ ',
+    label: 'ธุรกิจ',
+    value: 'ธุรกิจ',
   },
 ]

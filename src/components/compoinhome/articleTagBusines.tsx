@@ -18,14 +18,12 @@ import {
   CarouselPrevious,
 } from '@/components/ui/carousel'
 import { Text } from '@chakra-ui/react'
-import { TotalVisit, TotalVisit1 } from '@/lib/actions/user.visit'
-import VisitBtnArticle from '../visit/visitArticle'
 import VisitBtnArticleC from '../visit/visitArticleC'
 import { getCurrentUser } from '@/lib/session'
-import { fetchInBlogPage } from '@/lib/actions/user.carousel'
+import { fetchBlogByTagBusiness } from '@/lib/actions/user.article.tag'
 
-export default async function Articleinhomepage() {
-  const otherInfo = await fetchInBlogPage()
+export default async function ArticleTagBusiness() {
+  const otherInfo = await fetchBlogByTagBusiness()
   const user = await getCurrentUser()
   return (
     <>
@@ -36,7 +34,7 @@ export default async function Articleinhomepage() {
         className="w-full max-w-full "
       >
         <CarouselContent>
-          {otherInfo.slice(0, 5).map((article, index) => (
+          {otherInfo.map((article, index) => (
             <>
               <CarouselItem
                 key={index}
@@ -116,12 +114,6 @@ export default async function Articleinhomepage() {
         <CarouselPrevious />
         <CarouselNext />
       </Carousel>
-      <div className="flex w-full flex-col">
-        <div className="items-end justify-end text-end">
-          <Link href="/allblog">ดูทั้งหมด</Link>
-        </div>
-        <div className="divider divider-neutral "></div>
-      </div>
     </>
   )
 }

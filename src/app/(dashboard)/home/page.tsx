@@ -21,11 +21,7 @@ import {
   getTotalFollowers,
   getTotalFollowing,
 } from '@/lib/actions/user.follow'
-import {
-  fetchInBlogPage,
-  fetchInEnentPage,
-  fetchUserProfileByID,
-} from '@/lib/actions/user.post'
+import { fetchUserProfileByID } from '@/lib/actions/user.post'
 import { TotalVisit1, TotalVisitEvent } from '@/lib/actions/user.visit'
 import { getCurrentUser } from '@/lib/session'
 import {
@@ -45,8 +41,9 @@ import { Heading } from '@radix-ui/themes'
 import CommentInarticle from '@/components/article/commentinArticle'
 import { FetchArticleByID } from '@/lib/actions/user.article'
 import CommentArticleInHome from '@/components/article/commentArticleInHome'
-import CommentArticleHome from '@/components/post/commentArticleHome'
+import CommentArticleHome from '@/components/article/commentArticleHome'
 import VisitBtnArticleAll from '@/components/visit/visitArticleAll'
+import { fetchInBlogPage, fetchInEnentPage } from '@/lib/actions/user.carousel'
 
 export default async function Page() {
   const user = await getCurrentUser()
@@ -57,6 +54,7 @@ export default async function Page() {
   const userInfo = await fetchUserProfileByID(user?.id || '')
   const otherInfo = await fetchInBlogPage()
   const otherEvent = await fetchInEnentPage()
+  const checkFollower = await CheckFollow('', user?.id || '')
 
   //Todo: โดยใช้ Params.id ในการยืนยันจากฐานข้อมูล หากข้อมูลตรงกัน จะทำการแสดงเนื้อหาต่างๆที่โค้ดด้านล่าง
   // TODO:แสดงการติดตาม
@@ -155,7 +153,7 @@ export default async function Page() {
 
                     {otherInfo.map(async (ArticleBy: any, index: any) => (
                       <>
-                        <div className="rounded-lg p-3 shadow-xl">
+                        <div className="w-full rounded-lg p-3 shadow-xl">
                           <div className="">
                             <ArticleHome
                               key={ArticleBy?.id}
@@ -163,7 +161,6 @@ export default async function Page() {
                               title={ArticleBy?.title}
                               articleContent={ArticleBy?.articleContent}
                               ArticleImage={ArticleBy.ArticleImage}
-                              isFollow
                               tag={ArticleBy.tag}
                               currentId={user?.id || ''}
                               authorId={ArticleBy.authorId}

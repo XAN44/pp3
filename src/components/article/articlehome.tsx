@@ -6,15 +6,11 @@ import { Text } from '@chakra-ui/react'
 import { Heart } from 'lucide-react'
 import useSWR from 'swr'
 import { useEffect, useState } from 'react'
+import { FaComment } from 'react-icons/fa'
+import { FaRegComment, FaRegCommentDots } from 'react-icons/fa6'
+import Follow from '../follow/follow'
 
-async function fetcher(url: string) {
-  const response = await fetch(url)
-  if (!response.ok) {
-    throw new Error('cannot fetch top article')
-  }
-  console.log(response)
-  return response.json()
-}
+const fetcher = (url: string) => fetch(url).then((res) => res.json())
 
 interface Props {
   id: string
@@ -43,7 +39,22 @@ interface Props {
   }[]
   isComment?: boolean
   currentId: string
-  isFollow: boolean
+  // isFollow: boolean
+}
+
+interface LikeData {
+  totalLike: number
+  existingLike: {
+    currentId: string
+  }
+  liked: boolean
+}
+
+interface FollowData {
+  existingFollow: {
+    currentAccountId: string | null
+  }
+  Followed: boolean
 }
 
 export default function ArticleHome({
@@ -58,23 +69,50 @@ export default function ArticleHome({
   createAt,
   isComment,
   currentId,
-  isFollow,
+  // isFollow,
 }: Props) {
-  const [liked, setLiked] = useState(false)
-
-  const { data: Like, mutate: MutaLike } = useSWR<any[]>(
-    `/api/like?id=` + id,
+  const { data: Like, mutate: MutaLike } = useSWR<LikeData>(
+    `/api/like?id=${id}`,
+    fetcher
+  )
+  const { data: Follow, mutate: MutaFollow } = useSWR<FollowData>(
+    `api/follow?authorId=${authorId}`,
     fetcher
   )
 
+  const [follow, setFollow] = useState(false)
+  const [liked, setLiked] = useState(false)
+
   useEffect(() => {
-    async function FetchLike() {
-      const result = await fetch('/api/like?id=' + id)
-      const body = await result.json()
-      setLiked(body)
+    if (Follow && Follow.Followed) {
+      setFollow(Follow.Followed)
     }
-    FetchLike()
-  }, [id])
+  }, [Follow])
+
+  const handleFollow = async () => {
+    try {
+      const response = await fetch('/api/follow', {
+        method: 'POST',
+        body: JSON.stringify({ authorId }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      const data = await response.json()
+      if (response.ok) {
+        setFollow(!follow)
+        MutaFollow()
+      }
+    } catch (error) {
+      console.error('เกิดข้อผิดพลาดในการติดตาม:', error)
+    }
+  }
+
+  useEffect(() => {
+    if (Like && Like.liked) {
+      setLiked(Like.liked)
+    }
+  }, [Like])
 
   const handleLike = async () => {
     try {
@@ -90,12 +128,13 @@ export default function ArticleHome({
         setLiked(!liked)
         MutaLike()
       }
-    } catch (error) {}
+    } catch (error) {
+      console.error('เกิดข้อผิดพลาดในการกดไลค์:', error)
+    }
   }
 
   return (
-    <div className="h-full w-full    ">
-      {/* TODO: Image && Name */}
+    <div className="h-full w-full  ">
       <div className="flex">
         <Avatar className="h-14 w-14">
           {author?.image && (
@@ -110,16 +149,16 @@ export default function ArticleHome({
         <div className="ml-3 mt-3 grid text-start">
           <div className="flex items-center justify-center ">
             <Text as="b"> {author && author.name}</Text>
-
             <div className="divider divider-neutral divider-horizontal mt-3 h-5 w-2 items-center justify-center" />
-
             <div className="">
               {currentId !== author?.id && (
-                <Followbtn
-                  ProfileId={author?.id || ''}
-                  isFollowing={currentId}
-                  checkFollow={isFollow}
-                />
+                <>
+                  {Follow && (
+                    <Button onClick={handleFollow}>
+                      {follow ? 'Unfollow' : 'Follow'}
+                    </Button>
+                  )}
+                </>
               )}
             </div>
             <div className="mb-2">
@@ -133,12 +172,11 @@ export default function ArticleHome({
           </div>
         </div>
       </div>
-
-      <div className="w-full">
+      <div className="mt-4 grid place-items-center items-center justify-center ">
         {ArticleImage && <Image alt="Blog Image" src={ArticleImage} />}
       </div>
 
-      <div className="mt-3 text-start">
+      <div className="mt-6 text-start">
         {tag.map((hashtag) => (
           <>
             {hashtag ? (
@@ -148,15 +186,47 @@ export default function ArticleHome({
             ) : null}
           </>
         ))}
-        <div className="">
-          <Button onClick={handleLike}>
-            <Heart color={liked ? '#FF0000' : '#000000'} />
-          </Button>
+        <div className="mt-4 flex items-center justify-start space-x-6">
+          {Like && (
+            <Button
+              isIconOnly
+              variant="light"
+              size="sm"
+              aria-label="Like"
+              color="danger"
+              className="
+              relative overflow-visible 
+              shadow-xl after:absolute
+              after:inset-0 after:bg-background/40 after:transition
+              after:!duration-500 hover:-translate-y-2 hover:after:scale-150 hover:after:opacity-0
+              "
+              onClick={handleLike}
+            >
+              <Badge content={Like.totalLike} color="default" variant="faded">
+                <Heart
+                  color={liked ? '#FF0000' : '#000000'}
+                  className="hover:	hover:cursor-pointer"
+                />
+              </Badge>
+            </Button>
+          )}
+          {comments.length > 0 && (
+            <>
+              <Badge
+                className="ml-6"
+                content={comments.length}
+                color="default"
+                variant="faded"
+              >
+                <FaRegCommentDots />
+              </Badge>
+            </>
+          )}
         </div>
         <div className="mt-3">
           <Text as="b">{title}</Text>
         </div>
-        <div className="mt-3">
+        <div className="mt-1 p-3">
           <Text>{articleContent}</Text>
         </div>
       </div>

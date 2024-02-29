@@ -166,86 +166,87 @@ function Fetchprofilehome({
       </div>
 
       <div className="flex items-center justify-center space-x-10 xl:grid xl:items-start xl:justify-start xl:space-x-0 ">
-        {authUserId ? (
-          <>
-            <div className="mt-5 text-center">
-              <Text as="b" fontSize="large" textAlign="center">
-                มาแรง
-              </Text>
-              <div className="flex xl:grid">
-                {ToptierArticle?.map((Article, index) => (
-                  <>
-                    <div
-                      key={index}
-                      className=" mt-6 grid items-start justify-start xl:flex"
-                    >
-                      <Link
-                        href={`/article/${article.id}`}
-                        onClick={() => {
-                          visitHandler(article.id)
-                        }}
+        <div className="mt-3 grid">
+          <Text as="b" fontSize="large" textAlign="center">
+            มาแรง
+          </Text>
+          {authUserId ? (
+            <>
+              <div className="space-x-6 text-center">
+                <div className="flex items-center justify-center xl:grid">
+                  {ToptierArticle?.map((Article, index) => (
+                    <>
+                      <div
+                        key={index}
+                        className=" ml-3 mr-6 mt-3 grid items-start justify-start  xl:flex"
                       >
-                        <Image
-                          isBlurred
-                          src={Article.ArticleImage}
-                          alt={Article.ArticleImage}
-                          radius="md"
-                          width={100}
-                          height={100}
-                          className=" h-43 w-full object-scale-down"
-                        />
-                      </Link>
-
-                      <div className="ml-3 text-center xl:text-start">
-                        <h1>ผู้เขียน {Article.author.name}</h1>
+                        <Link
+                          href={`/article/${article.id}`}
+                          onClick={() => {
+                            visitHandler(article.id)
+                          }}
+                        >
+                          <Image
+                            isBlurred
+                            src={Article.ArticleImage}
+                            alt={Article.ArticleImage}
+                            radius="md"
+                            width={200}
+                            height={100}
+                            className="relative"
+                          />
+                          <div className="mt-3">
+                            <Text as="b">{Article.title}</Text>
+                          </div>
+                        </Link>
                       </div>
-                    </div>
-                  </>
-                ))}
+                    </>
+                  ))}
 
-                {ToptierEvent?.map((Event, index) => (
-                  <>
-                    <div
-                      key={index}
-                      className=" mt-6 grid items-start justify-start xl:flex"
-                    >
-                      <Link
-                        href={`/event/${event.id}`}
-                        onClick={() => {
-                          visitEvent(event.id)
-                        }}
+                  {ToptierEvent?.map((Event, index) => (
+                    <>
+                      <div
+                        key={index}
+                        className=" mt-6 grid items-start justify-start xl:flex"
                       >
-                        <Image
-                          isBlurred
-                          src={Event.eventImage}
-                          alt={Event.eventImage}
-                          radius="md"
-                          width={100}
-                          height={100}
-                          className=" h-43 w-full object-scale-down"
-                        />
-                      </Link>
-                      <div className="ml-3 text-center xl:text-start">
-                        <h1>ผู้เขียน {Event.author.name}</h1>
+                        <Link
+                          href={`/event/${event.id}`}
+                          onClick={() => {
+                            visitEvent(event.id)
+                          }}
+                        >
+                          <Image
+                            isBlurred
+                            src={Event.eventImage}
+                            alt={Event.eventImage}
+                            radius="md"
+                            width={100}
+                            height={100}
+                            className=" h-43 w-full object-scale-down"
+                          />
+                        </Link>
+                        <div className="ml-3 text-center xl:text-start">
+                          <h1>ผู้เขียน {Event.author.name}</h1>
+                        </div>
                       </div>
-                    </div>
-                  </>
-                ))}
+                    </>
+                  ))}
+                </div>
               </div>
-            </div>
-          </>
-        ) : (
-          <>
-            <div className="space-y-3 text-blue-800 xl:grid">
-              <Link href="/sign-in" className="hover:underline">
-                ลงชื่อเข้าใช้
-              </Link>
-              <Link href="/sign-up" className="hover:underline">
-                สมัครใช้งาน
-              </Link>
-            </div>
-          </>
-        )}
+            </>
+          ) : (
+            <>
+              <div className="space-y-3 text-blue-800 xl:grid">
+                <Link href="/sign-in" className="hover:underline">
+                  ลงชื่อเข้าใช้
+                </Link>
+                <Link href="/sign-up" className="hover:underline">
+                  สมัครใช้งาน
+                </Link>
+              </div>
+            </>
+          )}
+        </div>
       </div>
     </>
   )

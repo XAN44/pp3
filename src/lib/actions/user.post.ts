@@ -268,11 +268,13 @@ export async function fetchUserProfileByID(id: string) {
 
 export async function fetchInBlogPage() {
   const fetchUser = await db.article.findMany({
+    take: 5,
     select: {
       id: true,
       title: true,
       ArticleImage: true,
       articleContent: true,
+
       createAt: true,
       authorId: true,
 

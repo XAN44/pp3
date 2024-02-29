@@ -1,59 +1,57 @@
-"use client";
-import { unFollower } from "@/lib/actions/user.follow";
-import { usePathname } from "next/navigation";
+'use client'
+import { Button } from '@nextui-org/react'
+import React, { useEffect, useState } from 'react'
+import useSWR from 'swr'
+
+const fetcher = (url: string) => fetch(url).then((res) => res.json())
 
 interface Props {
-  followAccount: string;
-  followingByCurrentId: string;
-  totalFollow: number;
+  authorAccountId: string | null
+  currentAccountId: string | null
 }
-export default function Follow({
-  followAccount,
-  followingByCurrentId,
-  totalFollow,
-}: Props) {
-  const path = usePathname() ?? "";
 
-  // const handleFollower = async () => {
-  //   try {
-  //     await Follower(JSON.parse(followingByCurrentId), followAccount, path);
-  //     console.log("Success");
-  //     // ตรวจสอบสถานะการติดตามใหม่หลังจากกดปุ่มติดตาม
-  //     const isFollowing = await CheckFollow(
-  //       JSON.stringify(followingByCurrentId),
-  //       followAccount
-  //     );
-  //     if (isFollowing) {
-  //       console.log("Already following");
-  //     } else {
-  //       console.log("Not following yet");
-  //     }
-  //   } catch (error) {
-  //     console.error("Error:", error);
-  //   }
-  // };
+interface FollowData {
+  existingFollow: {
+    currentAccountId: string | null
+  }
+  Followed: boolean
+}
 
-  const handleunFollower = async () => {
-    try {
-      await unFollower(JSON.parse(followingByCurrentId), followAccount, path);
-      console.log("Success");
-    } catch (error) {
-      console.error("Error:", error);
+export default function Follow({ authorAccountId, currentAccountId }: Props) {
+  const { data: Follow, mutate: MutaFollow } = useSWR<FollowData>(
+    `api/follow?id=${authorAccountId}`,
+    fetcher
+  )
+
+  const [follow, setFollow] = useState(false)
+
+  useEffect(() => {
+    if (Follow && Follow.Followed) {
+      setFollow(Follow.Followed)
     }
-  };
+  }, [Follow])
+  const handleFollow = async () => {
+    try {
+      const response = await fetch('/api/follow', {
+        method: 'POST',
+        body: JSON.stringify({ authorAccountId }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      const data = await response.json()
+      if (response.ok) {
+        setFollow(!follow)
+        MutaFollow()
+      }
+    } catch (error) {
+      console.error('เกิดข้อผิดพลาดในการติดตาม:', error)
+    }
+  }
 
-  // แสดงผลปุ่มตามสถานะการติดตามที่มีในข้อมูล totalFollow โดยตรง
   return (
-    <div className="">
-      {/* {totalFollow > 0 ? (
-        <>
-          <button onClick={handleunFollower}>Unfollow</button>
-        </>
-      ) : (
-        <>
-          <button onClick={handleFollower}>Follow</button>
-        </>
-      )} */}
-    </div>
-  );
+    <>
+      <Button onClick={handleFollow}>{follow ? 'Unfollow' : 'Follow'}</Button>
+    </>
+  )
 }

@@ -25,7 +25,7 @@ export async function GET(request: Request) {
         ArticleImage: true,
         Visit: true,
       },
-      take: 1,
+      take: 2,
       orderBy: {
         Visit: {
           _count: 'desc',

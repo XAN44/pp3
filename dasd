@@ -1,95 +1,191 @@
-import React from 'react'
+'use client'
+import { Badge, Button, Divider, Image, useSwitch } from '@nextui-org/react'
+import { Avatar, AvatarImage } from '../ui/avatar'
+import Followbtn from '../follow/followbtn'
+import { Text } from '@chakra-ui/react'
+import { Heart } from 'lucide-react'
+import useSWR from 'swr'
+import { useEffect, useState } from 'react'
+import { FaComment } from 'react-icons/fa'
+import { FaRegComment, FaRegCommentDots } from 'react-icons/fa6'
+import Follow from '../follow/follow'
 
-import { Avatar, Card, CardBody, CardFooter, Image } from '@nextui-org/react'
-import Link from 'next/link'
-import { Badge } from '@chakra-ui/react'
+const fetcher = (url: string) => fetch(url).then((res) => res.json())
 
-import { fetchInBlogPage } from '@/lib/actions/user.post'
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from '@/components/ui/carousel'
+interface Props {
+  id: string
+  title: string | null
+  articleContent: string | null
+  ArticleImage: string | null
+  createAt: string
+  tag: {
+    id: string | null
+    tag: string | null
+  }[]
+  authorId: string | null
+  author: {
+    id: string
+    name: string | null
+    image: string | null
+  } | null
+  comments: {
+    id: string
+    text: string
+    author: {
+      id: string
+      name: string | null
+      image: string | null
+    } | null
+  }[]
+  isComment?: boolean
+  currentId: string
+  isFollow: boolean
+}
 
-export default async function Articleinhomepage() {
-  const otherInfo = await fetchInBlogPage()
+interface LikeData {
+  totalLike: number
+  existingLike: {
+    currentId: string
+  }
+}
+
+export default function ArticleHome({
+  id,
+  title,
+  articleContent,
+  ArticleImage,
+  tag,
+  author,
+  authorId,
+  comments,
+  createAt,
+  isComment,
+  currentId,
+  isFollow,
+}: Props) {
+  const { data: Like, mutate: MutaLike } = useSWR<LikeData>(
+    `/api/like?id=${id}&currentId=${currentId}`,
+    fetcher
+  )
+  const [liked, setLiked] = useState(false)
+
+  useEffect(() => {
+    async function FetchLike() {
+      const result = await fetch(`/api/like?id=${id}&currentId=${currentId}`)
+      const body = await result.json()
+      setLiked(body.liked)
+    }
+    FetchLike()
+  }, [id, currentId])
+
+  const handleLike = async () => {
+    try {
+      const response = await fetch('/api/like', {
+        method: 'POST',
+        body: JSON.stringify({ id, currentId }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      const data = await response.json()
+      if (response.ok) {
+        setLiked(!liked)
+        MutaLike()
+      }
+    } catch (error) {}
+  }
+
   return (
-    <>
-      <Carousel
-        opts={{
-          align: 'start',
-        }}
-        className="w-full max-w-sm"
-      >
-        <CarouselContent>
-          {otherInfo.map((article, index) => (
-            <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3">
-              <>
-                <div className="p-1">
-                  <Card
-                    shadow="sm"
-                    radius="lg"
-                    isFooterBlurred
-                    key="cas"
-                    isPressable
-                    className="  rounded-l-none rounded-r-none bg-zinc-300"
-                  >
-                    <CardBody className=" overflow-visible p-0 pt-0">
-                      <Image
-                        isZoomed
-                        src={article.ArticleImage || ' '}
-                        alt="articleImage"
-                        radius="md"
-                        width="100%"
-                        className="h-[140px] w-full rounded-xl object-cover"
-                      />
-                    </CardBody>
-                    <CardFooter className="text-small flex place-items-center items-center justify-between px-3">
-                      <div className="w-full ">
-                        <div className="w-40">
-                          <b className="">{article.title}</b>
-                          <p className="text-default-500 text-start">
-                            {article.articleContent}
-                          </p>
-                        </div>
-                      </div>
-                      <div className=" grid place-items-center items-center justify-center">
-                        <div className="w-10  ">
-                          <Link href={`/profile/${article?.authorId}`}>
-                            <Avatar
-                              alt="profile"
-                              src={article?.author?.image || ''}
-                            />
-                          </Link>
-                        </div>
+    <div className="h-full w-full  ">
+      <div className="flex">
+        <Avatar className="h-14 w-14">
+          {author?.image && (
+            <AvatarImage
+              src={author?.image || ''}
+              alt="profileImage"
+              width={250}
+              height={250}
+            />
+          )}
+        </Avatar>
+        <div className="ml-3 mt-3 grid text-start">
+          <div className="flex items-center justify-center ">
+            <Text as="b"> {author && author.name}</Text>
+            <div className="divider divider-neutral divider-horizontal mt-3 h-5 w-2 items-center justify-center" />
+            <div className="">
+              {currentId !== author?.id && (
+                <Follow authorAccountId={authorId || ''} currentAccountId={currentId} />
+              )}
+            </div>
+            <div className="mb-2">
+              {currentId === author?.id && (
+                <div className="badge badge-neutral mt-3">โพสต์ของคุณ</div>
+              )}
+            </div>
+          </div>
+          <div className="">
+            <Text>{createAt}</Text>
+          </div>
+        </div>
+      </div>
+      <div className="mt-4 grid place-items-center items-center justify-center ">
+        {ArticleImage && <Image alt="Blog Image" src={ArticleImage} />}
+      </div>
 
-                        <div className="mt-3">
-                          {article.tag ? (
-                            article.tag.map((hashTag: any) => (
-                              <div
-                                className="badge badge-neutral  "
-                                key={hashTag.id}
-                              >
-                                {hashTag.tag}
-                              </div>
-                            ))
-                          ) : (
-                            <Badge>ไม่มีแฮชแท็ก</Badge>
-                          )}
-                        </div>
-                      </div>
-                    </CardFooter>
-                  </Card>
-                </div>
+      <div className="mt-6 text-start">
+        {tag.map((hashtag) => (
+          <>
+            {hashtag ? (
+              <>
+                <div className="badge badge-info">{hashtag.tag}</div>
               </>
-            </CarouselItem>
-          ))}
-        </CarouselContent>
-        <CarouselPrevious />
-        <CarouselNext />
-      </Carousel>
-    </>
+            ) : null}
+          </>
+        ))}
+        <div className="mt-4 flex items-center justify-start space-x-6">
+          {Like && (
+            <Button
+              isIconOnly
+              variant="light"
+              size="sm"
+              aria-label="Like"
+              color="danger"
+              className="
+              relative overflow-visible 
+              shadow-xl after:absolute
+              after:inset-0 after:bg-background/40 after:transition
+              after:!duration-500 hover:-translate-y-2 hover:after:scale-150 hover:after:opacity-0
+              "
+              onClick={handleLike}
+            >
+              <Badge content={Like.totalLike} color="default" variant="faded">
+                <Heart
+                  color={liked ? '#FF0000' : '#000000'}
+                  className="hover:	hover:cursor-pointer"
+                />
+              </Badge>
+            </Button>
+          )}
+          {comments.length > 0 && (
+            <>
+              <Badge
+                className="ml-6"
+                content={comments.length}
+                color="default"
+                variant="faded"
+              >
+                <FaRegCommentDots />
+              </Badge>
+            </>
+          )}
+        </div>
+        <div className="mt-3">
+          <Text as="b">{title}</Text>
+        </div>
+        <div className="mt-1 p-3">
+          <Text>{articleContent}</Text>
+        </div>
+      </div>
+    </div>
   )
 }

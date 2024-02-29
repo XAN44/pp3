@@ -98,7 +98,7 @@ export default function ArticleForm({
       loading: { title: 'กำลังโพสต์ ...', description: 'โปรดรอสักครู่' },
     })
 
-    const promise = await UserPromise
+    postArticle.reset()
 
     setIsloading(false)
     setIsText('บันทึกสำเร็จ')
@@ -133,7 +133,7 @@ export default function ArticleForm({
     <>
       {accountId === authUserId && (
         <div className=" ">
-          <Button onClick={onOpen}>BLOG POST</Button>
+          <Button onClick={onOpen}>Create Blog</Button>
           <AlertDialog
             motionPreset="slideInBottom"
             leastDestructiveRef={cancelRef}
@@ -143,7 +143,7 @@ export default function ArticleForm({
           >
             <AlertDialogOverlay />
             <AlertDialogContent>
-              <AlertDialogHeader>Discard Changes?</AlertDialogHeader>
+              <AlertDialogHeader>สร้างบล็อกของคุณ !</AlertDialogHeader>
               <AlertDialogCloseButton />
               <AlertDialogBody>
                 <Form {...postArticle}>
@@ -156,7 +156,7 @@ export default function ArticleForm({
                       name="title"
                       render={({ field }) => (
                         <FormItem className="flex flex-col gap-3 ">
-                          <FormLabel> TITLE </FormLabel>
+                          <FormLabel> ตั้งชื่อ Blog </FormLabel>
                           <FormControl className=" border-dark-4 border">
                             <Input
                               className=" w-full resize-none rounded-lg bg-base-300 pl-3 pr-3 pt-3 ring-1 ring-black"
@@ -169,56 +169,12 @@ export default function ArticleForm({
                     />
                     <FormField
                       control={postArticle.control}
-                      name="articleContent"
-                      render={({ field }) => (
-                        <FormItem className="flex flex-col place-items-center items-center justify-center gap-3  ">
-                          <FormLabel> CONTENT </FormLabel>
-
-                          <FormControl className="">
-                            <Textarea
-                              labelPlacement="outside"
-                              placeholder="แบ่งปันเรื่องราวดีๆของคุณเข้าสู่แพลตฟอร์ม!"
-                              className="max-w-xs"
-                              {...field}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={postArticle.control}
-                      name="tag"
-                      render={({ field }) => (
-                        <FormItem className="flex flex-col gap-3 ">
-                          <FormLabel> HASHTAG </FormLabel>
-                          <Select
-                            items={HASHTAG}
-                            label="Select Hashtag"
-                            placeholder="HashTag For You"
-                            {...field}
-                            value={field.value}
-                            onChange={(value) => field.onChange(value)}
-                          >
-                            {(HASHTAG) => (
-                              <SelectItem key={HASHTAG.value}>
-                                {HASHTAG.label}
-                              </SelectItem>
-                            )}
-                          </Select>
-                          <FormDescription>
-                            คุณสามารถเลือกแท็กเพื่อโพสต์แสดงไปยังเนื้อหาที่เกี่ยวข้องได้
-                          </FormDescription>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={postArticle.control}
                       name="articleImage"
                       render={({ field }) => (
                         <FormItem className="flex w-full flex-col items-center  justify-center gap-2 ">
-                          <FormLabel className="text-base-semibold text-light-2"></FormLabel>
+                          <FormLabel className="text-base-semibold text-light-2">
+                            เลือกรูปภาพของคุณ
+                          </FormLabel>
                           <FormControl>
                             <label
                               htmlFor="file-upload"
@@ -244,6 +200,53 @@ export default function ArticleForm({
                               display: imageSelected ? 'block' : 'none',
                             }}
                           />
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={postArticle.control}
+                      name="tag"
+                      render={({ field }) => (
+                        <FormItem className="flex flex-col gap-3 ">
+                          <FormLabel> เลือกหมวดหมู่ </FormLabel>
+                          <Select
+                            items={HASHTAG}
+                            label="Select Hashtag"
+                            placeholder="HashTag For You"
+                            {...field}
+                            value={field.value}
+                            onChange={(value) => field.onChange(value)}
+                          >
+                            {(HASHTAG) => (
+                              <SelectItem key={HASHTAG.value}>
+                                {HASHTAG.label}
+                              </SelectItem>
+                            )}
+                          </Select>
+                          <FormDescription>
+                            คุณสามารถเลือกแท็กเพื่อโพสต์แสดงไปยังเนื้อหาที่เกี่ยวข้องได้
+                          </FormDescription>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={postArticle.control}
+                      name="articleContent"
+                      render={({ field }) => (
+                        <FormItem className="flex flex-col place-items-center items-center justify-center gap-3  ">
+                          <FormLabel> เริ่มเขียน Blog ของคุณ </FormLabel>
+
+                          <FormControl className="">
+                            <Textarea
+                              labelPlacement="outside"
+                              placeholder="แบ่งปันเรื่องราวดีๆของคุณเข้าสู่แพลตฟอร์ม!"
+                              className="max-w-xs"
+                              {...field}
+                            />
+                          </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}

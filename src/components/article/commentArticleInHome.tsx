@@ -38,6 +38,7 @@ export default function CommentArticleInHome({
 
   const onSubmitPost = async (values: z.infer<typeof commentArticle>) => {
     await CommentinArticlesHome(articleId, values.commentz, currentUserId, path)
+    commentTimeLine.reset()
   }
   return (
     <div className="">

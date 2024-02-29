@@ -6,7 +6,7 @@ export async function POST(request: Request) {
   try {
     const user = await getCurrentUser()
 
-    const { id } = await request.json()
+    const { id, currentId } = await request.json()
     if (!id) {
       return NextResponse.json(
         { message: 'กรุณาใส่ ID ของบทความ' },
@@ -34,7 +34,6 @@ export async function POST(request: Request) {
         const unlike = await db.like.delete({
           where: {
             id: existingLike.id,
-            isLiked: false,
           },
         })
         return NextResponse.json(unlike)
@@ -44,7 +43,6 @@ export async function POST(request: Request) {
           data: {
             userId: user?.id,
             articleId: id,
-            isLiked: true,
           },
         })
         return NextResponse.json(like)
@@ -63,25 +61,42 @@ export async function GET(request: Request) {
     const user = await getCurrentUser()
     const { searchParams } = new URL(request.url)
     const id = searchParams.get('id') || ''
+    // const currentId = searchParams.get('currentId') || ''
 
     const ArticleId = await db.article.findFirst({
       where: {
         id,
       },
+      select: {
+        id: true,
+      },
     })
 
     if (ArticleId) {
+      // เช็คว่าผู้ใช้ปัจจุบันได้กดไลค์บทความนี้หรือไม่
       const existingLike = await db.like.findFirst({
         where: {
-          articleId: id,
           userId: user?.id,
+          articleId: id,
         },
         select: {
           id: true,
-          isLiked: true,
         },
       })
-      return NextResponse.json(existingLike)
+
+      const totalLike = await db.like.count({
+        where: {
+          articleId: id,
+        },
+        select: {
+          id: true,
+        },
+      })
+
+      return NextResponse.json({
+        liked: !!existingLike?.id,
+        totalLike: totalLike.id,
+      })
     }
     return NextResponse.json(ArticleId)
   } catch (error) {
