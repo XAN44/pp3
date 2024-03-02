@@ -37,7 +37,7 @@ export default async function ArticleTagTravel() {
         className="w-full max-w-full "
       >
         <CarouselContent>
-          {otherInfo.map((article, index) => (
+          {otherInfo.map((article: any, index: any) => (
             <>
               <CarouselItem
                 key={index}
@@ -71,7 +71,7 @@ export default async function ArticleTagTravel() {
                           <div className="grid">
                             <div className="ml-4 ">
                               <Text>{article.author?.name}</Text>
-                              {article.tag.map((hashtag) => (
+                              {article.tag.map((hashtag: any) => (
                                 <>
                                   {hashtag?.tag ? (
                                     <Badge width="max-content">
@@ -91,19 +91,20 @@ export default async function ArticleTagTravel() {
                               เข้าชม
                               <span className="ml-2">
                                 {article.Visit.reduce(
-                                  (total, current) => total + current.count,
+                                  (total: number, current: any) =>
+                                    total + current.count,
                                   0
                                 )}
                               </span>
                             </Text>
                           </div>
                           <div className="">
-                            {/* <Link href={`/article/${article.id}`}> */}
-                            <VisitBtnArticleC
-                              id={article.id}
-                              userId={user?.id || ''}
-                            />
-                            {/* </Link> */}
+                            <Link href={`/article/${article.id}`}>
+                              <VisitBtnArticleC
+                                id={article.id}
+                                userId={user?.id || ''}
+                              />
+                            </Link>
                           </div>
                         </div>
                       </div>

@@ -43,7 +43,11 @@ import { FetchArticleByID } from '@/lib/actions/user.article'
 import CommentArticleInHome from '@/components/article/commentArticleInHome'
 import CommentArticleHome from '@/components/article/commentArticleHome'
 import VisitBtnArticleAll from '@/components/visit/visitArticleAll'
-import { fetchInBlogPage, fetchInEnentPage } from '@/lib/actions/user.carousel'
+import {
+  fetchBlogByFollowing,
+  fetchInBlogPage,
+  fetchInEnentPage,
+} from '@/lib/actions/user.carousel'
 
 export default async function Page() {
   const user = await getCurrentUser()
@@ -60,6 +64,7 @@ export default async function Page() {
   // TODO:แสดงการติดตาม
   const userfollow = await getTotalFollowers(user?.id || '')
   const userfollowing = await getTotalFollowing(user?.id || '')
+  const followBlog = await fetchBlogByFollowing(user?.id || '')
 
   return (
     <>
@@ -129,6 +134,7 @@ export default async function Page() {
                 <TabsList className="">
                   <TabsTrigger value="article"> บทความ</TabsTrigger>
                   <TabsTrigger value="event"> กิจกรรม</TabsTrigger>
+                  <TabsTrigger value="follow"> ติดตาม</TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="article">
@@ -252,6 +258,85 @@ export default async function Page() {
                         createAt={new Date(Event.createAt).toLocaleString()}
                         totalVisit={await TotalVisitEvent(Event.id)}
                       />
+                    ))}
+                  </div>
+                </TabsContent>
+
+                <TabsContent value="follow">
+                  <div className="mb-6">
+                    <Articleinhomepage />
+                  </div>
+
+                  <div className="mb-3 mt-5 place-items-center p-3 text-center ">
+                    {followBlog.map(async (ArticleBy, index: any) => (
+                      <>
+                        <div className="w-full rounded-lg p-3 shadow-xl">
+                          <div className="">
+                            <ArticleHome
+                              key={ArticleBy?.id}
+                              id={ArticleBy?.id}
+                              title={ArticleBy?.title}
+                              articleContent={ArticleBy?.articleContent}
+                              ArticleImage={ArticleBy.ArticleImage}
+                              tag={ArticleBy.tag}
+                              currentId={user?.id || ''}
+                              authorId={ArticleBy.authorId}
+                              author={ArticleBy.author}
+                              comments={ArticleBy.comment}
+                              createAt={new Date(
+                                ArticleBy.createAt
+                              ).toLocaleString()}
+                            />
+                          </div>
+                          <div className="left-3 mt-7 ">
+                            <CommentArticleInHome
+                              articleId={ArticleBy.id}
+                              currentUserImage={user?.image || ''}
+                              currentUserId={user?.id || ''}
+                            />
+                          </div>
+                          <div className="mb-10 mt-10">
+                            {ArticleBy.comment
+                              .slice(0, 4)
+                              .map((comment: any) => (
+                                <>
+                                  <CommentArticleHome
+                                    key={comment.id}
+                                    id={comment.id}
+                                    current={
+                                      user || {
+                                        id: '',
+                                        name: '',
+                                        image: '',
+                                      }
+                                    }
+                                    comment={comment?.text}
+                                    authorId={comment.authorId}
+                                    createAt={new Date(
+                                      comment.createdAt
+                                    ).toLocaleString()}
+                                    author={
+                                      comment.author || {
+                                        id: '',
+                                        name: '',
+                                        image: '',
+                                      }
+                                    }
+                                    reply={comment.Reply}
+                                    isComment
+                                    isReply
+                                  />
+                                </>
+                              ))}
+                            <Link href={`/article/${ArticleBy.id}`}>
+                              <VisitBtnArticleAll
+                                id={ArticleBy.id}
+                                userId={user?.id || ''}
+                              />
+                            </Link>
+                          </div>
+                        </div>
+                      </>
                     ))}
                   </div>
                 </TabsContent>

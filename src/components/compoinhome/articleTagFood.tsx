@@ -98,12 +98,12 @@ export default async function ArticleTagFood() {
                             </Text>
                           </div>
                           <div className="">
-                            {/* <Link href={`/article/${article.id}`}> */}
-                            <VisitBtnArticleC
-                              id={article.id}
-                              userId={user?.id || ''}
-                            />
-                            {/* </Link> */}
+                            <Link href={`/article/${article.id}`}>
+                              <VisitBtnArticleC
+                                id={article.id}
+                                userId={user?.id || ''}
+                              />
+                            </Link>
                           </div>
                         </div>
                       </div>

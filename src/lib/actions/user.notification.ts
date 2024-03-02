@@ -6,7 +6,7 @@ import { getCurrentUser } from '../session'
 
 export async function Notification(
   userId: string,
-  postId: string,
+  articleId: string,
   body: string,
   path: string
 ) {
@@ -20,7 +20,7 @@ export async function Notification(
       data: {
         body,
         userId,
-        postId,
+        articleId,
         current: user.name,
       },
       include: {
@@ -29,9 +29,9 @@ export async function Notification(
             name: true,
           },
         },
-        post: {
+        article: {
           select: {
-            content: true,
+            comment: true,
           },
         },
       },
@@ -39,7 +39,7 @@ export async function Notification(
 
     revalidatePath(path)
     console.log(
-      `ผู้ใช้ ${user.name} ได้แสดงความคิดเห็นในโพสต์ ${newNoti.post?.content} ของ ${newNoti.user?.name} ด้วยข้อความ ${body}`
+      `ผู้ใช้ ${user.name} ได้แสดงความคิดเห็นในโพสต์ ${newNoti.article?.comment} ของ ${newNoti.user?.name} ด้วยข้อความ ${body}`
     )
   } catch (error: any) {
     throw new Error(`Failed to create/update user: ${error.message}`)

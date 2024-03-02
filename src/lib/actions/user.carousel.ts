@@ -189,3 +189,94 @@ export async function fetchInEnentPage() {
   })
   return fetchUser
 }
+
+export async function fetchBlogByFollowing(userId: string) {
+  const followingIds = await db.follows.findMany({
+    where: {
+      followerId: userId,
+    },
+    select: {
+      followingId: true,
+    },
+  })
+
+  const fetchUser = await db.article.findMany({
+    where: {
+      authorId: {
+        in: followingIds.map((follow) => follow.followingId),
+      },
+    },
+    select: {
+      id: true,
+      title: true,
+      ArticleImage: true,
+      articleContent: true,
+      createAt: true,
+      authorId: true,
+      comment: {
+        orderBy: {
+          createdAt: 'asc',
+        },
+        select: {
+          id: true,
+          text: true,
+          authorid: true,
+          createdAt: true,
+          author: {
+            select: {
+              id: true,
+              name: true,
+              image: true,
+            },
+          },
+          articleId: true,
+          Article: {
+            select: {
+              id: true,
+              title: true,
+              articleContent: true,
+              ArticleImage: true,
+            },
+          },
+          Reply: {
+            select: {
+              replytext: true,
+              author: {
+                select: {
+                  id: true,
+                  name: true,
+                  image: true,
+                },
+              },
+              replyCommet: {
+                select: {
+                  id: true,
+                },
+              },
+            },
+          },
+        },
+      },
+      Visit: {
+        select: {
+          count: true,
+        },
+      },
+      author: {
+        select: {
+          id: true,
+          name: true,
+          image: true,
+        },
+      },
+      tag: {
+        select: {
+          id: true,
+          tag: true,
+        },
+      },
+    },
+  })
+
+  return fetchUser
+}

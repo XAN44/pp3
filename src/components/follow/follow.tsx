@@ -30,6 +30,7 @@ export default function Follow({ authorAccountId, currentAccountId }: Props) {
       setFollow(Follow.Followed)
     }
   }, [Follow])
+
   const handleFollow = async () => {
     try {
       const response = await fetch('/api/follow', {

@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache'
 import { db } from '../db'
 import { getCurrentUser } from '../session'
+import { Notification } from './user.notification'
 
 interface Props {
   authorId: string
@@ -93,8 +94,20 @@ export async function FetchArticleByID(id: string) {
             id: true,
             name: true,
             image: true,
+            bio: true,
+            followers: {
+              select: {
+                id: true,
+              },
+            },
+            following: {
+              select: {
+                id: true,
+              },
+            },
           },
         },
+
         comment: {
           orderBy: {
             createdAt: 'asc',
@@ -175,7 +188,27 @@ export async function CommentinArticlesHome(
         articleId: articleId,
         authorid: authorId,
       },
+      include: {
+        author: {
+          select: {
+            name: true,
+          },
+        },
+      },
     })
+
+    if (
+      inArticle &&
+      inArticle.authorId &&
+      user &&
+      user.id !== inArticle.authorId
+    ) {
+      // แจ้งเตือนเจ้าของโพสต์
+      const auth = newCommentInArticle.author?.name
+
+      await Notification(inArticle.authorId, articleId, comment, path)
+    }
+
     revalidatePath(path)
   } catch (error: any) {
     throw new Error(`Faied to creat comment : ${error.message}`)

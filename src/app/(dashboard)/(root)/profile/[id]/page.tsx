@@ -9,7 +9,6 @@ import {
   getTotalFollowers,
   getTotalFollowing,
 } from '@/lib/actions/user.follow'
-import { checkLike, getLike } from '@/lib/actions/user.like'
 import { fetchUserProfileByID } from '@/lib/actions/user.post'
 import { TotalVisit1, TotalVisitEvent } from '@/lib/actions/user.visit'
 import { getCurrentUser } from '@/lib/session'
@@ -101,7 +100,7 @@ export default async function Page({ params }: { params: { id: string } }) {
                           id={ArticleBy.id}
                           title={ArticleBy.title}
                           articleContent={ArticleBy.articleContent}
-                          ArticleImage={ArticleBy.ArticleImage}
+                          ArticleImage={ArticleBy.ArticleImage || ''}
                           tag={ArticleBy.tag}
                           authorId={ArticleBy.authorId}
                           author={ArticleBy.author}

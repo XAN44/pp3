@@ -152,12 +152,12 @@ function Fetchprofilehome({
             <>
               <div className="flex ">
                 <div className="w-[83px]">
-                  <Text>ผู้ติดตาม</Text>
+                  <Text>กำลังติดตาม</Text>
                 </div>
                 <Text>{totalFollower}</Text>
               </div>
               <div className="flex space-x-2">
-                <Text>กำลังติดตาม </Text>
+                <Text>ผู้ติดตาม </Text>
                 <Text>{totalFollowing}</Text>
               </div>
             </>

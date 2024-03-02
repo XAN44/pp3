@@ -173,7 +173,15 @@ export default function ArticleHome({
         </div>
       </div>
       <div className="mt-4 grid place-items-center items-center justify-center ">
-        {ArticleImage && <Image alt="Blog Image" src={ArticleImage} />}
+        <div className="mt-4 grid place-items-center items-center justify-center">
+          {ArticleImage && Array.isArray(ArticleImage) ? (
+            ArticleImage.map((url, index) => (
+              <Image key={index} alt={`Blog Image ${index + 1}`} src={url} />
+            ))
+          ) : (
+            <Image alt="Blog Image" src={ArticleImage || ''} />
+          )}
+        </div>{' '}
       </div>
 
       <div className="mt-6 text-start">

@@ -1,191 +1,309 @@
 'use client'
-import { Badge, Button, Divider, Image, useSwitch } from '@nextui-org/react'
-import { Avatar, AvatarImage } from '../ui/avatar'
-import Followbtn from '../follow/followbtn'
-import { Text } from '@chakra-ui/react'
-import { Heart } from 'lucide-react'
-import useSWR from 'swr'
-import { useEffect, useState } from 'react'
-import { FaComment } from 'react-icons/fa'
-import { FaRegComment, FaRegCommentDots } from 'react-icons/fa6'
-import Follow from '../follow/follow'
 
-const fetcher = (url: string) => fetch(url).then((res) => res.json())
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form'
+import { POSTARTILE } from '@/lib/actions/user.article'
+import { useUploadThing } from '@/lib/uploadthing'
+import { isBase64Image } from '@/lib/utils'
+import { ArticlePost } from '@/lib/validations/Userpost'
+import {
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogCloseButton,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogOverlay,
+  useDisclosure,
+  useToast,
+} from '@chakra-ui/react'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { Select, SelectItem, Textarea } from '@nextui-org/react'
+import { Loader2 } from 'lucide-react'
+import Image from 'next/image'
+import { usePathname } from 'next/navigation'
+import React, { ChangeEvent, useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { CiImageOn } from 'react-icons/ci'
+import * as z from 'zod'
+import { HASHTAG } from '../tag/hashtag'
+import { Button } from '../ui/button'
+import { Input } from '../ui/input'
 
 interface Props {
-  id: string
-  title: string | null
-  articleContent: string | null
-  ArticleImage: string | null
-  createAt: string
-  tag: {
-    id: string | null
-    tag: string | null
-  }[]
-  authorId: string | null
-  author: {
-    id: string
-    name: string | null
-    image: string | null
-  } | null
-  comments: {
-    id: string
-    text: string
-    author: {
-      id: string
-      name: string | null
-      image: string | null
-    } | null
-  }[]
-  isComment?: boolean
-  currentId: string
-  isFollow: boolean
+  accountId: string
+  authUserId: string
+  title: string
+  articleContent: string
+  ArticleImage: string
+  tag: string
 }
 
-interface LikeData {
-  totalLike: number
-  existingLike: {
-    currentId: string
-  }
-}
-
-export default function ArticleHome({
-  id,
+export default function ArticleForm({
+  accountId,
+  authUserId,
   title,
   articleContent,
   ArticleImage,
   tag,
-  author,
-  authorId,
-  comments,
-  createAt,
-  isComment,
-  currentId,
-  isFollow,
 }: Props) {
-  const { data: Like, mutate: MutaLike } = useSWR<LikeData>(
-    `/api/like?id=${id}&currentId=${currentId}`,
-    fetcher
-  )
-  const [liked, setLiked] = useState(false)
+  const [files, setFiles] = useState<File[]>([])
+  const [selectedImages, setSelectedImages] = useState<string[]>([])
 
-  useEffect(() => {
-    async function FetchLike() {
-      const result = await fetch(`/api/like?id=${id}&currentId=${currentId}`)
-      const body = await result.json()
-      setLiked(body.liked)
-    }
-    FetchLike()
-  }, [id, currentId])
+  const [imageSelected, setImageSelected] = useState(false)
 
-  const handleLike = async () => {
-    try {
-      const response = await fetch('/api/like', {
-        method: 'POST',
-        body: JSON.stringify({ id, currentId }),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
-      const data = await response.json()
-      if (response.ok) {
-        setLiked(!liked)
-        MutaLike()
+  const { startUpload } = useUploadThing('media')
+  const [isLoading, setIsloading] = useState(false)
+  const [isText, setIsText] = useState('บันทึก')
+  const toast = useToast()
+
+  const pathname = usePathname()
+  const postArticle = useForm<z.infer<typeof ArticlePost>>({
+    resolver: zodResolver(ArticlePost),
+    defaultValues: {},
+  })
+
+  const onSubmitPost = async (values: z.infer<typeof ArticlePost>) => {
+    setIsloading(true)
+
+    const blob = values.articleImage
+    if (blob) {
+      const hasImageChange = isBase64Image(blob)
+      if (hasImageChange) {
+        const imgRes = await startUpload(files)
+        if (imgRes && imgRes[0].url) {
+          values.articleImage = imgRes[0].url
+        }
       }
-    } catch (error) {}
+    }
+
+    const UserPromise = POSTARTILE({
+      authorId: authUserId,
+      title: values.title ? String(values.title) : '',
+      articleContent: values.articleContent
+        ? String(values.articleContent)
+        : '',
+      ArticleImage: values.articleImage ? String(values.articleImage) : '',
+      tag: values.tag ? String(values.tag) : '',
+      path: pathname,
+    })
+
+    toast.promise(UserPromise, {
+      success: { title: 'สำเร็จ!', description: 'สร้างบล็อกสำเร็จแล้ว' },
+      error: { title: 'เกิดข้อผิดพลาด', description: 'เกิดข้อผิดพลาดบางอย่าง' },
+      loading: { title: 'กำลังโพสต์ ...', description: 'โปรดรอสักครู่' },
+    })
+
+    postArticle.reset()
+
+    setIsloading(false)
+    setIsText('บันทึกสำเร็จ')
+    console.log('NEW ARTICLE', POSTARTILE)
   }
 
-  return (
-    <div className="h-full w-full  ">
-      <div className="flex">
-        <Avatar className="h-14 w-14">
-          {author?.image && (
-            <AvatarImage
-              src={author?.image || ''}
-              alt="profileImage"
-              width={250}
-              height={250}
-            />
-          )}
-        </Avatar>
-        <div className="ml-3 mt-3 grid text-start">
-          <div className="flex items-center justify-center ">
-            <Text as="b"> {author && author.name}</Text>
-            <div className="divider divider-neutral divider-horizontal mt-3 h-5 w-2 items-center justify-center" />
-            <div className="">
-              {currentId !== author?.id && (
-                <Follow authorAccountId={authorId || ''} currentAccountId={currentId} />
-              )}
-            </div>
-            <div className="mb-2">
-              {currentId === author?.id && (
-                <div className="badge badge-neutral mt-3">โพสต์ของคุณ</div>
-              )}
-            </div>
-          </div>
-          <div className="">
-            <Text>{createAt}</Text>
-          </div>
-        </div>
-      </div>
-      <div className="mt-4 grid place-items-center items-center justify-center ">
-        {ArticleImage && <Image alt="Blog Image" src={ArticleImage} />}
-      </div>
+  const handleImage = (
+    e: ChangeEvent<HTMLInputElement>,
+    fieldChange: (Value: string) => void
+  ) => {
+    e.preventDefault()
+    const fileReader = new FileReader()
 
-      <div className="mt-6 text-start">
-        {tag.map((hashtag) => (
-          <>
-            {hashtag ? (
-              <>
-                <div className="badge badge-info">{hashtag.tag}</div>
-              </>
-            ) : null}
-          </>
-        ))}
-        <div className="mt-4 flex items-center justify-start space-x-6">
-          {Like && (
-            <Button
-              isIconOnly
-              variant="light"
-              size="sm"
-              aria-label="Like"
-              color="danger"
-              className="
-              relative overflow-visible 
-              shadow-xl after:absolute
-              after:inset-0 after:bg-background/40 after:transition
-              after:!duration-500 hover:-translate-y-2 hover:after:scale-150 hover:after:opacity-0
-              "
-              onClick={handleLike}
-            >
-              <Badge content={Like.totalLike} color="default" variant="faded">
-                <Heart
-                  color={liked ? '#FF0000' : '#000000'}
-                  className="hover:	hover:cursor-pointer"
-                />
-              </Badge>
-            </Button>
-          )}
-          {comments.length > 0 && (
-            <>
-              <Badge
-                className="ml-6"
-                content={comments.length}
-                color="default"
-                variant="faded"
-              >
-                <FaRegCommentDots />
-              </Badge>
-            </>
-          )}
+    if (e.target.files && e.target.files.length > 0) {
+      const filesArray = Array.from(e.target.files)
+      const imageUrls: string[] = []
+
+      filesArray.forEach((file) => {
+        if (!file.type.includes('image')) return
+
+        const fileReader = new FileReader()
+        fileReader.onload = (event) => {
+          const imageDataUrl = event.target?.result?.toString() || ' '
+          imageUrls.push(imageDataUrl)
+          if (imageUrls.length === filesArray.length) {
+            setSelectedImages([...selectedImages, ...imageUrls])
+            setImageSelected(true)
+          }
+        }
+        fileReader.readAsDataURL(file)
+      })
+    }
+  }
+
+  const handleRemoveImage = (index: number) => {
+    const updatedImages = [...selectedImages]
+    updatedImages.splice(index, 1)
+    setSelectedImages(updatedImages)
+  }
+  const { isOpen, onOpen, onClose } = useDisclosure()
+  const cancelRef = React.useRef<HTMLInputElement>(null)
+
+  return (
+    <>
+      {accountId === authUserId && (
+        <div className=" ">
+          <Button onClick={onOpen}>Create Blog</Button>
+          <AlertDialog
+            motionPreset="slideInBottom"
+            leastDestructiveRef={cancelRef}
+            onClose={onClose}
+            isOpen={isOpen}
+            isCentered
+          >
+            <AlertDialogOverlay />
+            <AlertDialogContent>
+              <AlertDialogHeader>สร้างบล็อกของคุณ !</AlertDialogHeader>
+              <AlertDialogCloseButton />
+              <AlertDialogBody>
+                <Form {...postArticle}>
+                  <form
+                    onSubmit={postArticle.handleSubmit(onSubmitPost)}
+                    className="flex flex-col justify-center gap-10 text-center"
+                  >
+                    <FormField
+                      control={postArticle.control}
+                      name="title"
+                      render={({ field }) => (
+                        <FormItem className="flex flex-col gap-3 ">
+                          <FormLabel> ตั้งชื่อ Blog </FormLabel>
+                          <FormControl className=" border-dark-4 border">
+                            <Input
+                              className=" w-full resize-none rounded-lg bg-base-300 pl-3 pr-3 pt-3 ring-1 ring-black"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={postArticle.control}
+                      name="articleImage"
+                      render={({ field }) => (
+                        <FormItem className="flex w-full flex-col items-center  justify-center gap-2 ">
+                          <FormLabel className="text-base-semibold text-light-2">
+                            เลือกรูปภาพของคุณ
+                          </FormLabel>
+                          <FormControl>
+                            <label
+                              htmlFor="file-upload"
+                              className="flex w-12 cursor-pointer gap-2"
+                            >
+                              <input
+                                id="file-upload"
+                                type="file"
+                                className="hidden w-5 "
+                                accept="image/*"
+                                placeholder="add post photo"
+                                onChange={(e) => handleImage(e, field.onChange)}
+                                required
+                              />
+                              <CiImageOn size={30} id="file-upload" />
+                            </label>
+                          </FormControl>
+
+                          <div className="flex gap-3">
+                            {selectedImages.map(
+                              (image: string, index: number) => (
+                                <>
+                                  <div className="flex gap-3">
+                                    <Image
+                                      key={index}
+                                      src={image}
+                                      alt={`Selected Image ${index + 1}`}
+                                      width={100}
+                                      height={100}
+                                      style={{
+                                        display: imageSelected
+                                          ? 'block'
+                                          : 'none',
+                                      }}
+                                    />
+                                    <button
+                                      onClick={() => handleRemoveImage(index)}
+                                    >
+                                      ลบ
+                                    </button>
+                                  </div>
+                                </>
+                              )
+                            )}
+                          </div>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={postArticle.control}
+                      name="tag"
+                      render={({ field }) => (
+                        <FormItem className="flex flex-col gap-3 ">
+                          <FormLabel> เลือกหมวดหมู่ </FormLabel>
+                          <Select
+                            items={HASHTAG}
+                            label="Select Hashtag"
+                            placeholder="HashTag For You"
+                            {...field}
+                            value={field.value}
+                            onChange={(value) => field.onChange(value)}
+                          >
+                            {(HASHTAG) => (
+                              <SelectItem key={HASHTAG.value}>
+                                {HASHTAG.label}
+                              </SelectItem>
+                            )}
+                          </Select>
+                          <FormDescription>
+                            คุณสามารถเลือกแท็กเพื่อโพสต์แสดงไปยังเนื้อหาที่เกี่ยวข้องได้
+                          </FormDescription>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={postArticle.control}
+                      name="articleContent"
+                      render={({ field }) => (
+                        <FormItem className="flex flex-col place-items-center items-center justify-center gap-3  ">
+                          <FormLabel> เริ่มเขียน Blog ของคุณ </FormLabel>
+
+                          <FormControl className="">
+                            <Textarea
+                              labelPlacement="outside"
+                              placeholder="แบ่งปันเรื่องราวดีๆของคุณเข้าสู่แพลตฟอร์ม!"
+                              className="max-w-xs"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <Button type="submit" className="mt-3" disabled={isLoading}>
+                      {isLoading ? (
+                        <>
+                          <Button disabled>
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            Please wait
+                          </Button>
+                        </>
+                      ) : (
+                        isText
+                      )}
+                    </Button>
+                  </form>
+                </Form>
+              </AlertDialogBody>
+            </AlertDialogContent>
+          </AlertDialog>
         </div>
-        <div className="mt-3">
-          <Text as="b">{title}</Text>
-        </div>
-        <div className="mt-1 p-3">
-          <Text>{articleContent}</Text>
-        </div>
-      </div>
-    </div>
+      )}
+    </>
   )
 }
