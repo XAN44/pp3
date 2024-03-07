@@ -8,6 +8,10 @@ interface Props {
   title: string
   eventContent: string
   eventImage: string
+  eventstartTime: string
+  eventlocation: string
+  eventparticipants: string
+  blogInArticle: any
   path: string
   tag: string
 }
@@ -17,6 +21,10 @@ export async function EVENTPOST({
   title,
   eventContent,
   eventImage,
+  eventstartTime,
+  eventlocation,
+  blogInArticle,
+  eventparticipants,
   path,
   tag,
 }: Props): Promise<void> {
@@ -24,12 +32,17 @@ export async function EVENTPOST({
     if (!authorId) {
       throw new Error('Pless LOGIN')
     }
+
     await db.event.create({
       data: {
         authorId: authorId,
         title,
         eventContent,
         eventImage,
+        eventstartTime,
+        eventlocation,
+        blogInArticle,
+        eventparticipants,
         tag: {
           create: {
             tag: tag,
@@ -110,13 +123,16 @@ export async function FetchArticleByID(id: string) {
                 image: true,
               },
             },
-            articleId: true,
-            Article: {
+            eventId: true,
+            Event: {
               select: {
                 id: true,
                 title: true,
-                articleContent: true,
-                ArticleImage: true,
+                eventContent: true,
+                eventImage: true,
+                eventstartTime: true,
+                eventlocation: true,
+                eventparticipants: true,
               },
             },
             Reply: {
@@ -157,6 +173,7 @@ export async function FetchEventByID(id: string) {
       where: {
         id: id,
       },
+
       include: {
         tag: {
           select: {
@@ -169,8 +186,20 @@ export async function FetchEventByID(id: string) {
             id: true,
             name: true,
             image: true,
+            bio: true,
+            followers: {
+              select: {
+                id: true,
+              },
+            },
+            following: {
+              select: {
+                id: true,
+              },
+            },
           },
         },
+
         comment: {
           orderBy: {
             createdAt: 'asc',
@@ -185,15 +214,19 @@ export async function FetchEventByID(id: string) {
                 id: true,
                 name: true,
                 image: true,
+                bio: true,
               },
             },
-            articleId: true,
-            Article: {
+            eventId: true,
+            Event: {
               select: {
                 id: true,
                 title: true,
-                articleContent: true,
-                ArticleImage: true,
+                eventContent: true,
+                eventImage: true,
+                eventlocation: true,
+                eventparticipants: true,
+                eventstartTime: true,
               },
             },
             Reply: {

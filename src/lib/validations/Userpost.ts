@@ -17,6 +17,10 @@ export const EventPost = z.object({
   eventContent: z.string().nonempty().optional(),
   tag: z.string().nonempty().optional(),
   eventImage: z.string().url().nonempty(),
+  eventstartTime: z.string().nonempty(),
+  eventlocation: z.string().optional(),
+  blogInArticle: z.string().optional(),
+  eventparticipants: z.string().optional(),
 })
 
 export const commentPost = z.object({

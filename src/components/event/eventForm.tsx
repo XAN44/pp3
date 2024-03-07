@@ -21,11 +21,20 @@ import {
   AlertDialogContent,
   AlertDialogHeader,
   AlertDialogOverlay,
+  Text,
   useDisclosure,
   useToast,
 } from '@chakra-ui/react'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Select, SelectItem, Textarea } from '@nextui-org/react'
+import {
+  Avatar,
+  Chip,
+  Input,
+  Select,
+  SelectItem,
+  SelectedItems,
+  Textarea,
+} from '@nextui-org/react'
 import { Loader2 } from 'lucide-react'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
@@ -34,33 +43,66 @@ import { useForm } from 'react-hook-form'
 import { CiImageOn } from 'react-icons/ci'
 import * as z from 'zod'
 import { HASHTAG } from '../tag/hashtag'
-import { Button } from '../ui/button'
-import { Input } from '../ui/input'
+import { users } from '../tag/data1'
 
+import { Button } from '../ui/button'
+import useSWR from 'swr'
 interface Props {
   accountId: string
   authUserId: string
   title: string
   eventContent: string
   eventImage: string
+  eventstartTime: string
+  eventlocation: string
+  eventparticipants: string
+  blogInArticle: string
   tag: string
+}
+
+const fetcher = (url: string) => fetch(url).then((res) => res.json())
+
+type Blog = {
+  id: string
+  title: string
+  ArticleImage: string
+}
+
+type User = {
+  id: number
+  name: string
+  role: string
+  team: string
+  status: string
+  age: string
+  avatar: string
+  email: string
 }
 
 export default function EventForm({
   accountId,
   authUserId,
   title,
+  blogInArticle,
   eventContent,
   eventImage,
+  eventstartTime,
+  eventlocation,
+  eventparticipants,
   tag,
 }: Props) {
+  const { data: blogInEvent } = useSWR<Blog[]>(
+    `/api/blogInEvent?authUserId=${authUserId}`,
+    fetcher
+  )
+
   const [files, setFiles] = useState<File[]>([])
   const [selectedImage, setSelectedImage] = useState<string>('')
   const { startUpload } = useUploadThing('media')
   const [isLoading, setIsloading] = useState(false)
   const [isText, setIsText] = useState('บันทึก')
   const [imageSelected, setImageSelected] = useState(false)
-  
+
   const toast = useToast()
 
   const pathname = usePathname()
@@ -88,6 +130,14 @@ export default function EventForm({
       title: values.title ? String(values.title) : '',
       eventContent: values.eventContent ? String(values.eventContent) : '',
       eventImage: values.eventImage ? String(values.eventImage) : '',
+      eventstartTime: values.eventstartTime
+        ? String(values.eventstartTime)
+        : '',
+      eventlocation: values.eventlocation ? String(values.eventlocation) : '',
+      eventparticipants: values.eventparticipants
+        ? String(values.eventparticipants)
+        : '',
+      blogInArticle: values.blogInArticle ? String(values.blogInArticle) : '',
       tag: values.tag ? String(values.tag) : '',
       path: pathname,
     })
@@ -141,26 +191,46 @@ export default function EventForm({
           >
             <AlertDialogOverlay />
             <AlertDialogContent>
-              <AlertDialogHeader>Discard Changes?</AlertDialogHeader>
+              <AlertDialogHeader>สร้างกิจกรรม !</AlertDialogHeader>
               <AlertDialogCloseButton />
               <AlertDialogBody>
                 <Form {...postArticle}>
                   <form
                     onSubmit={postArticle.handleSubmit(onSubmitPost)}
-                    className="flex flex-col justify-center gap-10 text-center"
+                    className="flex flex-col justify-center text-center"
                   >
                     <FormField
                       control={postArticle.control}
                       name="title"
                       render={({ field }) => (
                         <FormItem className="flex flex-col gap-3 ">
-                          <FormLabel> TITLE </FormLabel>
-                          <FormControl className=" border-dark-4 border">
+                          <FormControl>
                             <Input
-                              className=" w-full resize-none rounded-lg bg-base-300 pl-3 pr-3 pt-3 ring-1 ring-black"
+                              type="text"
+                              label="ชื่อกิจกรรม"
+                              labelPlacement="inside"
                               {...field}
                             />
                           </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={postArticle.control}
+                      name="eventlocation"
+                      render={({ field }) => (
+                        <FormItem className="mt-3   items-center justify-center gap-3">
+                          <FormControl>
+                            <Input
+                              type="text"
+                              label="สถานที่จัดกิจกรรม"
+                              labelPlacement="inside"
+                              {...field}
+                            />
+                          </FormControl>
+
                           <FormMessage />
                         </FormItem>
                       )}
@@ -169,14 +239,12 @@ export default function EventForm({
                       control={postArticle.control}
                       name="eventContent"
                       render={({ field }) => (
-                        <FormItem className="flex flex-col place-items-center items-center justify-center gap-3  ">
-                          <FormLabel> CONTENT </FormLabel>
-
+                        <FormItem className="mt-3 items-center justify-center gap-3 ">
                           <FormControl className="">
                             <Textarea
-                              labelPlacement="outside"
-                              placeholder="แบ่งปันเรื่องราวดีๆของคุณเข้าสู่แพลตฟอร์ม!"
-                              className="max-w-xs"
+                              type="text"
+                              label="เนื้อหากิจกรรม"
+                              labelPlacement="inside"
                               {...field}
                             />
                           </FormControl>
@@ -188,12 +256,11 @@ export default function EventForm({
                       control={postArticle.control}
                       name="tag"
                       render={({ field }) => (
-                        <FormItem className="flex flex-col gap-3 ">
-                          <FormLabel> HASHTAG </FormLabel>
+                        <FormItem className="mt-3 flex flex-col">
                           <Select
                             items={HASHTAG}
-                            label="Select Hashtag"
-                            placeholder="HashTag For You"
+                            label="หมวดหมู่"
+                            placeholder="เลือกหมวดหมู่ของกิจกรรม"
                             {...field}
                             value={field.value}
                             onChange={(value) => field.onChange(value)}
@@ -211,12 +278,114 @@ export default function EventForm({
                         </FormItem>
                       )}
                     />
+
+                    <div className="mt-3 flex">
+                      <FormField
+                        control={postArticle.control}
+                        name="eventstartTime"
+                        render={({ field }) => (
+                          <FormItem className="flex flex-col items-center justify-center gap-3 ">
+                            <FormControl className=" w-48 ">
+                              <Input type="datetime-local" {...field} />
+                            </FormControl>
+                            <FormDescription>
+                              เลือกวันที่เริ่มต้นกิจกรรม
+                            </FormDescription>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={postArticle.control}
+                        name="eventparticipants"
+                        render={({ field }) => (
+                          <FormItem className="flex w-56 flex-col items-center justify-center gap-3">
+                            <FormControl className=" w-48  ">
+                              <Input
+                                type="text"
+                                label="จำนวนผู้เข้าร่วม"
+                                labelPlacement="inside"
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormDescription>
+                              ระบุจำนวนหรือระบุว่าไม่จำกัด
+                            </FormDescription>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                    {/* testselect */}
+                    <FormField
+                      control={postArticle.control}
+                      name="blogInArticle"
+                      render={({ field }) => (
+                        <FormItem className="flex flex-col items-center justify-center gap-3 ">
+                          <Select
+                            items={blogInEvent}
+                            variant="bordered"
+                            value={field.value}
+                            onChange={(value) => field.onChange(value)}
+                            isMultiline={true}
+                            selectionMode="multiple"
+                            placeholder="เลือก BLOG ที่สอดคล้องกับกิจกรรมของคุณ  "
+                            labelPlacement="outside"
+                            classNames={{
+                              label: 'group-data-[filled=true]:-translate-y-5',
+                              trigger: 'min-h-unit-16',
+                              listboxWrapper: 'max-h-[400px]',
+                            }}
+                            renderValue={(items) => {
+                              return items.map((item, index) => (
+                                <div
+                                  key={index}
+                                  className="item-center  flex gap-2"
+                                >
+                                  <Avatar
+                                    src={item.data?.ArticleImage}
+                                    alt="test"
+                                    className="flex-shrink-0"
+                                  />
+                                  <div className="flex flex-col gap-2">
+                                    <span>{item.data?.title}</span>
+                                  </div>
+                                </div>
+                              ))
+                            }}
+                          >
+                            {(blog) => (
+                              <SelectItem key={blog.id} textValue={blog.title}>
+                                <div className="flex items-center gap-2">
+                                  <Avatar
+                                    alt="lol"
+                                    className="flex-shrink-0"
+                                    size="sm"
+                                    src={blog.ArticleImage}
+                                  />
+                                  <div className="flex flex-col">
+                                    <span className="text-small">
+                                      {blog.title}
+                                    </span>
+                                  </div>
+                                </div>
+                              </SelectItem>
+                            )}
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    {/* testselect */}
                     <FormField
                       control={postArticle.control}
                       name="eventImage"
                       render={({ field }) => (
-                        <FormItem className="flex w-full flex-col items-center  justify-center gap-2 ">
-                          <FormLabel className="text-base-semibold text-light-2"></FormLabel>
+                        <FormItem className="mt-3 flex w-full flex-col items-center  justify-center gap-2 ">
+                          <FormLabel className="text-base-semibold text-light-2">
+                            อัพโหลดภาพกิจกรรม
+                          </FormLabel>
                           <FormControl>
                             <label
                               htmlFor="file-upload"

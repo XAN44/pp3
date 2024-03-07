@@ -60,19 +60,6 @@ interface LikeData {
   liked: boolean
 }
 
-interface getArticleWithTag {
-  id: string
-  title: string
-  tagrecom: string
-  ArticleImage: string
-  createAt: string
-  authorId: string
-  author: {
-    id: string
-    name: string | null
-    image: string | null
-  }
-}
 interface FollowData {
   existingFollow: {
     currentAccountId: string | null

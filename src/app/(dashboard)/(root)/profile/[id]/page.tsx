@@ -123,6 +123,11 @@ export default async function Page({ params }: { params: { id: string } }) {
                         eventContent={''}
                         tag={''}
                         title={''}
+                        eventstartTime={''}
+                        eventCreator={''}
+                        eventlocation={''}
+                        eventMore={''}
+                        eventparticipants={''}
                       />
                       {Account.Event.map(async (Event) => (
                         <EventCard

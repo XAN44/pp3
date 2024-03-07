@@ -10,9 +10,10 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { POSTARTILE } from '@/lib/actions/user.article'
+import { EVENTPOST } from '@/lib/actions/user.event'
 import { useUploadThing } from '@/lib/uploadthing'
 import { isBase64Image } from '@/lib/utils'
-import { ArticlePost } from '@/lib/validations/Userpost'
+import { EventPost } from '@/lib/validations/Userpost'
 import {
   AlertDialog,
   AlertDialogBody,
@@ -24,7 +25,15 @@ import {
   useToast,
 } from '@chakra-ui/react'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Select, SelectItem, Textarea } from '@nextui-org/react'
+import {
+  Avatar,
+  Chip,
+  Input,
+  Select,
+  SelectItem,
+  SelectedItems,
+  Textarea,
+} from '@nextui-org/react'
 import { Loader2 } from 'lucide-react'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
@@ -33,74 +42,99 @@ import { useForm } from 'react-hook-form'
 import { CiImageOn } from 'react-icons/ci'
 import * as z from 'zod'
 import { HASHTAG } from '../tag/hashtag'
-import { Button } from '../ui/button'
-import { Input } from '../ui/input'
+import { users } from '../tag/data1'
 
+import { Button } from '../ui/button'
+import useSWR from 'swr'
 interface Props {
   accountId: string
   authUserId: string
   title: string
-  articleContent: string
-  ArticleImage: string
+  eventContent: string
+  eventImage: string
+  eventstartTime: string
+  eventlocation: string
+  eventparticipants: string
+  blogInArticle: string
   tag: string
 }
 
-export default function ArticleForm({
+const fetcher = (url: string) => fetch(url).then((res) => res.json())
+
+type Blog = {
+  id: string
+  title: string
+  ArticleImage: string
+}
+
+export default function EventForm({
   accountId,
   authUserId,
   title,
-  articleContent,
-  ArticleImage,
+  blogInArticle,
+  eventContent,
+  eventImage,
+  eventstartTime,
+  eventlocation,
+  eventparticipants,
   tag,
 }: Props) {
+  const { data: blogInEvent } = useSWR(
+    `/api/blogInEvent?authUserId=${authUserId}`,
+    fetcher
+  )
+
   const [files, setFiles] = useState<File[]>([])
-  const [selectedImages, setSelectedImages] = useState<string[]>([])
-
-  const [imageSelected, setImageSelected] = useState(false)
-
+  const [selectedImage, setSelectedImage] = useState<string>('')
   const { startUpload } = useUploadThing('media')
   const [isLoading, setIsloading] = useState(false)
   const [isText, setIsText] = useState('บันทึก')
+  const [imageSelected, setImageSelected] = useState(false)
+
   const toast = useToast()
 
   const pathname = usePathname()
-  const postArticle = useForm<z.infer<typeof ArticlePost>>({
-    resolver: zodResolver(ArticlePost),
+  const postArticle = useForm<z.infer<typeof EventPost>>({
+    resolver: zodResolver(EventPost),
     defaultValues: {},
   })
 
-  const onSubmitPost = async (values: z.infer<typeof ArticlePost>) => {
+  const onSubmitPost = async (values: z.infer<typeof EventPost>) => {
     setIsloading(true)
 
-    const blob = values.articleImage
+    const blob = values.eventImage
     if (blob) {
       const hasImageChange = isBase64Image(blob)
       if (hasImageChange) {
         const imgRes = await startUpload(files)
         if (imgRes && imgRes[0].url) {
-          values.articleImage = imgRes[0].url
+          values.eventImage = imgRes[0].url
         }
       }
     }
 
-    const UserPromise = POSTARTILE({
+    const UserPromise = EVENTPOST({
       authorId: authUserId,
       title: values.title ? String(values.title) : '',
-      articleContent: values.articleContent
-        ? String(values.articleContent)
+      eventContent: values.eventContent ? String(values.eventContent) : '',
+      eventImage: values.eventImage ? String(values.eventImage) : '',
+      eventstartTime: values.eventstartTime
+        ? String(values.eventstartTime)
         : '',
-      ArticleImage: values.articleImage ? String(values.articleImage) : '',
+      eventlocation: values.eventlocation ? String(values.eventlocation) : '',
+      eventparticipants: values.eventparticipants
+        ? String(values.eventparticipants)
+        : '',
+      blogInArticle: values.blogInArticle ? String(values.blogInArticle) : '',
       tag: values.tag ? String(values.tag) : '',
       path: pathname,
     })
 
     toast.promise(UserPromise, {
-      success: { title: 'สำเร็จ!', description: 'สร้างบล็อกสำเร็จแล้ว' },
+      success: { title: 'สำเร็จ!', description: 'สร้างกิจกรรมสำเร็จแล้ว' },
       error: { title: 'เกิดข้อผิดพลาด', description: 'เกิดข้อผิดพลาดบางอย่าง' },
       loading: { title: 'กำลังโพสต์ ...', description: 'โปรดรอสักครู่' },
     })
-
-    postArticle.reset()
 
     setIsloading(false)
     setIsText('บันทึกสำเร็จ')
@@ -115,30 +149,18 @@ export default function ArticleForm({
     const fileReader = new FileReader()
 
     if (e.target.files && e.target.files.length > 0) {
-      const filesArray = Array.from(e.target.files)
-      const imageUrls: string[] = []
+      const file = e.target.files[0]
+      setFiles(Array.from(e.target.files))
+      if (!file.type.includes('image')) return
 
-      filesArray.forEach((file) => {
-        if (!file.type.includes('image')) return
-
-        const fileReader = new FileReader()
-        fileReader.onload = (event) => {
-          const imageDataUrl = event.target?.result?.toString() || ' '
-          imageUrls.push(imageDataUrl)
-          if (imageUrls.length === filesArray.length) {
-            setSelectedImages([...selectedImages, ...imageUrls])
-            setImageSelected(true)
-          }
-        }
-        fileReader.readAsDataURL(file)
-      })
+      fileReader.onload = async (event) => {
+        const imageDataUrl = event.target?.result?.toString() || ' '
+        setSelectedImage(imageDataUrl)
+        fieldChange(imageDataUrl)
+        setImageSelected(true)
+      }
+      fileReader.readAsDataURL(file)
     }
-  }
-
-  const handleRemoveImage = (index: number) => {
-    const updatedImages = [...selectedImages]
-    updatedImages.splice(index, 1)
-    setSelectedImages(updatedImages)
   }
   const { isOpen, onOpen, onClose } = useDisclosure()
   const cancelRef = React.useRef<HTMLInputElement>(null)
@@ -147,7 +169,7 @@ export default function ArticleForm({
     <>
       {accountId === authUserId && (
         <div className=" ">
-          <Button onClick={onOpen}>Create Blog</Button>
+          <Button onClick={onOpen}>BLOG POST</Button>
           <AlertDialog
             motionPreset="slideInBottom"
             leastDestructiveRef={cancelRef}
@@ -157,23 +179,60 @@ export default function ArticleForm({
           >
             <AlertDialogOverlay />
             <AlertDialogContent>
-              <AlertDialogHeader>สร้างบล็อกของคุณ !</AlertDialogHeader>
+              <AlertDialogHeader>สร้างกิจกรรม !</AlertDialogHeader>
               <AlertDialogCloseButton />
               <AlertDialogBody>
                 <Form {...postArticle}>
                   <form
                     onSubmit={postArticle.handleSubmit(onSubmitPost)}
-                    className="flex flex-col justify-center gap-10 text-center"
+                    className="flex flex-col justify-center text-center"
                   >
                     <FormField
                       control={postArticle.control}
                       name="title"
                       render={({ field }) => (
                         <FormItem className="flex flex-col gap-3 ">
-                          <FormLabel> ตั้งชื่อ Blog </FormLabel>
-                          <FormControl className=" border-dark-4 border">
+                          <FormControl>
                             <Input
-                              className=" w-full resize-none rounded-lg bg-base-300 pl-3 pr-3 pt-3 ring-1 ring-black"
+                              type="text"
+                              label="ชื่อกิจกรรม"
+                              labelPlacement="inside"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={postArticle.control}
+                      name="eventlocation"
+                      render={({ field }) => (
+                        <FormItem className="mt-3   items-center justify-center gap-3">
+                          <FormControl>
+                            <Input
+                              type="text"
+                              label="สถานที่จัดกิจกรรม"
+                              labelPlacement="inside"
+                              {...field}
+                            />
+                          </FormControl>
+
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={postArticle.control}
+                      name="eventContent"
+                      render={({ field }) => (
+                        <FormItem className="mt-3 items-center justify-center gap-3 ">
+                          <FormControl className="">
+                            <Textarea
+                              type="text"
+                              label="เนื้อหากิจกรรม"
+                              labelPlacement="inside"
                               {...field}
                             />
                           </FormControl>
@@ -183,72 +242,13 @@ export default function ArticleForm({
                     />
                     <FormField
                       control={postArticle.control}
-                      name="articleImage"
-                      render={({ field }) => (
-                        <FormItem className="flex w-full flex-col items-center  justify-center gap-2 ">
-                          <FormLabel className="text-base-semibold text-light-2">
-                            เลือกรูปภาพของคุณ
-                          </FormLabel>
-                          <FormControl>
-                            <label
-                              htmlFor="file-upload"
-                              className="flex w-12 cursor-pointer gap-2"
-                            >
-                              <input
-                                id="file-upload"
-                                type="file"
-                                className="hidden w-5 "
-                                accept="image/*"
-                                placeholder="add post photo"
-                                onChange={(e) => handleImage(e, field.onChange)}
-                                required
-                              />
-                              <CiImageOn size={30} id="file-upload" />
-                            </label>
-                          </FormControl>
-
-                          <div className="flex gap-3">
-                            {selectedImages.map(
-                              (image: string, index: number) => (
-                                <>
-                                  <div className="flex gap-3">
-                                    <Image
-                                      key={index}
-                                      src={image}
-                                      alt={`Selected Image ${index + 1}`}
-                                      width={100}
-                                      height={100}
-                                      style={{
-                                        display: imageSelected
-                                          ? 'block'
-                                          : 'none',
-                                      }}
-                                    />
-                                    <button
-                                      onClick={() => handleRemoveImage(index)}
-                                    >
-                                      ลบ
-                                    </button>
-                                  </div>
-                                </>
-                              )
-                            )}
-                          </div>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-
-                    <FormField
-                      control={postArticle.control}
                       name="tag"
                       render={({ field }) => (
-                        <FormItem className="flex flex-col gap-3 ">
-                          <FormLabel> เลือกหมวดหมู่ </FormLabel>
+                        <FormItem className="mt-3 flex flex-col">
                           <Select
                             items={HASHTAG}
-                            label="Select Hashtag"
-                            placeholder="HashTag For You"
+                            label="หมวดหมู่"
+                            placeholder="เลือกหมวดหมู่ของกิจกรรม"
                             {...field}
                             value={field.value}
                             onChange={(value) => field.onChange(value)}
@@ -266,21 +266,134 @@ export default function ArticleForm({
                         </FormItem>
                       )}
                     />
+
+                    <div className="mt-3 flex">
+                      <FormField
+                        control={postArticle.control}
+                        name="eventstartTime"
+                        render={({ field }) => (
+                          <FormItem className="flex flex-col items-center justify-center gap-3 ">
+                            <FormControl className=" w-48 ">
+                              <Input type="datetime-local" {...field} />
+                            </FormControl>
+                            <FormDescription>
+                              เลือกวันที่เริ่มต้นกิจกรรม
+                            </FormDescription>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={postArticle.control}
+                        name="eventparticipants"
+                        render={({ field }) => (
+                          <FormItem className="flex w-56 flex-col items-center justify-center gap-3">
+                            <FormControl className=" w-48  ">
+                              <Input
+                                type="text"
+                                label="จำนวนผู้เข้าร่วม"
+                                labelPlacement="inside"
+                                {...field}
+                              />
+                            </FormControl>
+                            <FormDescription>
+                              ระบุจำนวนหรือระบุว่าไม่จำกัด
+                            </FormDescription>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                    {/* testselect */}
                     <FormField
                       control={postArticle.control}
-                      name="articleContent"
+                      name="blogInArticle"
                       render={({ field }) => (
-                        <FormItem className="flex flex-col place-items-center items-center justify-center gap-3  ">
-                          <FormLabel> เริ่มเขียน Blog ของคุณ </FormLabel>
-
-                          <FormControl className="">
-                            <Textarea
+                        <FormItem className="flex flex-col items-center justify-center gap-3 ">
+                            <Select
+                              items={blogInEvent}
+                              label="Assigned to"
+                              variant="bordered"
+                              isMultiline={true}
+                              selectionMode="multiple"
+                              placeholder="Select a user"
                               labelPlacement="outside"
-                              placeholder="แบ่งปันเรื่องราวดีๆของคุณเข้าสู่แพลตฟอร์ม!"
-                              className="max-w-xs"
-                              {...field}
-                            />
+                              classNames={{
+                                base: 'max-w-xs',
+                                trigger: 'min-h-unit-12 py-2',
+                              }}
+                              renderValue={(items: SelectedItems<Blog>) => {
+                                return (
+                                  <div className="flex flex-wrap gap-2">
+                                    {items.map((item) => (
+                                      <Chip key={item.key}>
+                                        {item.data?.title}
+                                      </Chip>
+                                    ))}
+                                  </div>
+                                )
+                              }}
+                            >
+                              {(blog) => (
+                                <SelectItem
+                                  key={blog.id}
+                                  textValue={blog.title}
+                                >
+                                  <div className="flex items-center gap-2">
+                                    <Avatar
+                                      alt="User avatar"
+                                      className="flex-shrink-0"
+                                      size="sm"
+                                      src={blog.ArticleImage}
+                                    />
+                                    <div className="flex flex-col">
+                                      <span className="text-small">
+                                        {blog.title}
+                                      </span>
+                                    </div>
+                                  </div>
+                                </SelectItem>
+                              )}
+                            </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    {/* testselect */}
+                    <FormField
+                      control={postArticle.control}
+                      name="eventImage"
+                      render={({ field }) => (
+                        <FormItem className="mt-3 flex w-full flex-col items-center  justify-center gap-2 ">
+                          <FormLabel className="text-base-semibold text-light-2">
+                            อัพโหลดภาพกิจกรรม
+                          </FormLabel>
+                          <FormControl>
+                            <label
+                              htmlFor="file-upload"
+                              className="flex w-12 cursor-pointer gap-2"
+                            >
+                              <input
+                                id="file-upload"
+                                type="file"
+                                className="hidden w-5 "
+                                accept="image/*"
+                                placeholder="add post photo"
+                                onChange={(e) => handleImage(e, field.onChange)}
+                              />
+                              <CiImageOn size={30} id="file-upload" />
+                            </label>
                           </FormControl>
+                          <Image
+                            src={selectedImage}
+                            alt="image post"
+                            width={100}
+                            height={100}
+                            style={{
+                              display: imageSelected ? 'block' : 'none',
+                            }}
+                          />
                           <FormMessage />
                         </FormItem>
                       )}

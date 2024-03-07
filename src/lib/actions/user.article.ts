@@ -122,6 +122,7 @@ export async function FetchArticleByID(id: string) {
                 id: true,
                 name: true,
                 image: true,
+                bio: true,
               },
             },
             articleId: true,

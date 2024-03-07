@@ -47,7 +47,9 @@ import {
   fetchBlogByFollowing,
   fetchInBlogPage,
   fetchInEnentPage,
+  geteventregister,
 } from '@/lib/actions/user.carousel'
+import EventInhomepage from '@/components/event/eventInhomepage'
 
 export default async function Page() {
   const user = await getCurrentUser()
@@ -57,6 +59,7 @@ export default async function Page() {
 
   const userInfo = await fetchUserProfileByID(user?.id || '')
   const otherInfo = await fetchInBlogPage()
+
   const otherEvent = await fetchInEnentPage()
   const checkFollower = await CheckFollow('', user?.id || '')
 
@@ -230,6 +233,9 @@ export default async function Page() {
                   </div>
                 </TabsContent>
                 <TabsContent value="event">
+                  <div className="mb-6">
+                    <EventInhomepage />
+                  </div>
                   <div className="place-items-center text-center">
                     {userInfo?.map((Account) => (
                       <>
@@ -237,6 +243,10 @@ export default async function Page() {
                           key={Account.id}
                           accountId={Account.id}
                           authUserId={user?.id || ''}
+                          blogInArticle={''}
+                          eventlocation={''}
+                          eventparticipants={''}
+                          eventstartTime={''}
                           eventImage={''}
                           eventContent={''}
                           tag={''}
@@ -249,8 +259,12 @@ export default async function Page() {
                         key={Event.id}
                         id={Event.id}
                         title={Event.title}
+                        eventlocation={Event.eventlocation}
                         articleContent={Event.eventContent}
                         ArticleImage={Event.eventImage}
+                        eventstartTime={Event.eventstartTime}
+                        eventparticipants={Event.eventparticipants}
+                        registerCount={await geteventregister(Event.id)}
                         tag={Event.tag}
                         authorId={Event.authorId}
                         author={Event.author}

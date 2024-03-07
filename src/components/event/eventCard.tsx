@@ -8,6 +8,9 @@ interface Props {
   title: string | null
   articleContent: string | null
   ArticleImage: string | null
+  eventlocation: string | null
+  eventstartTime: string | null
+  eventparticipants: string | null
   createAt: string
   tag: {
     id: string | null
@@ -29,6 +32,7 @@ interface Props {
     } | null
   }[]
   isComment?: boolean
+  registerCount: number
   totalVisit: number
 }
 
@@ -40,6 +44,10 @@ export default function EventCard({
   tag,
   author,
   authorId,
+  eventstartTime,
+  eventparticipants,
+  eventlocation,
+  registerCount,
   comments,
   createAt,
   isComment,
@@ -69,7 +77,12 @@ export default function EventCard({
           <aside className="w-full ">
             <div className="w-40">
               <b>{title}</b>
-              <p className="text-start text-default-500">{articleContent}</p>
+              <p>{eventlocation}</p>
+              <p>เริ่มกิจกรรมเมื่อ </p>
+              {eventstartTime}
+              <p>
+                จำนวนผู้เข้าร่วมกิจกรรม {registerCount} / {eventparticipants}
+              </p>
             </div>
           </aside>
           <div className=" grid place-items-center items-center justify-center">
@@ -82,7 +95,7 @@ export default function EventCard({
             <footer className="mt-3">
               {tag ? (
                 tag.map((hashTag) => (
-                  <div className="badge badge-neutral  " key={hashTag.id}>
+                  <div className="badge badge-neutral w-max " key={hashTag.id}>
                     {hashTag.tag}
                   </div>
                 ))
@@ -95,7 +108,7 @@ export default function EventCard({
           </div>
         </CardFooter>
       </Card>
-      <Link href={`/event${id}`}>
+      <Link href={`/event/${id}`}>
         <VisitEvent id={id} userId={authorId || ''} />
       </Link>
     </div>

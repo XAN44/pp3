@@ -68,6 +68,7 @@ model User {
     Visit         Visit[]
     Event         Event[]
     SearchHistory SearchHistory[]
+    RegisterEvent RegisterEvent[]
 }
 
 model Follows {
@@ -133,6 +134,38 @@ model Like {
     @@unique([postId, userId])
 }
 
+model Event {
+    id                String          @id @default(cuid())
+    title             String?
+    eventContent      String?
+    eventImage        String?
+    author            User?           @relation(fields: [authorId], references: [id])
+    authorId          String?
+    eventstartTime    String? //*กิจกรรมเริ่มวันที่
+    eventlocation     String? //*สถานที่จัดกิจกรรม
+    eventparticipants String? //*จำนวนเปิดรับกิจกรรม
+    blogInArticle     Article?        @relation(fields: [articleId], references: [id])
+    createAt          DateTime        @default(now())
+    comment           Comment[]
+    tag               ArticleTag[]
+    Visit             Visit[]
+    Notification      Notification[]
+    SearchHistory     SearchHistory[]
+    articleId         String?
+    RegisterEvent     RegisterEvent[]
+}
+
+model RegisterEvent {
+    id        String    @id @default(cuid())
+    user      User?     @relation(fields: [userID], references: [id])
+    userID    String?
+    event     Event?    @relation(fields: [eventID], references: [id])
+    eventID   String?
+    createdAt DateTime? @default(now())
+
+    @@unique([userID, eventID], name: "Unique_User_Event")
+}
+
 model Article {
     id             String          @id @default(cuid())
     title          String?
@@ -147,21 +180,7 @@ model Article {
     Notification   Notification[]
     SearchHistory  SearchHistory[]
     Like           Like[]
-}
-
-model Event {
-    id            String          @id @default(cuid())
-    title         String?
-    eventContent  String?
-    eventImage    String?
-    author        User?           @relation(fields: [authorId], references: [id])
-    authorId      String?
-    createAt      DateTime        @default(now())
-    comment       Comment[]
-    tag           ArticleTag[]
-    Visit         Visit[]
-    Notification  Notification[]
-    SearchHistory SearchHistory[]
+    Event          Event[]
 }
 
 model ArticleTag {

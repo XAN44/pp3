@@ -1,9 +1,17 @@
 import ArticleCardPage from '@/components/article/articlePage'
 import CommentIEvent from '@/components/event/commentinEvent'
+import EventInhomepage from '@/components/event/eventInhomepage'
+import EventHomePage from '@/components/event/eventPage'
 import CommentCard from '@/components/post/commentCard'
 import Reply from '@/components/post/replyForm'
 import { fetchUser } from '@/lib/actions/user.action'
 import { FetchEventByID } from '@/lib/actions/user.event'
+import {
+  CheckFollow,
+  getTotalFollowers,
+  getTotalFollowing,
+} from '@/lib/actions/user.follow'
+import { TotalVisitEvent } from '@/lib/actions/user.visit'
 import { getCurrentUser } from '@/lib/session'
 import { Container, Heading } from '@radix-ui/themes'
 import { redirect } from 'next/navigation'
@@ -18,19 +26,32 @@ const Page = async ({ params }: { params: { id: string } }) => {
   if (!userInfo) redirect('/profile')
 
   const ArticleBy = await FetchEventByID(params.id)
+  const checkFollower = await CheckFollow(params.id, user.id)
+  const userfollow = await getTotalFollowers(params.id)
+  const userfollowing = await getTotalFollowing(params.id)
 
   return (
     <Container className=" inset-y-28 top-24 mt-32 h-full place-items-start ">
       <div className="">
-        <ArticleCardPage
+        <EventHomePage
           key={ArticleBy?.id}
           id={ArticleBy?.id}
           title={ArticleBy?.title}
           articleContent={ArticleBy?.eventContent}
           ArticleImage={ArticleBy.eventImage}
-          tag={ArticleBy.tag}
+          tag={ArticleBy.tag.map((tagItem) => ({
+            tag: tagItem.tag || '',
+          }))}
+          eventlocation={ArticleBy.eventlocation}
+          eventparticipants={ArticleBy.eventparticipants}
+          eventstartTime={ArticleBy.eventstartTime}
           authorId={ArticleBy.authorId}
           author={ArticleBy.author}
+          currentId={user.id}
+          isFollow={checkFollower}
+          totalFollower={userfollow}
+          totalFollowing={userfollowing}
+          totalVisit={await TotalVisitEvent(ArticleBy.id)}
           comments={ArticleBy.comment}
           createAt={new Date(ArticleBy.createAt).toLocaleString()}
         />
