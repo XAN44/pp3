@@ -11,6 +11,8 @@ interface Props {
   eventstartTime: string
   eventlocation: string
   eventparticipants: string
+  eventcreator: string
+  eventmore: string
   blogInArticle: any
   path: string
   tag: string
@@ -25,6 +27,8 @@ export async function EVENTPOST({
   eventlocation,
   blogInArticle,
   eventparticipants,
+  eventcreator,
+  eventmore,
   path,
   tag,
 }: Props): Promise<void> {
@@ -35,13 +39,19 @@ export async function EVENTPOST({
 
     await db.event.create({
       data: {
-        authorId: authorId,
+        author: {
+          connect: { id: authorId },
+        },
         title,
         eventContent,
+        eventcreator,
+        eventmore,
         eventImage,
         eventstartTime,
         eventlocation,
-        blogInArticle,
+        blogInArticle: {
+          connect: { id: blogInArticle },
+        },
         eventparticipants,
         tag: {
           create: {
@@ -87,6 +97,39 @@ export async function CommentinArticles(
   }
 }
 
+// export async function rep(id: string) {
+//   try {
+//     const reply = await db.comment.findUnique({
+//       where: {
+//         id: id,
+//       },
+//       select: {
+//         Reply: {
+//           select: {
+//             id: true,
+//             replytext: true,
+//             author: {
+//               select: {
+//                 id: true,
+//                 name: true,
+//                 image: true,
+//               },
+//             },
+//             replyCommet: {
+//               select: {
+//                 id: true,
+//               },
+//             },
+//           },
+//         },
+//       },
+//     })
+//     return reply
+//   } catch (error) {
+//     console.error('Error fetching comments:', error)
+//     throw error
+//   }
+// }
 export async function FetchArticleByID(id: string) {
   try {
     const article = await db.event.findUnique({
@@ -100,6 +143,7 @@ export async function FetchArticleByID(id: string) {
             tag: true,
           },
         },
+
         author: {
           select: {
             id: true,
@@ -175,6 +219,44 @@ export async function FetchEventByID(id: string) {
       },
 
       include: {
+        RegisterEvent: {
+          select: {
+            userID: true,
+            user: {
+              select: {
+                id: true,
+                name: true,
+                image: true,
+              },
+            },
+          },
+        },
+        blogInArticle: {
+          select: {
+            id: true,
+            title: true,
+            ArticleImage: true,
+            articleContent: true,
+            createAt: true,
+            author: {
+              select: {
+                id: true,
+                name: true,
+                image: true,
+              },
+            },
+            Visit: {
+              select: {
+                count: true,
+              },
+            },
+            tag: {
+              select: {
+                tag: true,
+              },
+            },
+          },
+        },
         tag: {
           select: {
             id: true,
@@ -204,6 +286,7 @@ export async function FetchEventByID(id: string) {
           orderBy: {
             createdAt: 'asc',
           },
+
           select: {
             id: true,
             text: true,
@@ -227,10 +310,13 @@ export async function FetchEventByID(id: string) {
                 eventlocation: true,
                 eventparticipants: true,
                 eventstartTime: true,
+                eventcreator: true,
+                eventmore: true,
               },
             },
             Reply: {
               select: {
+                id: true,
                 replytext: true,
                 author: {
                   select: {
@@ -254,6 +340,7 @@ export async function FetchEventByID(id: string) {
     if (!article) {
       throw new Error('Article not found')
     }
+
     return article
   } catch (error) {
     console.error('Error fetching comments:', error)

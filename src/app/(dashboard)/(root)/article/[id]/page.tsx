@@ -1,7 +1,7 @@
 import ArticleCardPage from '@/components/article/articlePage'
 import CommentArticleHome from '@/components/article/commentArticleHome'
 import CommentArticleInHome from '@/components/article/commentArticleInHome'
-import CommentInarticle from '@/components/article/commentinArticle'
+import SWRcomment from '@/components/article/swrcomment'
 import Recommand from '@/components/compoinhome/recommand'
 import CommentCard from '@/components/post/commentCard'
 import Reply from '@/components/post/replyForm'
@@ -30,6 +30,7 @@ const Page = async ({ params }: { params: { id: string } }) => {
   const userfollow = await getTotalFollowers(params.id)
   const userfollowing = await getTotalFollowing(params.id)
   const checkFollower = await CheckFollow(params.id, user.id)
+
   return (
     <Container className=" inset-y-28 top-24 mt-32 h-full place-items-start ">
       <div className="">
@@ -65,33 +66,33 @@ const Page = async ({ params }: { params: { id: string } }) => {
           ความคิดเห็นทั้งหมด
         </Heading>
         {ArticleBy.comment.map((comment: any) => (
-          <>
-            <CommentArticleHome
-              key={comment.id}
-              id={comment.id}
-              current={
-                user || {
-                  id: '',
-                  name: '',
-                  image: '',
-                }
+          <CommentArticleHome
+            key={comment.id}
+            comment={comment.text}
+            id={comment.id}
+            articleId={ArticleBy.id}
+            current={
+              user || {
+                id: '',
+                name: '',
+                image: '',
               }
-              comment={comment?.text}
-              authorId={comment.authorId}
-              createAt={new Date(comment.createdAt).toLocaleString()}
-              author={
-                comment.author || {
-                  id: '',
-                  name: '',
-                  image: '',
-                }
+            }
+            authorId={comment.authorId}
+            createAt={new Date(comment.createdAt).toLocaleString()}
+            author={
+              comment.author || {
+                id: '',
+                name: '',
+                image: '',
               }
-              reply={comment.Reply}
-              isComment
-              isReply
-            />
-          </>
+            }
+            reply={comment.Reply}
+            isComment
+            isReply
+          />
         ))}
+
         <div className="mt-6 text-center">
           <Recommand
             id={ArticleBy.id}

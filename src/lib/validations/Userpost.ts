@@ -14,12 +14,14 @@ export const ArticlePost = z.object({
 
 export const EventPost = z.object({
   title: z.string().nonempty().optional(),
-  eventContent: z.string().nonempty().optional(),
+  eventContent: z.string().nonempty('โปรดกรอกข้อมูล').optional(),
   tag: z.string().nonempty().optional(),
-  eventImage: z.string().url().nonempty(),
+  eventImage: z.string().url().nonempty('โปรดกรอกข้อมูล'),
   eventstartTime: z.string().nonempty(),
   eventlocation: z.string().optional(),
   blogInArticle: z.string().optional(),
+  eventcreator: z.string().optional(),
+  eventmore: z.string().optional(),
   eventparticipants: z.string().optional(),
 })
 

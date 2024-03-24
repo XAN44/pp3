@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache'
 import { db } from '../db'
 import { getCurrentUser } from '../session'
 import { Notification } from './user.notification'
+import { mutate } from 'swr'
 
 interface Props {
   authorId: string
@@ -178,6 +179,10 @@ export async function CommentinArticlesHome(
       where: {
         id: articleId,
       },
+      select: {
+        authorId: true,
+        title: true,
+      },
     })
     if (!inArticle) {
       throw new Error('dont have article')
@@ -197,17 +202,15 @@ export async function CommentinArticlesHome(
         },
       },
     })
-
-    if (
-      inArticle &&
-      inArticle.authorId &&
-      user &&
-      user.id !== inArticle.authorId
-    ) {
-      // แจ้งเตือนเจ้าของโพสต์
-      const auth = newCommentInArticle.author?.name
-
-      await Notification(inArticle.authorId, articleId, comment, path)
+    if (newCommentInArticle && inArticle.authorId !== authorId) {
+      // เพิ่มเงื่อนไขนี้
+      await db.notification.create({
+        data: {
+          articleId: articleId,
+          userId: inArticle.authorId,
+          body: `ผู้ใช้ ${user?.name} ได้แสดงความคิดเห็นบนบล็อกของคุณ ${inArticle.title}`,
+        },
+      })
     }
 
     revalidatePath(path)

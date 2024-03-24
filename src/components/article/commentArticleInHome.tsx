@@ -40,6 +40,31 @@ export default function CommentArticleInHome({
     await CommentinArticlesHome(articleId, values.commentz, currentUserId, path)
     commentTimeLine.reset()
   }
+
+  // const onSubmitPost = async () => {
+  //   try {
+  //     const response = await fetch(`/api/commentArticle`, {
+  //       method: 'POST',
+  //       body: JSON.stringify({
+  //         articleId: articleId,
+  //         text: commentTimeLine.getValues('commentz'),
+  //         authorid: currentUserId,
+  //       }),
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //     })
+  //     if (!response.ok) {
+  //       throw new Error('Failed to submit comment')
+  //     }
+  //     mutate(`/api/commentArticle?articleId=${articleId}`) // อัปเดตข้อมูลด้วย mutate
+
+  //     commentTimeLine.reset() // Reset ค่าใน form
+  //   } catch (error) {
+  //     console.error('Error submitting comment:', error)
+  //   }
+  // }
+
   return (
     <div className="">
       <Form {...commentTimeLine}>

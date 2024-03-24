@@ -1,4 +1,5 @@
-import { GetNotification } from '@/lib/actions/user.notification'
+'use client'
+import { DELETENOTI, GetNotification } from '@/lib/actions/user.notification'
 import { fetchUserProfileByID } from '@/lib/actions/user.post'
 import { getCurrentUser } from '@/lib/session'
 import React from 'react'
@@ -10,14 +11,22 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
-import { Link } from '@nextui-org/react'
+import { Button, Link } from '@nextui-org/react'
+import { Delete } from 'lucide-react'
+import { useSession } from 'next-auth/react'
+import useSWR from 'swr'
+import { usePathname } from 'next/navigation'
 
-export default async function NotificationCard() {
-  const user = await getCurrentUser()
-  if (!user?.id) return <></>
+const fetcher = (url: string) => fetch(url).then((res) => res.json())
+export default function NotificationCard() {
+  const path = usePathname() ?? ''
 
-  const account = await fetchUserProfileByID(user.id)
-  const notifications = await GetNotification(user?.id || '')
+  const { data: notifications } = useSWR(`/api/notification`, fetcher)
+  const { data: user } = useSession()
+  if (!user?.user.id) return <></>
+
+  const handleDelete = async (notificationId: string) =>
+    await DELETENOTI(notificationId, path)
 
   return (
     <>
@@ -27,24 +36,25 @@ export default async function NotificationCard() {
           <DialogHeader>
             <DialogTitle> การแจ้งเตือน </DialogTitle>
             <DialogDescription>
-              <div>
-                {notifications.length > 0 ? (
-                  account?.map((acc) =>
-                    acc.notifications.map((noi) => (
-                      <div key={noi.id} className="">
-                        <Link href={`/post/${noi.post?.id}`}>
-                          <p>
-                            ผู้ใช้ {noi.current} ได้แสดงความคิดเห็นในโพสต์
-                            {noi.post?.content} ของคุณด้วยข้อความ {noi.body}
-                          </p>
-                        </Link>
-                      </div>
-                    ))
-                  )
-                ) : (
-                  <p>Dont have notification</p>
-                )}
-              </div>
+              {notifications ? (
+                notifications.map((notification: any) => (
+                  <div key={notification.id} className="flex">
+                    <p>{notification.body}</p>
+                    <Delete
+                      className="
+              relative left-4 overflow-visible 
+              after:absolute after:inset-0 after:bg-background/40 
+              after:transition after:!duration-500
+              hover:-translate-y-2 hover:cursor-pointer hover:after:scale-150 hover:after:opacity-0
+              "
+                      onClick={() => handleDelete(notification.id)}
+                      size={20}
+                    />
+                  </div>
+                ))
+              ) : (
+                <p>ไม่มีการแจ้งเตือน</p>
+              )}
             </DialogDescription>
           </DialogHeader>
         </DialogContent>

@@ -38,7 +38,6 @@ import ArticleHome from '@/components/article/articlehome'
 import Reply from '@/components/post/replyForm'
 import CommentCard from '@/components/post/commentCard'
 import { Heading } from '@radix-ui/themes'
-import CommentInarticle from '@/components/article/commentinArticle'
 import { FetchArticleByID } from '@/lib/actions/user.article'
 import CommentArticleInHome from '@/components/article/commentArticleInHome'
 import CommentArticleHome from '@/components/article/commentArticleHome'
@@ -194,7 +193,9 @@ export default async function Page() {
                                 <>
                                   <CommentArticleHome
                                     key={comment.id}
-                                    id={comment.id}
+                                    id={ArticleBy.id}
+                                    comment={comment?.text}
+                                    articleId={comment.articleId}
                                     current={
                                       user || {
                                         id: '',
@@ -202,7 +203,6 @@ export default async function Page() {
                                         image: '',
                                       }
                                     }
-                                    comment={comment?.text}
                                     authorId={comment.authorId}
                                     createAt={new Date(
                                       comment.createdAt
@@ -243,14 +243,6 @@ export default async function Page() {
                           key={Account.id}
                           accountId={Account.id}
                           authUserId={user?.id || ''}
-                          blogInArticle={''}
-                          eventlocation={''}
-                          eventparticipants={''}
-                          eventstartTime={''}
-                          eventImage={''}
-                          eventContent={''}
-                          tag={''}
-                          title={''}
                         />
                       </>
                     ))}
@@ -317,6 +309,8 @@ export default async function Page() {
                                   <CommentArticleHome
                                     key={comment.id}
                                     id={comment.id}
+                                    articleId={comment.articleId}
+                                    comment={comment?.text}
                                     current={
                                       user || {
                                         id: '',
@@ -324,7 +318,6 @@ export default async function Page() {
                                         image: '',
                                       }
                                     }
-                                    comment={comment?.text}
                                     authorId={comment.authorId}
                                     createAt={new Date(
                                       comment.createdAt

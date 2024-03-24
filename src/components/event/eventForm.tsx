@@ -50,14 +50,6 @@ import useSWR from 'swr'
 interface Props {
   accountId: string
   authUserId: string
-  title: string
-  eventContent: string
-  eventImage: string
-  eventstartTime: string
-  eventlocation: string
-  eventparticipants: string
-  blogInArticle: string
-  tag: string
 }
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json())
@@ -68,29 +60,7 @@ type Blog = {
   ArticleImage: string
 }
 
-type User = {
-  id: number
-  name: string
-  role: string
-  team: string
-  status: string
-  age: string
-  avatar: string
-  email: string
-}
-
-export default function EventForm({
-  accountId,
-  authUserId,
-  title,
-  blogInArticle,
-  eventContent,
-  eventImage,
-  eventstartTime,
-  eventlocation,
-  eventparticipants,
-  tag,
-}: Props) {
+export default function EventForm({ accountId, authUserId }: Props) {
   const { data: blogInEvent } = useSWR<Blog[]>(
     `/api/blogInEvent?authUserId=${authUserId}`,
     fetcher
@@ -137,6 +107,8 @@ export default function EventForm({
       eventparticipants: values.eventparticipants
         ? String(values.eventparticipants)
         : '',
+      eventcreator: values.eventcreator ? String(values.eventcreator) : '',
+      eventmore: values.eventmore ? String(values.eventmore) : '',
       blogInArticle: values.blogInArticle ? String(values.blogInArticle) : '',
       tag: values.tag ? String(values.tag) : '',
       path: pathname,
@@ -181,7 +153,7 @@ export default function EventForm({
     <>
       {accountId === authUserId && (
         <div className=" ">
-          <Button onClick={onOpen}>BLOG POST</Button>
+          <Button onClick={onOpen}>สร้างกิจกรรม</Button>
           <AlertDialog
             motionPreset="slideInBottom"
             leastDestructiveRef={cancelRef}
@@ -244,6 +216,40 @@ export default function EventForm({
                             <Textarea
                               type="text"
                               label="เนื้อหากิจกรรม"
+                              labelPlacement="inside"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={postArticle.control}
+                      name="eventcreator"
+                      render={({ field }) => (
+                        <FormItem className="mt-3 items-center justify-center gap-3 ">
+                          <FormControl className="">
+                            <Input
+                              type="text"
+                              label="ผู้สร้างกิจกรรม"
+                              labelPlacement="inside"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={postArticle.control}
+                      name="eventmore"
+                      render={({ field }) => (
+                        <FormItem className="mt-3 items-center justify-center gap-3 ">
+                          <FormControl className="">
+                            <Textarea
+                              type="text"
+                              label="เพิ่มเติม"
                               labelPlacement="inside"
                               {...field}
                             />

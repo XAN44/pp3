@@ -5,7 +5,7 @@ import React from 'react'
 
 export default function Footer() {
   return (
-    <footer className="footer bottom-0 left-0 mt-14 w-full bg-white text-black">
+    <footer className=" bottom-0 left-0 mt-14 w-full bg-white text-black">
       <div className="flex justify-around">
         <div className="flex flex-col space-y-3">
           <Text fontSize="x-large" as="b">
@@ -74,7 +74,7 @@ export default function Footer() {
               <Image src="/ig.png" alt="youtube" width="32" height="32" />:
               INSTRAGRAM
             </Text>
-            <Text className="btn btn btn-prim flex place-items-center justify-center gap-3 text-center">
+            <Text className=" flex place-items-center justify-center gap-3 text-center">
               <Image src="/tiktok.png" alt="youtube" width="32" height="32" />:
               TIKTOK
             </Text>

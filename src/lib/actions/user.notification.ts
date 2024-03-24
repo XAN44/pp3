@@ -54,29 +54,45 @@ export async function GetNotification(accountId: string) {
       where: {
         userId: accountId,
       },
-      include: {
-        comment: {
-          select: {
-            text: true,
-          },
-        },
-        post: {
-          select: {
-            content: true,
-            id: true,
-          },
-        },
-        user: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
+      select: {
+        id: true,
+        body: true,
       },
     })
     return getNoti
   } catch (error: any) {
     console.error(`Error fetching notifications: ${error.message}`)
     throw new Error('Failed to fetch notifications')
+  }
+}
+
+export async function DELETENOTI(id: string, path: string) {
+  try {
+    const user = await getCurrentUser()
+
+    const check = await db.notification.findFirst({
+      where: {
+        id,
+      },
+      select: {
+        user: {
+          select: {
+            id: true,
+          },
+        },
+      },
+    })
+    if (check?.user?.id === user?.id) {
+      const deleteNotification = await db.notification.delete({
+        where: {
+          id,
+        },
+      })
+    }
+    revalidatePath(path)
+    return check
+  } catch (error) {
+    console.error('Error fetching comments:', error)
+    throw error
   }
 }

@@ -4,6 +4,15 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useState } from 'react'
 import {
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  useDisclosure,
+  Button,
+} from '@nextui-org/react'
+import {
   Form,
   FormControl,
   FormField,
@@ -18,17 +27,8 @@ import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { usePathname } from 'next/navigation'
 import { Text } from '@chakra-ui/react'
-import { Avatar, Button } from '@nextui-org/react'
-import useSWR from 'swr'
-import {
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  useDisclosure,
-} from '@nextui-org/react'
-import { Delete, Trash2 } from 'lucide-react'
+import { Avatar } from '@nextui-org/react'
+import { Delete } from 'lucide-react'
 interface Props {
   id: string
   current: {
@@ -56,22 +56,9 @@ interface Props {
   }[]
   isComment?: boolean
   isReply?: boolean
-  articleId: string
 }
 
-interface inArticle {
-  authorId: string
-  author: {
-    id: string
-    name: string
-    image: string
-  }
-  text: string
-}
-
-const fetcher = (url: string) => fetch(url).then((res) => res.json())
-
-const CommentArticleHome = ({
+const CommentEventandreply = ({
   id,
   current,
   comment,
@@ -80,7 +67,6 @@ const CommentArticleHome = ({
   reply,
   authorId,
   isComment,
-  articleId,
   isReply,
 }: Props) => {
   const [replying, setReplying] = useState(false)
@@ -137,7 +123,6 @@ const CommentArticleHome = ({
   }
   const onSubmitReply = async (values: z.infer<typeof replyComment>) => {
     await replyComments(id || '', values.reply, current.id || '', path)
-    replyForm.reset()
   }
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
 
@@ -149,7 +134,7 @@ const CommentArticleHome = ({
             <Link href={`/profile/${author?.id}`}>
               {author?.image && <Avatar alt=".." src={author.image} />}
             </Link>
-            <div className="grid ">
+            <div className="grid  ">
               <div className="flex items-center">
                 <Text>{author?.name}</Text>
                 {current.id === author?.id && (
@@ -202,12 +187,11 @@ const CommentArticleHome = ({
                   </>
                 )}
               </div>
-              <Text className="text-start">{comment}</Text>
+              <Text>{comment}</Text>
             </div>
           </div>
 
           {/* Click To show reply */}
-
           {isReply && !showReply && id.length > 0 && (
             <div className="text-end">
               <button onClick={handleShowReply}>แสดงการตอบกลับ</button>
@@ -279,4 +263,4 @@ const CommentArticleHome = ({
   )
 }
 
-export default CommentArticleHome
+export default CommentEventandreply

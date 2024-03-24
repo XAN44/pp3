@@ -21,6 +21,10 @@ export async function POST(request: Request) {
       where: {
         id: id,
       },
+      select: {
+        authorId: true,
+        title: true,
+      },
     })
     if (findEvent) {
       const existingJoin = await db.registerEvent.findFirst({
@@ -35,8 +39,18 @@ export async function POST(request: Request) {
             id: existingJoin.id,
           },
         })
+        if (deleteJoin) {
+          await db.notification.deleteMany({
+            where: {
+              eventId: id,
+              userId: findEvent.authorId,
+            },
+          })
+        }
+
         return NextResponse.json(deleteJoin)
       }
+
       if (!existingJoin) {
         const joinEvent = await db.registerEvent.create({
           data: {
@@ -44,6 +58,15 @@ export async function POST(request: Request) {
             eventID: id,
           },
         })
+        if (joinEvent) {
+          await db.notification.create({
+            data: {
+              eventId: id,
+              userId: findEvent.authorId,
+              body: `ผู้ใช้ ${user.name} ได้เข้าร่วมกิจกรรม ${findEvent.title} ของคุณ`,
+            },
+          })
+        }
         return NextResponse.json(joinEvent)
       }
     }
@@ -61,7 +84,6 @@ export async function GET(request: Request) {
     const user = await getCurrentUser()
     const { searchParams } = new URL(request.url)
     const id = searchParams.get('id') || ''
-    // const currentId = searchParams.get('currentId') || ''
 
     const eventID = await db.event.findFirst({
       where: {
@@ -73,7 +95,6 @@ export async function GET(request: Request) {
     })
 
     if (eventID) {
-      // เช็คว่าผู้ใช้ปัจจุบันได้กดไลค์บทความนี้หรือไม่
       const existingJoin = await db.registerEvent.findFirst({
         where: {
           userID: user?.id,

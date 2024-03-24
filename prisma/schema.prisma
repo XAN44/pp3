@@ -144,6 +144,8 @@ model Event {
     eventstartTime    String? //*กิจกรรมเริ่มวันที่
     eventlocation     String? //*สถานที่จัดกิจกรรม
     eventparticipants String? //*จำนวนเปิดรับกิจกรรม
+    eventcreator      String? //*ผู้สร้างกิจกรรม
+    eventmore         String? //*เพิ่มเติม
     blogInArticle     Article?        @relation(fields: [articleId], references: [id])
     createAt          DateTime        @default(now())
     comment           Comment[]

@@ -162,3 +162,34 @@ export async function replyComments(
     return reply
   } catch (error) {}
 }
+
+export async function DELETE(id: string, path: string) {
+  try {
+    const user = await getCurrentUser()
+
+    const check = await db.comment.findFirst({
+      where: {
+        id,
+      },
+      select: {
+        author: {
+          select: {
+            id: true,
+          },
+        },
+      },
+    })
+    if (check?.author?.id === user?.id) {
+      const deleteArticle = await db.comment.delete({
+        where: {
+          id,
+        },
+      })
+    }
+    revalidatePath(path)
+    return check
+  } catch (error) {
+    console.error('Error fetching comments:', error)
+    throw error
+  }
+}

@@ -4,7 +4,7 @@ import { Avatar, Badge, Divider, Image } from '@nextui-org/react'
 import { Flex, Heading } from '@radix-ui/themes'
 import Link from 'next/link'
 import { Text } from '@chakra-ui/react'
-import { Heart } from 'lucide-react'
+import { Heart, Trash2 } from 'lucide-react'
 import useSWR from 'swr'
 import { useEffect, useState } from 'react'
 import VisitBtnArticleC from '../visit/visitArticleC'
@@ -17,6 +17,16 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from '@/components/ui/carousel'
+import {
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  useDisclosure,
+} from '@nextui-org/react'
+import { AiOutlineDelete } from 'react-icons/ai'
+import { useRouter } from 'next/navigation'
 const fetcher = (url: string) => fetch(url).then((res) => res.json())
 
 interface Props {
@@ -83,6 +93,8 @@ export default function ArticleHomePage({
   totalVisit,
   isFollow,
 }: Props) {
+  const router = useRouter()
+
   const { data: Like, mutate: MutaLike } = useSWR<LikeData>(
     `/api/like?id=${id}`,
     fetcher
@@ -97,9 +109,27 @@ export default function ArticleHomePage({
     `/api/recommend?tag=${tag.map((tag) => tag.tag)}`,
     fetcher
   )
+  const handleDelete = async () => {
+    try {
+      const response = await fetch('/api/deleteArticle', {
+        method: 'DELETE',
+        body: JSON.stringify({ id }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      const data = await response.json()
+      if (response.ok) {
+        router.push('/home') // เมื่อลบเสร็จแล้วกลับไปที่หน้า /home
+      }
+    } catch (error) {
+      console.error('เกิดข้อผิดพลาดในการลบโพส:', error)
+    }
+  }
 
   const [follow, setFollow] = useState(false)
   const [liked, setLiked] = useState(false)
+  const { isOpen, onOpen, onOpenChange } = useDisclosure()
 
   useEffect(() => {
     if (Follow && Follow.Followed) {
@@ -200,7 +230,7 @@ export default function ArticleHomePage({
                 {hashtag?.tag}
               </div>
             ))}
-            <div className="flex">
+            <div className="flex space-x-6">
               <p>ยอดผู้เข้าชม {totalVisit}</p>
               {Like && (
                 <Button
@@ -228,6 +258,54 @@ export default function ArticleHomePage({
                     />
                   </Badge>
                 </Button>
+              )}
+              {currentId === author?.id && (
+                <>
+                  <Button
+                    isIconOnly
+                    size="sm"
+                    aria-label="delete"
+                    variant="light"
+                    color="danger"
+                    className="
+              relative left-4 overflow-visible 
+              after:absolute after:inset-0 after:bg-background/40 
+              after:transition
+              after:!duration-500 hover:-translate-y-2 hover:after:scale-150 hover:after:opacity-0
+              "
+                    onPress={onOpen}
+                  >
+                    <Trash2 />
+                  </Button>
+                  <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+                    <ModalContent>
+                      {(onClose) => (
+                        <>
+                          <ModalHeader className="flex flex-col gap-1">
+                            คุณต้องการที่จะลบบทความนี้ ?
+                          </ModalHeader>
+                          <ModalBody>
+                            <p>
+                              การลบจะทำให้หายไปจากไทม์ไลน์ของคุณและผู้อื่นจะไม่สามารถอ่านบทความนี้ได้อีก
+                            </p>
+                          </ModalBody>
+                          <ModalFooter>
+                            <Button
+                              color="danger"
+                              variant="light"
+                              onPress={handleDelete}
+                            >
+                              ลบ
+                            </Button>
+                            <Button color="primary" onPress={onClose}>
+                              ยกเลิก
+                            </Button>
+                          </ModalFooter>
+                        </>
+                      )}
+                    </ModalContent>
+                  </Modal>
+                </>
               )}
             </div>
             <Text as="small">เขียนวันที่ {createAt}</Text>
