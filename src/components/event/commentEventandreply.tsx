@@ -20,7 +20,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
-import { DELETE, replyComments } from '@/lib/actions/user.comment'
+import { DELETE, DELETEREPLYEVENT, replyComments, replyCommentsEvent } from '@/lib/actions/user.comment'
 import { replyComment } from '@/lib/validations/Userpost'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
@@ -69,10 +69,10 @@ const CommentEventandreply = ({
   isComment,
   isReply,
 }: Props) => {
-  const [replying, setReplying] = useState(false)
-  const [showReply, setShowReply] = useState(false)
-  const [showComment, setShowComment] = useState(false)
-  const [replyVisible, setReplyVisible] = useState(false)
+  const [ replying, setReplying ] = useState(false)
+  const [ showReply, setShowReply ] = useState(false)
+  const [ showComment, setShowComment ] = useState(false)
+  const [ replyVisible, setReplyVisible ] = useState(false)
   const path = usePathname() ?? ''
 
   const handleShowComment = () => {
@@ -121,8 +121,18 @@ const CommentEventandreply = ({
   const handleDelete = async () => {
     await DELETE(id || '', path)
   }
+
+  const handleDeleteReply = async (replyId: string) => {
+    try {
+      await DELETEREPLYEVENT(replyId, path);
+      // เพิ่มโค้ดเพื่ออัปเดตหรือรีเฟรชข้อมูลหลังจากลบ reply ได้ตามต้องการ
+    } catch (error) {
+      console.error('เกิดข้อผิดพลาดในการลบการตอบกลับ:', error);
+    }
+  }
   const onSubmitReply = async (values: z.infer<typeof replyComment>) => {
-    await replyComments(id || '', values.reply, current.id || '', path)
+    await replyCommentsEvent(id || '', values.reply, current.id || '', path)
+    replyForm.reset()
   }
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
 
@@ -203,16 +213,45 @@ const CommentEventandreply = ({
                 <button onClick={handleHiddenReply}>ซ่อนการตอบกลับ</button>
               </div>
               <div className="mb-4 ml-6">
+
                 {reply.map((r, index) => (
-                  <div key={index} className="mb-3 flex gap-3">
+                  <div key={r.id} className="mb-3 flex gap-3">
                     <>
-                      <Avatar
-                        src={r.author?.image || ''}
-                        alt="profile"
-                        className="rounded-full object-cover"
-                      />
+                      <Link href={`/profile/${r.author?.id}`}>
+                        <Avatar
+                          src={r.author?.image || ''}
+                          alt="profile"
+                          className="rounded-full object-cover"
+                        />
+                      </Link>
+
                       <div className="grid text-start">
-                        <Text>{r.author?.name}</Text>
+                        <div className="flex items-center">
+
+
+                          <Text>{r.author?.name}</Text>
+                          {current.id === r.author?.id && (
+                            <>
+                              <Button
+                                isIconOnly
+                                size="sm"
+                                aria-label="delete"
+                                variant="light"
+                                color="danger"
+                                className="
+                                                    relative left-4 overflow-visible 
+                                                    after:absolute after:inset-0 after:bg-background/40 
+                                                    after:transition
+                                                    after:!duration-500 hover:-translate-y-2 hover:after:scale-150 hover:after:opacity-0
+                                                    "
+                                onPress={() => handleDeleteReply(r.id)}
+                              >
+                                <Delete />
+                              </Button>
+
+                            </>
+                          )}
+                        </div>
                         <Text>{r.replytext}</Text>
                       </div>
                     </>

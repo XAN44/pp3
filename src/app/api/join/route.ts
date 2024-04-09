@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import { getCurrentUser } from '@/lib/session'
+import { createNotificatipnForJoin } from '@/lib/actions/user.notification'
 
 export async function POST(request: Request) {
   try {
@@ -58,11 +59,14 @@ export async function POST(request: Request) {
             eventID: id,
           },
         })
+
+    
         if (joinEvent) {
           await db.notification.create({
             data: {
-              eventId: id,
+              current:joinEvent.eventID,
               userId: findEvent.authorId,
+              eventId: joinEvent.eventID,
               body: `ผู้ใช้ ${user.name} ได้เข้าร่วมกิจกรรม ${findEvent.title} ของคุณ`,
             },
           })

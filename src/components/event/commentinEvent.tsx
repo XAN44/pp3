@@ -37,12 +37,16 @@ export default function CommentIEvent({
   })
 
   const onSubmitPost = async (values: z.infer<typeof commentEvent>) => {
+
     await CommentinEvent(
       eventId,
       values.commentz,
       JSON.parse(currentUserId),
       path
     )
+    commentTimeLine.reset()
+
+
   }
 
   return (

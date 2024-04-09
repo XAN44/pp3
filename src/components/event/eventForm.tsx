@@ -37,7 +37,7 @@ import {
 } from '@nextui-org/react'
 import { Loader2 } from 'lucide-react'
 import Image from 'next/image'
-import { usePathname } from 'next/navigation'
+import { redirect, usePathname } from 'next/navigation'
 import React, { ChangeEvent, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { CiImageOn } from 'react-icons/ci'
@@ -66,12 +66,12 @@ export default function EventForm({ accountId, authUserId }: Props) {
     fetcher
   )
 
-  const [files, setFiles] = useState<File[]>([])
-  const [selectedImage, setSelectedImage] = useState<string>('')
+  const [ files, setFiles ] = useState<File[]>([])
+  const [ selectedImage, setSelectedImage ] = useState<string>('')
   const { startUpload } = useUploadThing('media')
-  const [isLoading, setIsloading] = useState(false)
-  const [isText, setIsText] = useState('บันทึก')
-  const [imageSelected, setImageSelected] = useState(false)
+  const [ isLoading, setIsloading ] = useState(false)
+  const [ isText, setIsText ] = useState('บันทึก')
+  const [ imageSelected, setImageSelected ] = useState(false)
 
   const toast = useToast()
 
@@ -81,6 +81,7 @@ export default function EventForm({ accountId, authUserId }: Props) {
     defaultValues: {},
   })
 
+
   const onSubmitPost = async (values: z.infer<typeof EventPost>) => {
     setIsloading(true)
 
@@ -89,8 +90,8 @@ export default function EventForm({ accountId, authUserId }: Props) {
       const hasImageChange = isBase64Image(blob)
       if (hasImageChange) {
         const imgRes = await startUpload(files)
-        if (imgRes && imgRes[0].url) {
-          values.eventImage = imgRes[0].url
+        if (imgRes && imgRes[ 0 ].url) {
+          values.eventImage = imgRes[ 0 ].url
         }
       }
     }
@@ -120,6 +121,7 @@ export default function EventForm({ accountId, authUserId }: Props) {
       loading: { title: 'กำลังโพสต์ ...', description: 'โปรดรอสักครู่' },
     })
 
+
     setIsloading(false)
     setIsText('บันทึกสำเร็จ')
     console.log('NEW ARTICLE', POSTARTILE)
@@ -133,7 +135,7 @@ export default function EventForm({ accountId, authUserId }: Props) {
     const fileReader = new FileReader()
 
     if (e.target.files && e.target.files.length > 0) {
-      const file = e.target.files[0]
+      const file = e.target.files[ 0 ]
       setFiles(Array.from(e.target.files))
       if (!file.type.includes('image')) return
 
@@ -153,7 +155,7 @@ export default function EventForm({ accountId, authUserId }: Props) {
     <>
       {accountId === authUserId && (
         <div className=" ">
-          <Button onClick={onOpen}>สร้างกิจกรรม</Button>
+          <Button onClick={onOpen}>Create Event</Button>
           <AlertDialog
             motionPreset="slideInBottom"
             leastDestructiveRef={cancelRef}

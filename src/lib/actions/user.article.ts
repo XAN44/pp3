@@ -113,11 +113,13 @@ export async function FetchArticleByID(id: string) {
           orderBy: {
             createdAt: 'asc',
           },
+          
           select: {
             id: true,
             text: true,
             authorid: true,
             createdAt: true,
+            
             author: {
               select: {
                 id: true,
@@ -137,6 +139,126 @@ export async function FetchArticleByID(id: string) {
             },
             Reply: {
               select: {
+                id:true,
+                replytext: true,
+                authorid:true,
+                author: {
+                  select: {
+                    id: true,
+                    name: true,
+                    image: true,
+                  },
+                },
+                replyCommet: {
+                  select: {
+                    id: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    })
+
+
+    if (!article) {
+      throw new Error('Article not found')
+    }
+    return article
+  } catch (error) {
+    console.error('Error fetching comments:', error)
+    throw error
+  }
+}
+
+export async function getRepl(id:string) {
+  try {
+    const getReply = await db.reply.findMany({
+      where: {
+        replyCommet:{
+          id:id
+        }
+      },
+      select: {
+        id: true,
+        replytext:true,
+        author: {
+          select: {
+            id:true,
+            name:true,
+            image:true
+          }
+        }
+      }
+
+    })
+  } catch (error) {
+    
+  }
+}
+
+
+export async function FetchPOSTeByID(id: string) {
+  try {
+    const article = await db.post.findUnique({
+      where: {
+        id: id,
+      },
+      include: {
+        tag: {
+          select: {
+            id: true,
+            tag: true,
+          },
+        },
+        author: {
+          select: {
+            id: true,
+            name: true,
+            image: true,
+            bio: true,
+            followers: {
+              select: {
+                id: true,
+              },
+            },
+            following: {
+              select: {
+                id: true,
+              },
+            },
+          },
+        },
+
+        comments: {
+          orderBy: {
+            createdAt: 'asc',
+          },
+          select: {
+            id: true,
+            text: true,
+            authorid: true,
+            createdAt: true,
+            author: {
+              select: {
+                id: true,
+                name: true,
+                image: true,
+                bio: true,
+              },
+            },
+            articleId: true,
+            Post: {
+              select: {
+                id: true,
+                content: true,
+                ImagePost: true,
+              },
+            },
+            Reply: {
+              select: {
+                id:true,
                 replytext: true,
                 author: {
                   select: {
@@ -208,6 +330,7 @@ export async function CommentinArticlesHome(
         data: {
           articleId: articleId,
           userId: inArticle.authorId,
+          current:articleId,
           body: `ผู้ใช้ ${user?.name} ได้แสดงความคิดเห็นบนบล็อกของคุณ ${inArticle.title}`,
         },
       })

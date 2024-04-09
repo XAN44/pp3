@@ -46,9 +46,16 @@ import {
   fetchBlogByFollowing,
   fetchInBlogPage,
   fetchInEnentPage,
+  fetchPostcarosule,
   geteventregister,
 } from '@/lib/actions/user.carousel'
 import EventInhomepage from '@/components/event/eventInhomepage'
+import POSTFORM from '@/components/post/postform'
+import Posthome from '@/components/post/posthome'
+import CommentPostInHome from '@/components/post/commentPostInHome'
+import CommentPostHome from '@/components/post/commentPostHome'
+import VisitBtnPOSTAll from '@/components/visit/visitPost'
+import FollowinHomePage from '@/components/compoinhome/followinhomepage'
 
 export default async function Page() {
   const user = await getCurrentUser()
@@ -60,6 +67,7 @@ export default async function Page() {
   const otherInfo = await fetchInBlogPage()
 
   const otherEvent = await fetchInEnentPage()
+  const otherPost = await fetchPostcarosule()
   const checkFollower = await CheckFollow('', user?.id || '')
 
   //Todo: โดยใช้ Params.id ในการยืนยันจากฐานข้อมูล หากข้อมูลตรงกัน จะทำการแสดงเนื้อหาต่างๆที่โค้ดด้านล่าง
@@ -71,11 +79,7 @@ export default async function Page() {
   return (
     <>
       <div
-        className="
-        mt-[250px]
-        w-full 
-        xl:w-full
-        "
+        className="mt-[250px] w-full xl:w-full "
       >
         <HomePageHeader />
       </div>
@@ -139,138 +143,53 @@ export default async function Page() {
                   <TabsTrigger value="follow"> ติดตาม</TabsTrigger>
                 </TabsList>
 
+
                 <TabsContent value="article">
                   <div className="mb-6">
+                    <div className="mb-3 mt-5 place-items-center p-3 text-center ">
+                      {userInfo?.map((Account) => (
+                        <>
+                          <ArticleForm
+                            key={Account.id}
+                            accountId={Account.id}
+                            authUserId={user?.id || ''}
+                            ArticleImage={''}
+                            articleContent={''}
+                            tag={''}
+                            title={''}
+                          />
+                        </>
+                      ))}
+
+
+                    </div>
                     <Articleinhomepage />
                   </div>
 
-                  <div className="mb-3 mt-5 place-items-center p-3 text-center ">
-                    {userInfo?.map((Account) => (
-                      <>
-                        <ArticleForm
-                          key={Account.id}
-                          accountId={Account.id}
-                          authUserId={user?.id || ''}
-                          ArticleImage={''}
-                          articleContent={''}
-                          tag={''}
-                          title={''}
-                        />
-                      </>
-                    ))}
 
-                    {otherInfo.map(async (ArticleBy: any, index: any) => (
-                      <>
-                        <div className="w-full rounded-lg p-3 shadow-xl">
-                          <div className="">
-                            <ArticleHome
-                              key={ArticleBy?.id}
-                              id={ArticleBy?.id}
-                              title={ArticleBy?.title}
-                              articleContent={ArticleBy?.articleContent}
-                              ArticleImage={ArticleBy.ArticleImage}
-                              tag={ArticleBy.tag}
-                              currentId={user?.id || ''}
-                              authorId={ArticleBy.authorId}
-                              author={ArticleBy.author}
-                              comments={ArticleBy.comment}
-                              createAt={new Date(
-                                ArticleBy.createAt
-                              ).toLocaleString()}
-                            />
-                          </div>
-                          <div className="left-3 mt-7 ">
-                            <CommentArticleInHome
-                              articleId={ArticleBy.id}
-                              currentUserImage={user?.image || ''}
-                              currentUserId={user?.id || ''}
-                            />
-                          </div>
-                          <div className="mb-10 mt-10">
-                            {ArticleBy.comment
-                              .slice(0, 4)
-                              .map((comment: any) => (
-                                <>
-                                  <CommentArticleHome
-                                    key={comment.id}
-                                    id={ArticleBy.id}
-                                    comment={comment?.text}
-                                    articleId={comment.articleId}
-                                    current={
-                                      user || {
-                                        id: '',
-                                        name: '',
-                                        image: '',
-                                      }
-                                    }
-                                    authorId={comment.authorId}
-                                    createAt={new Date(
-                                      comment.createdAt
-                                    ).toLocaleString()}
-                                    author={
-                                      comment.author || {
-                                        id: '',
-                                        name: '',
-                                        image: '',
-                                      }
-                                    }
-                                    reply={comment.Reply}
-                                    isComment
-                                    isReply
-                                  />
-                                </>
-                              ))}
-                            <Link href={`/article/${ArticleBy.id}`}>
-                              <VisitBtnArticleAll
-                                id={ArticleBy.id}
-                                userId={user?.id || ''}
-                              />
-                            </Link>
-                          </div>
-                        </div>
-                      </>
-                    ))}
-                  </div>
                 </TabsContent>
                 <TabsContent value="event">
                   <div className="mb-6">
+                    <div className="mb-3 mt-5 place-items-center p-3 text-center ">
+                      {userInfo?.map((Account) => (
+                        <>
+                          <EventForm
+                            key={Account.id}
+                            accountId={Account.id}
+                            authUserId={user?.id || ''}
+                          />
+                        </>
+                      ))}
+
+                    </div>
                     <EventInhomepage />
                   </div>
-                  <div className="place-items-center text-center">
-                    {userInfo?.map((Account) => (
-                      <>
-                        <EventForm
-                          key={Account.id}
-                          accountId={Account.id}
-                          authUserId={user?.id || ''}
-                        />
-                      </>
-                    ))}
-                    {otherEvent.map(async (Event: any) => (
-                      <EventCard
-                        key={Event.id}
-                        id={Event.id}
-                        title={Event.title}
-                        eventlocation={Event.eventlocation}
-                        articleContent={Event.eventContent}
-                        ArticleImage={Event.eventImage}
-                        eventstartTime={Event.eventstartTime}
-                        eventparticipants={Event.eventparticipants}
-                        registerCount={await geteventregister(Event.id)}
-                        tag={Event.tag}
-                        authorId={Event.authorId}
-                        author={Event.author}
-                        comments={Event.comment}
-                        createAt={new Date(Event.createAt).toLocaleString()}
-                        totalVisit={await TotalVisitEvent(Event.id)}
-                      />
-                    ))}
-                  </div>
+
                 </TabsContent>
 
                 <TabsContent value="follow">
                   <div className="mb-6">
-                    <Articleinhomepage />
+                    <FollowinHomePage />
                   </div>
 
                   <div className="mb-3 mt-5 place-items-center p-3 text-center ">
@@ -348,6 +267,92 @@ export default async function Page() {
                   </div>
                 </TabsContent>
               </Tabs>
+              <div className="mb-3 mt-5 place-items-center p-3 text-center ">
+                {userInfo?.map((Account) => (
+                  <>
+                    <POSTFORM
+                      key={Account.id}
+                      accountId={Account.id}
+                      authUserId={user?.id || ''}
+                      ArticleImage={''}
+                      content={''}
+                      tag={''}
+                    />
+                  </>
+                ))}
+
+
+                {otherPost.map(async (post: any, index: any) => (
+                  <>
+                    <div className="w-full rounded-lg p-3 shadow-xl">
+                      <div className="">
+                        <Posthome
+                          key={post?.id}
+                          id={post?.id}
+                          content={post.content}
+                          ImagePost={post?.ImagePost}
+                          tag={post.tag}
+                          currentId={user?.id || ''}
+                          authorId={post.authorId}
+                          author={post.author}
+                          comments={post.comments}
+                          createAt={new Date(
+                            post.createdAt
+                          ).toLocaleString()}
+                        />
+                      </div>
+                      <div className="left-3 mt-7 ">
+                        <CommentPostInHome
+                          postId={post.id}
+                          currentUserImage={user?.image || ''}
+                          currentUserId={user?.id || ''}
+                        />
+                      </div>
+                      <div className="mb-10 mt-10">
+                        {post.comments
+                          .slice(0, 4)
+                          .map((comments: any) => (
+                            <>
+                              <CommentPostHome
+                                key={comments.id}
+                                id={comments.id}
+                                comments={comments?.text}
+                                articleId={comments.articleId}
+                                current={
+                                  user || {
+                                    id: '',
+                                    name: '',
+                                    image: '',
+                                  }
+                                }
+                                authorId={comments.authorId}
+                                createAt={new Date(
+                                  comments.createdAt
+                                ).toLocaleString()}
+                                author={
+                                  comments.author || {
+                                    id: '',
+                                    name: '',
+                                    image: '',
+                                  }
+                                }
+                                reply={comments.Reply}
+                                isComment
+                                isReply
+                              />
+                            </>
+                          ))}
+                        <Link href={`/post/${post.id}`}>
+                          <VisitBtnPOSTAll
+                            id={post.id}
+                            userId={user?.id || ''}
+                          />
+                        </Link>
+                      </div>
+                    </div>
+                  </>
+                ))}
+              </div>
             </div>
           </div>
         </main>

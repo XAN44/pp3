@@ -79,6 +79,36 @@ export async function VisitArticle(
   }
 }
 
+
+export async function VisitPost(
+  userId: string,
+  pageId: string,
+  path: string
+) {
+  try {
+    const visit = await db.visit.upsert({
+      where: {
+        id: pageId,
+      },
+      update: {
+        count: { increment: 1 },
+      },
+      create: {
+        pageId,
+        userId,
+        count: 1,
+      },
+    })
+    revalidatePath(path)
+    return true
+  } catch (error) {
+    console.log(error)
+    throw new Error('Can not visit')
+  }
+}
+
+
+
 export async function TotalVisit(pageId: string) {
   try {
     const totalVisit = await db.visit.count({
@@ -109,6 +139,19 @@ export async function TotalVisitEvent(eventId: string) {
     const totalVisit = await db.visit.count({
       where: {
         eventId,
+      },
+    })
+    return totalVisit
+  } catch (error) {
+    throw new Error('can not get count of like')
+  }
+}
+
+export async function TotalVisitPOST(pageId: string) {
+  try {
+    const totalVisit = await db.visit.count({
+      where: {
+        pageId,
       },
     })
     return totalVisit

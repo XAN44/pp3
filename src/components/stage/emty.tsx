@@ -1,0 +1,25 @@
+import { Text } from '@chakra-ui/react'
+import React from 'react'
+
+
+export default function Emty() {
+    return (
+        <div className="
+         px-4 
+        py-10 
+        sm:px-6 
+        lg:px-8 
+        lg:py-6 
+        h-full 
+        flex 
+        justify-center 
+        items-center 
+        bg-gray-100">
+            <div className="text-center items-center flex flex-col">
+                <Text fontSize={'medium'} fontWeight={'bold'}>
+                    เลือกแชทหรือเริ่มการสนทนาของคุณ
+                </Text>
+            </div>
+        </div>
+    )
+}

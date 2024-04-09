@@ -54,6 +54,7 @@ export async function POST(request: Request) {
         data: {
           userId: id,
           getSearch: id,
+          userTraget: id
         },
         include: {
           user: true,

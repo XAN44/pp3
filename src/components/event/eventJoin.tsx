@@ -1,4 +1,5 @@
 'use client'
+import { getNOITI } from '@/lib/actions/user.notification'
 import { Text } from '@chakra-ui/react'
 import { Avatar } from '@nextui-org/react'
 import React from 'react'
@@ -27,6 +28,11 @@ export default function EventJoin({ id }: Props) {
     fetcher
   )
 
+  // const noi = await getNOITI()
+  // console.log(noi)
+
+
+
   return (
     <div className="grid">
       <Text as="b">สมาชิกที่เข้าร่วม</Text>
@@ -36,6 +42,7 @@ export default function EventJoin({ id }: Props) {
           <Text>{regus.user.name}</Text>
         </div>
       ))}
+
     </div>
   )
 }

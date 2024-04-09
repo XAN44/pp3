@@ -26,6 +26,7 @@ import {
 } from '@nextui-org/react'
 import NotificationCard from './notification/notificationCard'
 import SearchBar from './SearchBar'
+import Chat from './chat/chat'
 
 interface User {
   userId: string
@@ -33,8 +34,7 @@ interface User {
 const Navbars = async ({ userId }: User) => {
   const user = await getCurrentUser()
   const account = await fetchUserProfileByID(userId || '')
-  console.log('user.Id', userId)
-  const notification = await GetNotification(user?.id || '')
+  console.log(user?.image)
 
   return (
     <>
@@ -44,6 +44,8 @@ const Navbars = async ({ userId }: User) => {
             <HandMetal />
           </Link>
           <NavbarContent className="hidden gap-4 sm:flex" justify="center">
+            <NavbarBrand>
+            </NavbarBrand>
             <NavbarBrand>
               <NotificationCard />
             </NavbarBrand>
@@ -103,7 +105,6 @@ const Navbars = async ({ userId }: User) => {
                           </DropdownMenuItem>
 
                           <DropdownMenuItem>
-                            <NotificationCard />
                           </DropdownMenuItem>
 
                           <DropdownMenuSeparator />

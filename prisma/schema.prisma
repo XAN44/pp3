@@ -1,11 +1,10 @@
 generator client {
-    provider        = "prisma-client-js"
-    previewFeatures = ["postgresqlExtensions"]
+    provider = "prisma-client-js"
 }
 
 datasource db {
     provider = "postgresql"
-    url      = env("SUPABASE")
+    url      = env("DATABASE_URL")
 }
 
 model Account {
@@ -25,14 +24,6 @@ model Account {
     user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
     @@unique([provider, providerAccountId])
-}
-
-model Session {
-    id           String   @id @default(cuid())
-    sessionToken String   @unique
-    userId       String
-    expires      DateTime
-    user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model User {
@@ -69,6 +60,47 @@ model User {
     Event         Event[]
     SearchHistory SearchHistory[]
     RegisterEvent RegisterEvent[]
+    messages      Message[]
+
+    Conversation   Conversation? @relation(fields: [conversationId], references: [id])
+    conversationId String?
+}
+
+model Conversation {
+    id            String   @id @default(cuid())
+    createdAt     DateTime @default(now())
+    lastMessageAt DateTime @default(now())
+    name          String?
+    isGroup       Boolean?
+
+    messagesIds String[]
+    messages    Message[]
+
+    userIds String[]
+    User    User[]
+    // users User[] @relation("UserConversations")
+}
+
+model Message {
+    id        String   @id @default(cuid())
+    text      String
+    createdAt DateTime @default(now())
+
+    seendIds String[]
+
+    Conversation   Conversation? @relation(fields: [conversationId], references: [id])
+    conversationId String?
+
+    sender   User   @relation(fields: [senderId], references: [id])
+    senderId String
+}
+
+model Session {
+    id           String   @id @default(cuid())
+    sessionToken String   @unique
+    userId       String
+    expires      DateTime
+    user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Follows {
@@ -83,16 +115,18 @@ model Follows {
 }
 
 model Post {
-    id           String         @id @default(cuid())
-    content      String?
-    ImagePost    String?
-    author       User?          @relation(fields: [authorId], references: [id])
-    authorId     String?
-    createdAt    DateTime       @default(now())
-    comments     Comment[]
-    Like         Like[]
-    Visit        Visit[]
-    Notification Notification[]
+    id            String          @id @default(cuid())
+    content       String?
+    ImagePost     String?
+    author        User?           @relation(fields: [authorId], references: [id])
+    authorId      String?
+    createdAt     DateTime        @default(now())
+    comments      Comment[]
+    Like          Like[]
+    Visit         Visit[]
+    Notification  Notification[]
+    tag           ArticleTag[]
+    SearchHistory SearchHistory[]
 }
 
 model Visit {
@@ -109,27 +143,31 @@ model Visit {
 }
 
 model SearchHistory {
-    id        String   @id @default(cuid())
-    getSearch String
-    timestamp DateTime @default(now())
-    userId    String?
-    user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
-    article   Article? @relation(fields: [articleId], references: [id])
-    articleId String?
-    event     Event?   @relation(fields: [eventId], references: [id])
-    eventId   String?
+    id         String   @id @default(cuid())
+    getSearch  String
+    timestamp  DateTime @default(now())
+    userId     String?
+    userTraget String?
+    user       User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+    article    Article? @relation(fields: [articleId], references: [id])
+    articleId  String?
+    event      Event?   @relation(fields: [eventId], references: [id])
+    eventId    String?
+    Post       Post?    @relation(fields: [postId], references: [id])
+    postId     String?
 }
 
 model Like {
-    id        String   @id @default(cuid())
-    postId    String?
-    userId    String?
-    articleId String?
-    isLiked   Boolean  @default(false)
-    createdAt DateTime @default(now())
-    article   Article? @relation(fields: [articleId], references: [id])
-    post      Post?    @relation(fields: [postId], references: [id])
-    user      User?    @relation(fields: [userId], references: [id])
+    id           String         @id @default(cuid())
+    postId       String?
+    userId       String?
+    articleId    String?
+    isLiked      Boolean        @default(false)
+    createdAt    DateTime       @default(now())
+    article      Article?       @relation(fields: [articleId], references: [id])
+    post         Post?          @relation(fields: [postId], references: [id])
+    user         User?          @relation(fields: [userId], references: [id])
+    Notification Notification[]
 
     @@unique([postId, userId])
 }
@@ -192,6 +230,8 @@ model ArticleTag {
     articleId String?
     Event     Event?   @relation(fields: [eventId], references: [id])
     eventId   String?
+    Post      Post?    @relation(fields: [postId], references: [id])
+    postId    String?
 }
 
 model Comment {
@@ -211,15 +251,21 @@ model Comment {
 }
 
 model Notification {
-    id        String   @id @default(cuid())
-    body      String
+    id         String  @id @default(cuid())
+    body       String
+    readStatus Boolean @default(false)
+
     userId    String?
     current   String?
+    likeId    String?
     createAt  DateTime @default(now())
     commentId String?
     postId    String?
     articleId String?
     eventId   String?
+    replyId   String?
+    reply     Reply?   @relation(fields: [replyId], references: [id])
+    liked     Like?    @relation(fields: [likeId], references: [id])
     user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
     comment   Comment? @relation(fields: [commentId], references: [id])
     post      Post?    @relation(fields: [postId], references: [id])
@@ -228,12 +274,13 @@ model Notification {
 }
 
 model Reply {
-    id             String   @id @default(cuid())
+    id             String         @id @default(cuid())
     replytext      String
-    author         User?    @relation(fields: [authorid], references: [id])
+    author         User?          @relation(fields: [authorid], references: [id])
     authorid       String?
-    replyCommet    Comment? @relation(fields: [replyCommentid], references: [id])
+    replyCommet    Comment?       @relation(fields: [replyCommentid], references: [id])
     replyCommentid String?
+    Notification   Notification[]
 }
 
 model VerificationToken {

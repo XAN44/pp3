@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache'
 import { db } from '../db'
 import { getCurrentUser } from '../session'
+import { user } from '@nextui-org/theme'
 
 export async function Notification(
   userId: string,
@@ -96,3 +97,101 @@ export async function DELETENOTI(id: string, path: string) {
     throw error
   }
 }
+
+export async function getNotificationLike (id:string){
+  try {
+    await db.notification.findFirst({
+      where:{
+        id
+      },
+      select:{
+        likeId:true
+      }
+    })
+  } catch (error) {
+    
+  }
+}
+
+export async function getNOITI() {
+  try {
+    const user = await getCurrentUser()
+    const getnoti = await db.notification.findMany({
+      where:{
+        userId: user?.id
+      },
+      select:{
+        body:true,
+        user:{
+          select:{
+            id:true,
+            name:true,
+            image:true,
+            
+          }
+        }
+      }
+    })
+    return getnoti
+  } catch (error) {
+    
+  }
+}
+
+export async function creatNotificationForLikeArticle(userId:string , body:string, articleId:string,likeId:string) {
+  try {
+    await db.notification.create({
+      data:{
+        userId,
+        body,
+        articleId,
+        likeId
+      }
+    })
+  } catch (error) {
+    
+  }
+}
+
+
+export async function createNotificatipnForJoin(userId:string ,body:string,eventId:string) {
+  try {
+   if (!userId || !eventId) {
+      throw new Error('User ID or Event ID is missing or null')
+    }
+    await db.notification.create({
+      data:{
+        userId,
+        body,
+        eventId
+      }
+    })
+    
+  } catch (error) {
+    throw error
+    
+  }
+}
+
+
+export async function createNotificatipnForCommentEvent(id:string,userId:string ,body:string,eventId:string,commentId:string) {
+  try {
+   if (!userId || !eventId) {
+      throw new Error('User ID or Event ID is missing or null')
+    }
+    await db.notification.create({
+      data:{
+        id,
+        userId,
+        body,
+        eventId,
+        commentId
+      }
+    })
+    
+  } catch (error) {
+    throw error
+    
+  }
+}
+

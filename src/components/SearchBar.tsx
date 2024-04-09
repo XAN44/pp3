@@ -32,9 +32,9 @@ async function fetcher(url: string) {
 }
 
 export default function SearchBar() {
-  const [queryArticle, setQueryArticle] = React.useState('')
-  const [queryEvent, setQueryEvent] = React.useState('')
-  const [queryProfile, setQueryProfile] = React.useState('')
+  const [ queryArticle, setQueryArticle ] = React.useState('')
+  const [ queryEvent, setQueryEvent ] = React.useState('')
+  const [ queryProfile, setQueryProfile ] = React.useState('')
   const { data: session, status } = useSession()
 
   // TODO: 3 อันดับ
@@ -165,7 +165,7 @@ export default function SearchBar() {
             isOpen={isOpen}
             onOpenChange={onOpenChange}
             placement="top"
-            size="5xl"
+            size="full"
             className="  bg-transparent  "
             classNames={{
               backdrop: 'bg-[#050505]/50 backdrop-opacity-40',
@@ -176,11 +176,11 @@ export default function SearchBar() {
             <ModalContent>
               {(onClose) => (
                 <>
-                  <ModalHeader className="text-white">
+                  <ModalHeader className="flex items-center justify-center text-white text-center font-bold">
                     ค้นหาสิ่งที่คุณอยากเจอ !
                   </ModalHeader>
                   <ModalBody>
-                    <div className=" flex items-start justify-center space-x-20">
+                    <div className=" flex items-start justify-center space-x-20 ">
                       <div className="w-full ">
                         <Tabs
                           defaultValue="article"
@@ -199,7 +199,7 @@ export default function SearchBar() {
                             </TabsList>
                           </div>
                           <TabsContent value="user" className=" ">
-                            <div className="flex justify-center space-x-28 text-white">
+                            <div className="flex justify-center space-x-28 text-black ">
                               <div className="mt-5 w-full ">
                                 <Text color="white">การค้นหายอดนิยม</Text>
                                 {/* 
@@ -207,25 +207,28 @@ export default function SearchBar() {
                             */}
                                 {ToptierProfile?.map((Profile, index) => (
                                   <>
-                                    <div
-                                      key={index}
-                                      className=" mt-6 flex items-start justify-start"
-                                    >
-                                      <Image
-                                        isBlurred
-                                        src={Profile.image}
-                                        alt={Profile.image}
-                                        radius="md"
-                                        width={100}
-                                        height={100}
-                                        className=" h-43 w-full object-scale-down"
-                                      />
-                                      <div className="ml-3 ">
-                                        <Text color="white">
-                                          {Profile.name}
-                                        </Text>
+
+                                    <Link href={`/profile/${Profile.id}`}>
+                                      <div
+                                        key={index}
+                                        className=" mt-6 flex items-center justify-start"
+                                      >
+                                        <Image
+                                          isBlurred
+                                          src={Profile.image}
+                                          alt={Profile.image}
+                                          radius="md"
+                                          width={100}
+                                          height={100}
+                                          className=" h-43 w-full object-scale-down"
+                                        />
+                                        <div className="ml-3 ">
+                                          <Text color="white">
+                                            {Profile.name}
+                                          </Text>
+                                        </div>
                                       </div>
-                                    </div>
+                                    </Link>
                                   </>
                                 ))}
                               </div>
@@ -252,7 +255,7 @@ export default function SearchBar() {
                                           onClose()
                                         }}
                                       >
-                                        <div className="mt-6 flex ">
+                                        <div className="mt-6 flex items-center">
                                           <Image
                                             isBlurred
                                             src={Profile.image}
@@ -280,25 +283,30 @@ export default function SearchBar() {
                                 {profileHistory?.map((history, index) => (
                                   <>
                                     {history.user && (
-                                      <div
-                                        key={index}
-                                        className="mt-6 flex items-start justify-start"
-                                      >
-                                        <Image
-                                          isBlurred
-                                          src={history.user.image}
-                                          alt={history.user.image}
-                                          radius="md"
-                                          width={100}
-                                          height={100}
-                                          className="h-43 w-full object-scale-down"
-                                        />
-                                        <div className="ml-3">
-                                          <Text color="white">
-                                            {history.user.name}
-                                          </Text>
-                                        </div>
-                                      </div>
+                                      <>
+                                        <Link href={`/profile/${history.user.id}`}>
+                                          <div
+                                            key={index}
+                                            className="mt-6 flex items-start justify-start"
+                                          >
+
+                                            <Image
+                                              isBlurred
+                                              src={history.user.image}
+                                              alt={history.user.image}
+                                              radius="md"
+                                              width={100}
+                                              height={100}
+                                              className="h-43 w-full object-scale-down"
+                                            />
+                                            <div className="ml-3">
+                                              <Text color="white">
+                                                {history.user.name}
+                                              </Text>
+                                            </div>
+                                          </div>
+                                        </Link>
+                                      </>
                                     )}
                                   </>
                                 ))}
@@ -314,28 +322,32 @@ export default function SearchBar() {
                             */}
                                 {ToptierArticle?.map((Article, index) => (
                                   <>
-                                    <div
-                                      key={index}
-                                      className=" mt-6 flex items-start justify-start"
-                                    >
-                                      <Image
-                                        isBlurred
-                                        src={Article.ArticleImage}
-                                        alt={Article.ArticleImage}
-                                        radius="md"
-                                        width={100}
-                                        height={100}
-                                        className=" h-43 w-full object-scale-down"
-                                      />
-                                      <div className="ml-3 ">
-                                        <Text color="white">
-                                          {Article.title}
-                                        </Text>
-                                        <Text color="white">
-                                          ผู้เขียน {Article.author.name}
-                                        </Text>
+                                    <Link href={`/article/${Article.id}`}>
+                                      <div
+                                        key={index}
+                                        className=" mt-6 flex items-start justify-start"
+                                      >
+
+                                        <Image
+                                          isBlurred
+                                          src={Article.ArticleImage}
+                                          alt={Article.ArticleImage}
+                                          radius="md"
+                                          width={100}
+                                          height={100}
+                                          className=" h-43 w-full object-scale-down"
+                                        />
+                                        <div className="ml-3 ">
+                                          <Text color="white">
+                                            {Article.title}
+                                          </Text>
+                                          <Text color="white">
+                                            ผู้เขียน {Article.author.name}
+                                          </Text>
+                                        </div>
+
                                       </div>
-                                    </div>
+                                    </Link>
                                   </>
                                 ))}
                               </div>
@@ -371,7 +383,7 @@ export default function SearchBar() {
                                             height={100}
                                             className=" h-43 w-full object-scale-down"
                                           />
-                                          <div className="ml-5 items-start justify-center ">
+                                          <div className="ml-5 items-start justify-center text-white ">
                                             <Text>{article?.title}</Text>
                                             <Text>
                                               ผู้เขียน {article?.author.name}
@@ -390,29 +402,34 @@ export default function SearchBar() {
                                 {searchHistory?.map((history, index) => (
                                   <>
                                     {history.article && (
-                                      <div
-                                        key={index}
-                                        className="mt-6 flex items-start justify-start"
-                                      >
-                                        <Image
-                                          isBlurred
-                                          src={history.article.ArticleImage}
-                                          alt={history.article.ArticleImage}
-                                          radius="md"
-                                          width={100}
-                                          height={100}
-                                          className="h-43 w-full object-scale-down"
-                                        />
-                                        <div className="ml-3">
-                                          <Text color="white">
-                                            {history.article.title}
-                                          </Text>
-                                          <Text color="white">
-                                            ผู้เขียน{' '}
-                                            {history.article.author.name}
-                                          </Text>
-                                        </div>
-                                      </div>
+
+                                      <>
+                                        <Link href={`/article/${history.article.id}`}>
+                                          <div
+                                            key={index}
+                                            className="mt-6 flex items-start justify-start"
+                                          >
+                                            <Image
+                                              isBlurred
+                                              src={history.article.ArticleImage}
+                                              alt={history.article.ArticleImage}
+                                              radius="md"
+                                              width={100}
+                                              height={100}
+                                              className="h-43 w-full object-scale-down"
+                                            />
+                                            <div className="ml-3">
+                                              <Text color="white">
+                                                {history.article.title}
+                                              </Text>
+                                              <Text color="white">
+                                                ผู้เขียน{' '}
+                                                {history.article.author.name}
+                                              </Text>
+                                            </div>
+                                          </div>
+                                        </Link>
+                                      </>
                                     )}
                                   </>
                                 ))}
@@ -428,26 +445,30 @@ export default function SearchBar() {
                             */}
                                 {ToptierEvent?.map((Event, index) => (
                                   <>
-                                    <div
-                                      key={index}
-                                      className=" mt-6 flex items-start justify-start"
-                                    >
-                                      <Image
-                                        isBlurred
-                                        src={Event.eventImage}
-                                        alt={Event.eventImage}
-                                        radius="md"
-                                        width={100}
-                                        height={100}
-                                        className=" h-43 w-full object-scale-down"
-                                      />
-                                      <div className="ml-3 ">
-                                        <Text color="white">{Event.title}</Text>
-                                        <Text color="white">
-                                          ผู้เขียน {Event.author.name}
-                                        </Text>
+                                    <Link href={`/event/${Event.id}`}>
+
+                                      <div
+                                        key={index}
+                                        className=" mt-6 flex items-start justify-start"
+                                      >
+                                        <Image
+                                          isBlurred
+                                          src={Event.eventImage}
+                                          alt={Event.eventImage}
+                                          radius="md"
+                                          width={100}
+                                          height={100}
+                                          className=" h-43 w-full object-scale-down"
+                                        />
+                                        <div className="ml-3 ">
+                                          <Text color="white">{Event.title}</Text>
+                                          <Text color="white">
+                                            ผู้เขียน {Event.author.name}
+                                          </Text>
+                                        </div>
                                       </div>
-                                    </div>
+                                    </Link>
+
                                   </>
                                 ))}
                               </div>
@@ -503,28 +524,32 @@ export default function SearchBar() {
                                 {eventHistory?.map((event, index) => (
                                   <>
                                     {event.event && (
-                                      <div
-                                        key={index}
-                                        className="mt-6 flex items-start justify-start"
-                                      >
-                                        <Image
-                                          isBlurred
-                                          src={event.event.eventImage}
-                                          alt={event.event.eventImage}
-                                          radius="md"
-                                          width={100}
-                                          height={100}
-                                          className="h-43 w-full object-scale-down"
-                                        />
-                                        <div className="ml-3">
-                                          <Text color="white">
-                                            {event.event.title}
-                                          </Text>
-                                          <Text color="white">
-                                            ผู้เขียน {event.event.author.name}
-                                          </Text>
-                                        </div>
-                                      </div>
+                                      <>
+                                        <Link href={`/event/${event.event.id}`}>
+                                          <div
+                                            className="mt-6 flex items-start justify-start"
+                                          >
+
+                                            <Image
+                                              isBlurred
+                                              src={event.event.eventImage}
+                                              alt={event.event.eventImage}
+                                              radius="md"
+                                              width={100}
+                                              height={100}
+                                              className="h-43 w-full object-scale-down"
+                                            />
+                                            <div className="ml-3">
+                                              <Text color="white">
+                                                {event.event.title}
+                                              </Text>
+                                              <Text color="white">
+                                                ผู้เขียน {event.event.author.name}
+                                              </Text>
+                                            </div>
+                                          </div>
+                                        </Link>
+                                      </>
                                     )}
                                   </>
                                 ))}

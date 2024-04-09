@@ -1,4 +1,5 @@
 import ArticleCardPage from '@/components/article/articlePage'
+import CommentAndReplyArticle from '@/components/article/commentAndReplyArticle'
 import CommentArticleHome from '@/components/article/commentArticleHome'
 import CommentArticleInHome from '@/components/article/commentArticleInHome'
 import SWRcomment from '@/components/article/swrcomment'
@@ -66,11 +67,12 @@ const Page = async ({ params }: { params: { id: string } }) => {
           ความคิดเห็นทั้งหมด
         </Heading>
         {ArticleBy.comment.map((comment: any) => (
-          <CommentArticleHome
+          <CommentAndReplyArticle
             key={comment.id}
             comment={comment.text}
             id={comment.id}
             articleId={ArticleBy.id}
+
             current={
               user || {
                 id: '',
@@ -78,7 +80,7 @@ const Page = async ({ params }: { params: { id: string } }) => {
                 image: '',
               }
             }
-            authorId={comment.authorId}
+            authorId={comment.authorid}
             createAt={new Date(comment.createdAt).toLocaleString()}
             author={
               comment.author || {

@@ -26,6 +26,8 @@ import {
   fetchEventInBlogPage,
   fetchInBlogPage,
 } from '@/lib/actions/user.carousel'
+import VisitEvent from '../visit/visitEvent'
+import VisitEventCarosule from '../visit/visitEventCarosule'
 
 export default async function EventInhomepage() {
   const otherInfo = await fetchEventInBlogPage()
@@ -101,7 +103,7 @@ export default async function EventInhomepage() {
                           </div>
                           <div className="">
                             <Link href={`/event/${article.id}`}>
-                              <VisitBtnArticleC
+                              <VisitEventCarosule
                                 id={article.id}
                                 userId={user?.id || ''}
                               />
@@ -122,6 +124,7 @@ export default async function EventInhomepage() {
       <div className="flex w-full flex-col">
         <div className="items-end justify-end text-end">
           <Link href="/allblog">ดูทั้งหมด</Link>
+
         </div>
         <div className="divider divider-neutral "></div>
       </div>

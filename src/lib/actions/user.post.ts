@@ -5,27 +5,34 @@ import { getCurrentUser } from '../session'
 import { select } from '@nextui-org/theme'
 
 interface userPost {
-  authorid: string
+  authorId: string
   path: string
   ImagePost: string
   content: string
+  tag:string
 }
 
 export async function userPost({
-  authorid,
+  authorId,
   content,
   ImagePost,
+  tag,
   path,
 }: userPost): Promise<void> {
   try {
-    if (!authorid) {
+    if (!authorId) {
       throw new Error('ไม่มีผู้ใช้')
     }
     await db.post.create({
       data: {
-        authorId: authorid,
+        authorId: authorId,
         content,
         ImagePost,
+        tag:{
+          create:{
+            tag:tag
+          }
+        }
       },
     })
     revalidatePath(path)
@@ -227,9 +234,7 @@ export async function fetchUserProfileByID(id: string) {
       },
       // TODO: POST
       post: {
-        orderBy: {
-          createdAt: 'desc',
-        },
+   
         select: {
           id: true,
           content: true,
@@ -247,9 +252,26 @@ export async function fetchUserProfileByID(id: string) {
               Twitter: true,
             },
           },
+               tag: {
+            select: {
+              id: true,
+              tag: true,
+            },
+          },
           // TODO:COMMENT
           comments: {
-            include: {
+            select: {
+              Reply:{
+                select:{
+                  author:{
+                    select:{
+                      id:true,
+                      name:true,
+                      image:true
+                    }
+                  }
+                }
+              },
               author: {
                 select: {
                   id: true,
@@ -259,6 +281,7 @@ export async function fetchUserProfileByID(id: string) {
               },
             },
           },
+
         },
       },
     },

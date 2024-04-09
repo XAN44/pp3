@@ -1,3 +1,4 @@
+import { creatNotificationForLikeArticle } from '@/lib/actions/user.notification'
 import { db } from '@/lib/db'
 import { getCurrentUser } from '@/lib/session'
 import { NextResponse } from 'next/server'
@@ -6,7 +7,7 @@ export async function POST(request: Request) {
   try {
     const user = await getCurrentUser()
 
-    const { id, currentId } = await request.json()
+    const { id } = await request.json()
     if (!id) {
       return NextResponse.json(
         { message: 'กรุณาใส่ ID ของบทความ' },
@@ -22,6 +23,11 @@ export async function POST(request: Request) {
       where: {
         id: id,
       },
+      select: {
+        id: true,
+        authorId: true,
+        title: true,
+      }
     })
     if (findarticle) {
       const existingLike = await db.like.findFirst({
@@ -36,6 +42,13 @@ export async function POST(request: Request) {
             id: existingLike.id,
           },
         })
+        if (unlike) {
+          await db.notification.delete({
+            where: {
+              id: existingLike.id
+            },
+          })
+        }
         return NextResponse.json(unlike)
       }
       if (!existingLike) {
@@ -43,10 +56,24 @@ export async function POST(request: Request) {
           data: {
             userId: user?.id,
             articleId: id,
+
           },
         })
+
+        if (like) {
+          await db.notification.create({
+            data: {
+              current: findarticle.id,
+              userId: findarticle.authorId,
+              body: `ผู้ใช้ ${user?.name} กดไลค์บทความ ${findarticle.title}`,
+              articleId: findarticle?.id,
+              likeId: like?.id
+            }
+          })
+        }
         return NextResponse.json(like)
       }
+
     }
   } catch (error) {
     return NextResponse.json(

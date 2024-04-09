@@ -112,7 +112,7 @@ export default function ArticleHomePage({
   const handleDelete = async () => {
     try {
       const response = await fetch('/api/deleteArticle', {
-        method: 'DELETE',
+        method: 'DELETE', 
         body: JSON.stringify({ id }),
         headers: {
           'Content-Type': 'application/json',

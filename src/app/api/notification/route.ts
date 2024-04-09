@@ -13,6 +13,11 @@ export async function GET(request: Request) {
       select: {
         id: true,
         body: true,
+        current:true,
+        articleId:true,
+        postId:true,
+        eventId:true,
+        
       },
     })
     return NextResponse.json(getNoti)
@@ -22,33 +27,4 @@ export async function GET(request: Request) {
   }
 }
 
-export async function DELETENOTI(id: string, path: string) {
-  try {
-    const user = await getCurrentUser()
 
-    const check = await db.notification.findFirst({
-      where: {
-        id,
-      },
-      select: {
-        user: {
-          select: {
-            id: true,
-          },
-        },
-      },
-    })
-    if (check?.user?.id === user?.id) {
-      const deleteNotification = await db.notification.delete({
-        where: {
-          id,
-        },
-      })
-    }
-    revalidatePath(path)
-    return check
-  } catch (error) {
-    console.error('Error fetching comments:', error)
-    throw error
-  }
-}

@@ -132,7 +132,7 @@ const Page = async ({ params }: { params: { id: string } }) => {
                     }
                   }
                   comment={comment?.text}
-                  authorId={comment.authorId}
+                  authorId={comment.authorid}
                   createAt={new Date(comment.createdAt).toLocaleString()}
                   author={
                     comment.author || {

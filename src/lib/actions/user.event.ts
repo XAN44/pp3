@@ -2,6 +2,8 @@
 
 import { revalidatePath } from 'next/cache'
 import { db } from '../db'
+import { getCurrentUser } from '../session'
+import { createNotificatipnForCommentEvent } from './user.notification'
 
 interface Props {
   authorId: string
@@ -18,6 +20,7 @@ interface Props {
   tag: string
 }
 
+
 export async function EVENTPOST({
   authorId,
   title,
@@ -31,42 +34,39 @@ export async function EVENTPOST({
   eventmore,
   path,
   tag,
-}: Props): Promise<void> {
+}: Props): Promise<any> {
   try {
     if (!authorId) {
-      throw new Error('Pless LOGIN')
+      throw new Error('กรุณาเข้าสู่ระบบ')
     }
 
-    await db.event.create({
-      data: {
-        author: {
-          connect: { id: authorId },
-        },
-        title,
-        eventContent,
-        eventcreator,
-        eventmore,
-        eventImage,
-        eventstartTime,
-        eventlocation,
-        blogInArticle: {
-          connect: { id: blogInArticle },
-        },
-        eventparticipants,
-        tag: {
-          create: {
-            tag: tag,
-          },
-        },
-      },
-    })
-    revalidatePath(path)
+    const eventData: any = { // สร้าง object เพื่อเก็บข้อมูลกิจกรรม
+      author: { connect: { id: authorId } },
+      title,
+      eventContent,
+      eventcreator,
+      eventmore,
+      eventImage,
+      eventstartTime,
+      eventlocation,
+      eventparticipants,
+      tag: { create: { tag } },
+    };
+
+    if (blogInArticle) {
+      eventData.blogInArticle = { connect: { id: blogInArticle } }
+    }
+
+
+
+  revalidatePath(path)
   } catch (error: any) {
     console.error(error) // Log the error for debugging
 
     throw new Error(`Failed to create/update user: ${error.message}`)
   }
 }
+
 
 export async function CommentinArticles(
   articleId: string,
@@ -355,23 +355,44 @@ export async function CommentinEvent(
   path: string
 ) {
   try {
+    const user = await getCurrentUser()
     const inArticle = await db.event.findUnique({
       where: {
         id: eventId,
       },
+      select:{
+        id:true,
+        authorId:true,
+        title:true,
+      }
     })
     if (!inArticle) {
       throw new Error('dont have article')
     }
 
-    const newCommentInArticle = await db.comment.create({
+    const newCommentInEvent = await db.comment.create({
       data: {
         text: comment,
         eventId: eventId,
         authorid: authorId,
       },
     })
+   if(user?.id === inArticle.authorId){
+        revalidatePath(path)
+        return false
+      }
+    if(newCommentInEvent){
+        await db.notification.create({
+          data:{
+            eventId:newCommentInEvent.eventId,
+            current:newCommentInEvent.eventId,
+            userId:inArticle.authorId,
+            body:`ผู้ใช้ ${user?.name} ได้แสดงความคิดเห็น ${newCommentInEvent.text} บนกิจกรรม ${inArticle.title} `, 
+          }
+        })
+    }
     revalidatePath(path)
+    return(newCommentInEvent)
   } catch (error: any) {
     throw new Error(`Failed to create/update user: ${error.message}`)
   }

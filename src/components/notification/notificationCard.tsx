@@ -1,8 +1,8 @@
 'use client'
-import { DELETENOTI, GetNotification } from '@/lib/actions/user.notification'
+import { DELETENOTI, GetNotification, getNotificationLike } from '@/lib/actions/user.notification'
 import { fetchUserProfileByID } from '@/lib/actions/user.post'
 import { getCurrentUser } from '@/lib/session'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   Dialog,
   DialogContent,
@@ -11,54 +11,194 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog'
-import { Button, Link } from '@nextui-org/react'
-import { Delete } from 'lucide-react'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Badge, Button, Link } from '@nextui-org/react'
+import { Delete, Heart } from 'lucide-react'
 import { useSession } from 'next-auth/react'
 import useSWR from 'swr'
 import { usePathname } from 'next/navigation'
+import { AiFillNotification } from 'react-icons/ai'
+import { UseStoreNotification } from '../store/store'
+
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json())
+
+
+
+
+
 export default function NotificationCard() {
   const path = usePathname() ?? ''
 
   const { data: notifications } = useSWR(`/api/notification`, fetcher)
+
   const { data: user } = useSession()
+
+
+  const { notificationCount, notificationIncrement, notificationRead } = UseStoreNotification((state) => ({
+    notificationCount: state.notificationCount,
+    notificationIncrement: state.notificationIncrement,
+    notificationRead: state.notificationRead
+  }))
+
+  useEffect(() => {
+    if (notifications) {
+      notificationIncrement(notifications.length)
+
+    }
+  }, [ notifications, notificationIncrement ])
+  const handleRead = () => {
+    notificationRead()
+  }
+
+  // const [ unreadNotificationsCount, setUnreadNotificationsCount ] = useState(0)
+
+
+  // useEffect(() => {
+  //   // นับจำนวนการแจ้งเตือนที่ยังไม่ได้อ่าน
+  //   if (notifications) {
+  //     const unreadCount = notifications.filter((notification: { read: any }) => !notification.read).length
+  //     setUnreadNotificationsCount(unreadCount)
+  //   }
+  // }, [ notifications ])
+
+
+  // const handleNotificationClick = () => {
+  //   // เมื่อคลิกที่ไอคอนการแจ้งเตือน ให้ตั้งค่าจำนวนการแจ้งเตือนเป็น 0
+  //   setUnreadNotificationsCount(0)
+  // }
+
+
+
+
   if (!user?.user.id) return <></>
+
 
   const handleDelete = async (notificationId: string) =>
     await DELETENOTI(notificationId, path)
 
+
+
+  const handleLinkLikve = async (notificationLikeLid: string) => await getNotificationLike(notificationLikeLid)
+
   return (
     <>
-      <Dialog>
-        <DialogTrigger>Notification</DialogTrigger>
-        <DialogContent>
+      <Dialog >
+        <DialogTrigger >
+          <Badge content={notificationCount} color="default" variant="faded">
+
+            <button onClick={handleRead}>   <AiFillNotification
+              className="hover:	hover:cursor-pointer"
+            />
+            </button>
+          </Badge>
+        </DialogTrigger>
+        <DialogContent className='h-full overflow-auto'>
           <DialogHeader>
             <DialogTitle> การแจ้งเตือน </DialogTitle>
             <DialogDescription>
-              {notifications ? (
-                notifications.map((notification: any) => (
-                  <div key={notification.id} className="flex">
-                    <p>{notification.body}</p>
-                    <Delete
-                      className="
-              relative left-4 overflow-visible 
-              after:absolute after:inset-0 after:bg-background/40 
-              after:transition after:!duration-500
-              hover:-translate-y-2 hover:cursor-pointer hover:after:scale-150 hover:after:opacity-0
-              "
-                      onClick={() => handleDelete(notification.id)}
-                      size={20}
-                    />
-                  </div>
-                ))
-              ) : (
-                <p>ไม่มีการแจ้งเตือน</p>
-              )}
+
+              <Tabs defaultValue="Post" className='flex flex-col' >
+                <TabsList className=''>
+                  <TabsTrigger value="Post"> โพสต์</TabsTrigger>
+                  <TabsTrigger value="Blog"> บทความ</TabsTrigger>
+                  <TabsTrigger value="event"> กิจกรรม</TabsTrigger>
+                </TabsList>
+                <TabsContent value="Post">
+
+                  {notifications.map((notification: any) => (
+                    <>
+                      <div className="flex items-center justify-center ">
+
+                        {notification?.current === notification?.postId && (
+                          <>
+                            <Link href={`/post/${notification?.postId}`}>
+                              <p>{notification.body}</p>
+                            </Link>
+
+                            <Delete
+                              className="
+                                relative left-4 overflow-visible 
+                                after:absolute after:inset-0 after:bg-background/40 
+                                after:transition after:!duration-500
+                                hover:cursor-pointer 
+                                hover:after:scale-150 hover:after:opacity-0
+                                "
+                              onClick={() => handleDelete(notification.id)}
+                              size={20}
+                            />
+
+
+                          </>
+                        )}
+                      </div>
+
+                    </>
+                  ))}
+                </TabsContent>
+                <TabsContent value='Blog'>
+                  {notifications.map((notification: any) => (
+                    <>
+                      <div className="flex items-center justify-center">
+                        {notification?.current === notification?.articleId && (
+                          <>
+                            <Link href={`/event/${notification?.articleId}`}>
+                              <p>{notification.body}</p>
+                            </Link>
+
+                            <Delete
+                              className="
+                                relative left-4 overflow-visible 
+                                after:absolute after:inset-0 after:bg-background/40 
+                                after:transition after:!duration-500
+                                hover:-translate-y-2 hover:cursor-pointer hover:after:scale-150 hover:after:opacity-0
+                                "
+                              onClick={() => handleDelete(notification.id)}
+                              size={20}
+                            />
+
+
+                          </>
+                        )}
+                      </div>
+                    </>
+                  ))}
+                </TabsContent>
+                <TabsContent value='event'>
+
+                  {notifications.map((notification: any) => (
+                    <>
+                      <div className="flex items-center justify-center">
+                        {notification?.current === notification?.eventId && (
+                          <>
+                            <Link href={`/event/${notification?.eventId}`}>
+                              <p>{notification.body}</p>
+                            </Link>
+
+                            <Delete
+                              className="
+                                relative left-4 overflow-visible 
+                                after:absolute after:inset-0 after:bg-background/40 
+                                after:transition after:!duration-500
+                                hover:-translate-y-2 hover:cursor-pointer hover:after:scale-150 hover:after:opacity-0
+                                "
+                              onClick={() => handleDelete(notification.id)}
+                              size={20}
+                            />
+
+
+                          </>
+                        )}
+
+                      </div >
+                    </>
+                  ))}
+                </TabsContent>
+              </Tabs>
             </DialogDescription>
           </DialogHeader>
         </DialogContent>
-      </Dialog>
+      </Dialog >
     </>
   )
 }
