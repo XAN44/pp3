@@ -4,7 +4,12 @@ import ArticleTagFood from '@/components/compoinhome/articleTagFood'
 import ArticleTagTravel from '@/components/compoinhome/articleTagTravel'
 import { Text } from '@chakra-ui/react'
 import { Image } from '@nextui-org/react'
+import { Metadata } from 'next'
 import React from 'react'
+
+export const metadata: Metadata = {
+  title: 'Allblog'
+}
 
 export default function page() {
   return (

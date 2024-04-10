@@ -92,7 +92,7 @@ export default function ArticleCard({
             <footer className="mt-3">
               {tag ? (
                 tag.map((hashTag) => (
-                  <div className="badge badge-neutral  " key={hashTag.id}>
+                  <div className="badge badge-neutral w-max " key={hashTag.id}>
                     {hashTag.tag}
                   </div>
                 ))

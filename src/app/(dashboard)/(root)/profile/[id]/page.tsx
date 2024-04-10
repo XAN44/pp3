@@ -19,8 +19,15 @@ import { fetchUserProfileByID } from '@/lib/actions/user.post'
 import { TotalVisit1, TotalVisitEvent } from '@/lib/actions/user.visit'
 import { getCurrentUser } from '@/lib/session'
 import { Divider, ScrollShadow } from '@nextui-org/react'
+import { Metadata } from 'next'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
+
+
+export const metadata: Metadata = {
+  title: 'Profile'
+}
+
 
 export default async function Page({ params }: { params: { id: string } }) {
   if (!params.id) return null
@@ -142,7 +149,7 @@ export default async function Page({ params }: { params: { id: string } }) {
                                       key={comments.id}
                                       id={comments.id}
                                       comments={comments?.text}
-                                      articleId={comments.articleId}
+                                      postId={comments.articleId}
                                       current={
                                         user || {
                                           id: '',

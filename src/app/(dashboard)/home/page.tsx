@@ -56,6 +56,12 @@ import CommentPostInHome from '@/components/post/commentPostInHome'
 import CommentPostHome from '@/components/post/commentPostHome'
 import VisitBtnPOSTAll from '@/components/visit/visitPost'
 import FollowinHomePage from '@/components/compoinhome/followinhomepage'
+import { Metadata } from 'next'
+
+
+export const metadata: Metadata = {
+  title: 'Home'
+}
 
 export default async function Page() {
   const user = await getCurrentUser()

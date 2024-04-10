@@ -16,7 +16,14 @@ import {
 import { TotalVisit1 } from '@/lib/actions/user.visit'
 import { getCurrentUser } from '@/lib/session'
 import { Container, Heading } from '@radix-ui/themes'
+import { Metadata } from 'next'
 import { redirect } from 'next/navigation'
+
+
+export const metadata: Metadata = {
+  title: 'Article'
+}
+
 
 const Page = async ({ params }: { params: { id: string } }) => {
   if (!params.id) return null

@@ -265,7 +265,7 @@ export default function Posthome({
                     <>
                         {hashtag ? (
                             <>
-                                <div className="badge badge-info">{hashtag.tag}</div>
+                                <div className="badge badge-info w-auto">{hashtag.tag}</div>
                             </>
                         ) : null}
                     </>

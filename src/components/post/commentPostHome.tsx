@@ -142,7 +142,7 @@ const CommentPostHome = ({
                     <Link href={`/profile/${author?.id}`}>
                         {author?.image && <Avatar alt=".." src={author.image} />}
                     </Link>
-                    <div className="grid  ">
+                    <div className="grid text-start  ">
                         <div className="flex items-center">
                             <Text>{author?.name}</Text>
                             {current.id === author?.id && (
@@ -154,11 +154,11 @@ const CommentPostHome = ({
                                         variant="light"
                                         color="danger"
                                         className="
-              relative left-4 overflow-visible 
-              after:absolute after:inset-0 after:bg-background/40 
-              after:transition
-              after:!duration-500 hover:-translate-y-2 hover:after:scale-150 hover:after:opacity-0
-              "
+                                                relative left-4 overflow-visible 
+                                                after:absolute after:inset-0 after:bg-background/40 
+                                                after:transition
+                                                after:!duration-500 hover:-translate-y-2 hover:after:scale-150 hover:after:opacity-0
+                                                "
                                         onPress={onOpen}
                                     >
                                         <Delete />

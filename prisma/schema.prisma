@@ -44,6 +44,8 @@ model User {
     IG              String?
     Twitter         String?
     Tiktok          String?
+    followingCount  Int @default(0)  @map("following", _count)
+    followersCount  Int @default(0)  @map("followers", _count)
 
     accounts Account[]
     sessions Session[]
@@ -64,6 +66,34 @@ model User {
 
     Conversation   Conversation? @relation(fields: [conversationId], references: [id])
     conversationId String?
+    room           Room[]        @relation("UserRoom")
+    Room           Room[]
+    Seen           Message[]     @relation("Seen")
+}
+
+model Room {
+    id            String    @id @default(cuid())
+    name          String?
+    isGroup       Boolean?
+    users         User[]    @relation("UserRoom")
+    createdAt     DateTime  @default(now())
+    lastMessageAt DateTime  @default(now())
+    sender        User?     @relation(fields: [senderId], references: [id])
+    senderId      String?
+    messages      Message[] @relation(name: "RoomMessages")
+}
+
+model Message {
+    id             String        @id @default(cuid())
+    text           String?
+    image          String?
+    createdAt      DateTime      @default(now())
+    rooms          Room[]        @relation(name: "RoomMessages")
+    sender         User          @relation(fields: [senderId], references: [id])
+    senderId       String
+    conversation   Conversation? @relation(fields: [conversationId], references: [id])
+    conversationId String?
+    seen           User[]        @relation("Seen")
 }
 
 model Conversation {
@@ -78,21 +108,6 @@ model Conversation {
 
     userIds String[]
     User    User[]
-    // users User[] @relation("UserConversations")
-}
-
-model Message {
-    id        String   @id @default(cuid())
-    text      String
-    createdAt DateTime @default(now())
-
-    seendIds String[]
-
-    Conversation   Conversation? @relation(fields: [conversationId], references: [id])
-    conversationId String?
-
-    sender   User   @relation(fields: [senderId], references: [id])
-    senderId String
 }
 
 model Session {

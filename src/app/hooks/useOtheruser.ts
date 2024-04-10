@@ -13,7 +13,7 @@ const useOtheruser = (conversation:FullconversationType| {
     const otherUser = useMemo(() => {
         const currentUserName = session.data?.user.name
 
-        const otherUser = conversation.User.filter((User) => User.name === currentUserName )
+        const otherUser = conversation.User.filter((User) => User.name !== currentUserName )
         return otherUser[0]
     },[session.data?.user.name, conversation.User])
     return otherUser

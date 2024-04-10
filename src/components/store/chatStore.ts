@@ -1,13 +1,27 @@
+
 import create from 'zustand'
 
-interface ChatStore {
-    selectedUser: string
-    setSelectedUser: (userId: string) => void
+interface chatInfo {
+    selectUser:{
+        id:string,
+        name:string
+        image:string
+    },
+    setSelectUser:(setId:string , setName:string , setImage:string) => void
 }
 
-const useChatStore = create<ChatStore>((set) => ({
-    selectedUser: '',
-    setSelectedUser: (userId: string) => set({ selectedUser: userId }),
+
+const useChatStore = create<chatInfo> ((set) => ({
+    selectUser:{
+        id:'',
+        name:'',
+        image:''
+    },
+    setSelectUser:(setId:string , setName:string , setImage:string) => set ({
+        selectUser:{
+            id:setId , name:setName , image:setImage
+        }
+    }) 
 
 }))
 

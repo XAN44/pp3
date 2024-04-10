@@ -123,7 +123,7 @@ export default async function EventInhomepage() {
       </Carousel>
       <div className="flex w-full flex-col">
         <div className="items-end justify-end text-end">
-          <Link href="/allblog">ดูทั้งหมด</Link>
+          <Link href="/allevent">ดูทั้งหมด</Link>
 
         </div>
         <div className="divider divider-neutral "></div>

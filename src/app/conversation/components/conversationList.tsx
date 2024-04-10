@@ -2,11 +2,12 @@
 import useConversation from "@/app/hooks/useConversation";
 import clsx from "clsx";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { MdOutlineGroupAdd } from 'react-icons/md'
 import ConversationBox from "./ConversationBox";
 import { FullconversationType } from "@/types";
 import { useSession } from 'next-auth/react'
+import { pusherClient } from "@/lib/pusher";
 
 interface ConversationProps {
     initialItem: FullconversationType[]
@@ -19,6 +20,8 @@ const ConversationList: React.FC<ConversationProps> = ({
     const { data: session } = useSession()
     const router = useRouter()
     const { conversationId, isOpen } = useConversation()
+
+
 
     return (
         <aside

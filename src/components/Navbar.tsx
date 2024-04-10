@@ -26,7 +26,7 @@ import {
 } from '@nextui-org/react'
 import NotificationCard from './notification/notificationCard'
 import SearchBar from './SearchBar'
-import Chat from './chat/chat'
+import Chat from '../app/chat/chat'
 
 interface User {
   userId: string

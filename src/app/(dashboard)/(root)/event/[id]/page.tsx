@@ -22,6 +22,11 @@ import { Rye } from 'next/font/google'
 import { redirect } from 'next/navigation'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import EventJoin from '@/components/event/eventJoin'
+import { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Event'
+}
 
 const Page = async ({ params }: { params: { id: string } }) => {
   if (!params.id) return null
