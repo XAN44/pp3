@@ -323,7 +323,7 @@ export default async function Page() {
                                 key={comments.id}
                                 id={comments.id}
                                 comments={comments?.text}
-                                articleId={comments.articleId}
+                                postId={comments.articleId}
                                 current={
                                   user || {
                                     id: '',

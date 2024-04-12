@@ -13,8 +13,7 @@ export async function POST(request:Request) {
             userId
         } = body
 
-        console.log("BODY:::", body ,'userId:::',userId
-        )
+      
         if (!currentUser?.id || !currentUser?.email){
             return new NextResponse('Unauthorized',{status:401})
         }    

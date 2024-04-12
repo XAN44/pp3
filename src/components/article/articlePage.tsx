@@ -112,7 +112,7 @@ export default function ArticleHomePage({
   const handleDelete = async () => {
     try {
       const response = await fetch('/api/deleteArticle', {
-        method: 'DELETE', 
+        method: 'DELETE',
         body: JSON.stringify({ id }),
         headers: {
           'Content-Type': 'application/json',
@@ -127,15 +127,15 @@ export default function ArticleHomePage({
     }
   }
 
-  const [follow, setFollow] = useState(false)
-  const [liked, setLiked] = useState(false)
+  const [ follow, setFollow ] = useState(false)
+  const [ liked, setLiked ] = useState(false)
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
 
   useEffect(() => {
     if (Follow && Follow.Followed) {
       setFollow(Follow.Followed)
     }
-  }, [Follow])
+  }, [ Follow ])
 
   const handleFollow = async () => {
     try {
@@ -160,7 +160,7 @@ export default function ArticleHomePage({
     if (Like && Like.liked) {
       setLiked(Like.liked)
     }
-  }, [Like])
+  }, [ Like ])
 
   const handleLike = async () => {
     try {

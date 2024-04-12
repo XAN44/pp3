@@ -61,14 +61,19 @@ export async function POST(
                 }
             })
 
-            const seenObject = {
-                id: currentUser.id, 
-            };
+         const latestUpdatedMessage = await db.message.findUnique({
+            where: {
+                id: lastMessage.id
+            },
+            include: {
+                seen: true
+            }
+        })
 
             await pusherServer.trigger(currentUser.email,'conversation:update',{
                 id:conversationroomId,
                 messages:[updatedMessage],
-                seen: [seenObject] 
+                seen: latestUpdatedMessage?.seen
 
             })
 

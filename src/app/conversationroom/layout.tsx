@@ -8,9 +8,11 @@ export default async function ConversationLayout({
     children: React.ReactNode
 }) {
 
+
     const conversation = await getRoom()
     return (
         <Chatsidebar>
+
             <div className="w-full h-full">
                 <RoomList initialItem={conversation} />
                 {children}

@@ -44,8 +44,6 @@ model User {
     IG              String?
     Twitter         String?
     Tiktok          String?
-    followingCount  Int @default(0)  @map("following", _count)
-    followersCount  Int @default(0)  @map("followers", _count)
 
     accounts Account[]
     sessions Session[]

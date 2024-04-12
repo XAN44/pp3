@@ -19,6 +19,7 @@ import useSWR from 'swr'
 import { usePathname } from 'next/navigation'
 import { AiFillNotification } from 'react-icons/ai'
 import { UseStoreNotification } from '../store/store'
+import axios from 'axios'
 
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json())
@@ -32,44 +33,33 @@ export default function NotificationCard() {
 
   const { data: notifications } = useSWR(`/api/notification`, fetcher)
 
+  const { data: noi } = useSWR(`/api/countnoi`, fetcher)
+
+
   const { data: user } = useSession()
 
 
-  const { notificationCount, notificationIncrement, notificationRead } = UseStoreNotification((state) => ({
+  const { notificationCount, notificationIncrement, notificationRead, statusRead } = UseStoreNotification((state) => ({
     notificationCount: state.notificationCount,
     notificationIncrement: state.notificationIncrement,
-    notificationRead: state.notificationRead
+    notificationRead: state.notificationRead,
+    statusRead: state.statusRead
   }))
 
   useEffect(() => {
-    if (notifications) {
-      notificationIncrement(notifications.length)
+    if (noi) {
+      notificationIncrement(noi.length)
 
     }
-  }, [ notifications, notificationIncrement ])
-  const handleRead = () => {
-    notificationRead()
+  }, [ noi, notificationIncrement ])
+  const handleRead = async () => {
+    try {
+      const response = await axios.post('/api/notification');
+      notificationRead()
+    } catch (error) {
+      console.error('เกิดข้อผิดพลาดในการส่งคำขอ:',);
+    }
   }
-
-  // const [ unreadNotificationsCount, setUnreadNotificationsCount ] = useState(0)
-
-
-  // useEffect(() => {
-  //   // นับจำนวนการแจ้งเตือนที่ยังไม่ได้อ่าน
-  //   if (notifications) {
-  //     const unreadCount = notifications.filter((notification: { read: any }) => !notification.read).length
-  //     setUnreadNotificationsCount(unreadCount)
-  //   }
-  // }, [ notifications ])
-
-
-  // const handleNotificationClick = () => {
-  //   // เมื่อคลิกที่ไอคอนการแจ้งเตือน ให้ตั้งค่าจำนวนการแจ้งเตือนเป็น 0
-  //   setUnreadNotificationsCount(0)
-  // }
-
-
-
 
   if (!user?.user.id) return <></>
 
@@ -79,19 +69,21 @@ export default function NotificationCard() {
 
 
 
-  const handleLinkLikve = async (notificationLikeLid: string) => await getNotificationLike(notificationLikeLid)
 
   return (
     <>
       <Dialog >
         <DialogTrigger >
-          <Badge content={notificationCount} color="default" variant="faded">
+          <button onClick={handleRead}>
+            <Badge content={notificationCount} color="default" variant="faded">
 
-            <button onClick={handleRead}>   <AiFillNotification
-              className="hover:	hover:cursor-pointer"
-            />
-            </button>
-          </Badge>
+              <div
+                className="hover:	hover:cursor-pointer"
+              >
+                <AiFillNotification />
+              </div>
+            </Badge>
+          </button>
         </DialogTrigger>
         <DialogContent className='h-full overflow-auto'>
           <DialogHeader>

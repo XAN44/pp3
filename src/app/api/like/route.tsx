@@ -63,6 +63,7 @@ export async function POST(request: Request) {
         if (like) {
           await db.notification.create({
             data: {
+              id: like?.id,
               current: findarticle.id,
               userId: findarticle.authorId,
               body: `ผู้ใช้ ${user?.name} กดไลค์บทความ ${findarticle.title}`,

@@ -5,7 +5,6 @@ import { db } from "../db"
 
 const getMessages = async (
     conversationroomId:string,
-    path:string
     ) => {
     try {
         const messages = await db.message.findMany({
@@ -27,7 +26,6 @@ const getMessages = async (
             }
             
         })
-        revalidatePath(path)
         return messages
     } catch (error) {
         return []

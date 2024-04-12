@@ -6,7 +6,7 @@ export async function GET(request: Request) {
   try {
     const user = await getCurrentUser()
 
-    const getNoti = await db.notification.findMany({
+    const notifications = await db.notification.findMany({
       where: {
         userId: user?.id,
       },
@@ -17,10 +17,13 @@ export async function GET(request: Request) {
         articleId:true,
         postId:true,
         eventId:true,
-        
+        likeId:true,
+        readStatus:true
       },
     })
-    return NextResponse.json(getNoti)
+    
+    
+    return NextResponse.json(notifications)
   } catch (error: any) {
     console.error(`Error fetching notifications: ${error.message}`)
     throw new Error('Failed to fetch notifications')
@@ -28,3 +31,24 @@ export async function GET(request: Request) {
 }
 
 
+
+export async function POST(request: Request) {
+  try {
+
+    const user = await getCurrentUser()
+    
+    const updateRead = await db.notification.updateMany({
+      where:{
+        userId:user?.id,
+      },
+      data:{
+        readStatus:true
+      }
+    })
+
+    return NextResponse.json(updateRead)
+  } catch (error) {
+    console.error(error)
+    return NextResponse.json(error)
+  }
+}

@@ -32,7 +32,7 @@ const MessageBox: React.FC<MessageBoxProps> = ({
     const body = clsx("flex flex-col gap-2", isOwn && "items-end")
 
     const message = clsx("text-sx w-fit voerflow-hidden",
-        isOwn ? 'bg-sky-500 text-white' : 'rouded-full py-2 px-3',
+        isOwn ? 'bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white' : 'rouded-full py-2 px-3',
         data.image ? 'rounded-md p-3' : 'rounded-full py-2 px-3'
     )
 
