@@ -27,6 +27,7 @@ import {
 } from '@nextui-org/react'
 import { AiOutlineDelete } from 'react-icons/ai'
 import { useRouter } from 'next/navigation'
+import { format } from 'date-fns'
 const fetcher = (url: string) => fetch(url).then((res) => res.json())
 
 interface Props {
@@ -308,18 +309,21 @@ export default function ArticleHomePage({
                 </>
               )}
             </div>
-            <Text as="small">เขียนวันที่ {createAt}</Text>
+            <Text as="small">
+              เขียนวันที่ {createAt}
+
+            </Text>
           </div>
         </div>
       </div>
 
       {/* Content */}
-      <div className="mt-6 grid  rounded-lg p-3 shadow-xl ring-1 ring-gray-400">
-        <div className="mt-5 text-start">
+      <div className="mt-6 grid w-full  rounded-lg p-3 shadow-xl ring-1 ring-gray-400">
+        <div className="mt-5 text-center w-full">
           <Text as="b">{title}</Text>
         </div>
-        <div className="mt-3">
-          <Text>{articleContent}</Text>
+        <div className="mt-3 flex flex-col overflow-y-auto max-h-[400px]">
+          <div dangerouslySetInnerHTML={{ __html: articleContent || '' }} />
         </div>
         <div className="mt-3 flex w-full items-center justify-center p-0">
           {ArticleImage && (

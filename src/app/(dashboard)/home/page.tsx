@@ -57,6 +57,7 @@ import CommentPostHome from '@/components/post/commentPostHome'
 import VisitBtnPOSTAll from '@/components/visit/visitPost'
 import FollowinHomePage from '@/components/compoinhome/followinhomepage'
 import { Metadata } from 'next'
+import ArticleFormmany from '@/components/article/articleFormMany'
 
 
 export const metadata: Metadata = {
@@ -159,11 +160,8 @@ export default async function Page() {
                             key={Account.id}
                             accountId={Account.id}
                             authUserId={user?.id || ''}
-                            ArticleImage={''}
-                            articleContent={''}
-                            tag={''}
-                            title={''}
                           />
+
                         </>
                       ))}
 

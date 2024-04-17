@@ -366,12 +366,7 @@ export default function EventForm({ accountId, authUserId }: Props) {
                             {(blog) => (
                               <SelectItem key={blog.id} textValue={blog.title}>
                                 <div className="flex items-center gap-2">
-                                  <Avatar
-                                    alt="lol"
-                                    className="flex-shrink-0"
-                                    size="sm"
-                                    src={blog.ArticleImage}
-                                  />
+                                 
                                   <div className="flex flex-col">
                                     <span className="text-small">
                                       {blog.title}

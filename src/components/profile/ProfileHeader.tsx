@@ -36,7 +36,6 @@ interface Props {
     twitter: string
     tiktok: string
   }
-  data: User
 
 }
 
@@ -63,7 +62,6 @@ function ProfileHeader({
   contact,
   article,
   event,
-  data
 }: Props) {
   const { data: ToptierArticle, mutate: MutaSearch } = useSWR<any[]>(
     `/api/profile-blog?id=${accountId}`,

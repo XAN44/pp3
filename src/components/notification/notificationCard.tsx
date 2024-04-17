@@ -1,4 +1,5 @@
 'use client'
+
 import { DELETENOTI, GetNotification, getNotificationLike } from '@/lib/actions/user.notification'
 import { fetchUserProfileByID } from '@/lib/actions/user.post'
 import { getCurrentUser } from '@/lib/session'
@@ -12,7 +13,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Badge, Button, Link } from '@nextui-org/react'
+import { Avatar, Badge, Button, Link } from '@nextui-org/react'
 import { Delete, Heart } from 'lucide-react'
 import { useSession } from 'next-auth/react'
 import useSWR from 'swr'
@@ -20,18 +21,26 @@ import { usePathname } from 'next/navigation'
 import { AiFillNotification } from 'react-icons/ai'
 import { UseStoreNotification } from '../store/store'
 import axios from 'axios'
+import { format, formatDistanceToNow } from 'date-fns'
+import { th } from 'date-fns/locale'; // import locale for Thai language
+import { User } from '@prisma/client'
 
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json())
 
 
 
+interface user {
+  data: User
+}
 
 
-export default function NotificationCard() {
+export default function NotificationCard({ data }: user) {
   const path = usePathname() ?? ''
 
   const { data: notifications } = useSWR(`/api/notification`, fetcher)
+  const {data:notificationEvent} = useSWR(`/api/notificationEvent`,fetcher)
+  console.log("EEEEEE",notificationEvent)
 
   const { data: noi } = useSWR(`/api/countnoi`, fetcher)
 
@@ -100,12 +109,20 @@ export default function NotificationCard() {
 
                   {notifications.map((notification: any) => (
                     <>
-                      <div className="flex items-center justify-center ">
+                      <div className="flex items-center justify-start ">
 
-                        {notification?.current === notification?.postId && (
+                        {notification?.postId && (
                           <>
                             <Link href={`/post/${notification?.postId}`}>
-                              <p>{notification.body}</p>
+                              <div className="grid">
+
+                                <p>{notification.body}</p>
+                                <p className='text-green-600'> เมื่อ {formatDistanceToNow(new Date(notification?.createAt), {
+                                  addSuffix: true,
+                                  locale: th
+                                })} </p>
+                              </div>
+
                             </Link>
 
                             <Delete
@@ -131,11 +148,18 @@ export default function NotificationCard() {
                 <TabsContent value='Blog'>
                   {notifications.map((notification: any) => (
                     <>
-                      <div className="flex items-center justify-center">
+                      <div className="flex items-center justify-start ">
                         {notification?.current === notification?.articleId && (
                           <>
                             <Link href={`/event/${notification?.articleId}`}>
-                              <p>{notification.body}</p>
+                              <div className="grid">
+
+                                <p>{notification.body}</p>
+                                <p className='text-green-600'> เมื่อ {formatDistanceToNow(new Date(notification?.createAt), {
+                                  addSuffix: true,
+                                  locale: th
+                                })} </p>
+                              </div>
                             </Link>
 
                             <Delete
@@ -160,12 +184,19 @@ export default function NotificationCard() {
 
                   {notifications.map((notification: any) => (
                     <>
-                      <div className="flex items-center justify-center">
+                      <div className="flex items-center justify-start ">
                         {notification?.current === notification?.eventId && (
                           <>
                             <Link href={`/event/${notification?.eventId}`}>
-                              <p>{notification.body}</p>
-                            </Link>
+                              <div className="grid">
+                                <p>{notification.body}</p>
+                                <p className='text-green-600'> เมื่อ {formatDistanceToNow(new Date(notification?.createAt), {
+                                  addSuffix: true,
+                                  locale: th
+                                })} </p>
+                              </div>                            
+                              
+                              </Link>
 
                             <Delete
                               className="

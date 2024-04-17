@@ -36,27 +36,36 @@ export async function EVENTPOST({
   tag,
 }: Props): Promise<any> {
   try {
+    
     if (!authorId) {
       throw new Error('กรุณาเข้าสู่ระบบ')
     }
 
-    const eventData: any = { // สร้าง object เพื่อเก็บข้อมูลกิจกรรม
-      author: { connect: { id: authorId } },
-      title,
-      eventContent,
-      eventcreator,
-      eventmore,
-      eventImage,
-      eventstartTime,
-      eventlocation,
-      eventparticipants,
-      tag: { create: { tag } },
-    };
+        await db.event.create({
+      data: {
+        author: {
+          connect: { id: authorId },
+        },
+        title,
+        eventContent,
+        eventcreator,
+        eventmore,
+        eventImage,
+        eventstartTime,
+        eventlocation,
+        blogInArticle: {
+          connect: { id: blogInArticle },
+        },
+        eventparticipants,
+        tag: {
+          create: {
+            tag: tag,
+          },
+        },
+      },
+    })
 
-    if (blogInArticle) {
-      eventData.blogInArticle = { connect: { id: blogInArticle } }
-    }
-
+ 
 
 
   revalidatePath(path)

@@ -18,7 +18,8 @@ export async function GET(request: Request) {
         postId:true,
         eventId:true,
         likeId:true,
-        readStatus:true
+        readStatus:true,
+        createAt:true
       },
     })
     

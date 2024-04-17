@@ -193,10 +193,6 @@ export default async function Page({ params }: { params: { id: string } }) {
                         key={Account.id}
                         accountId={Account.id}
                         authUserId={user.id}
-                        ArticleImage={''}
-                        articleContent={''}
-                        tag={''}
-                        title={''}
                       />
                     </div>
                     {Account.Article.map(async (ArticleBy) => (

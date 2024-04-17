@@ -23,6 +23,10 @@ import { redirect } from 'next/navigation'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import EventJoin from '@/components/event/eventJoin'
 import { Metadata } from 'next'
+import { th } from 'date-fns/locale'
+import { format, formatDistanceToNow, parseISO } from 'date-fns'
+
+
 
 export const metadata: Metadata = {
   title: 'Event'
@@ -82,7 +86,11 @@ const Page = async ({ params }: { params: { id: string } }) => {
             eventlocation={ArticleBy.eventlocation}
             eventmore={ArticleBy.eventmore}
             eventparticipants={ArticleBy.eventparticipants}
-            eventstartTime={ArticleBy.eventstartTime}
+
+            eventstartTime={format(parseISO(ArticleBy?.eventstartTime || ''),
+              "'วัน' EEEE 'ที่' d MMMM yyyy 'เวลา' HH:mm ", { locale: th }
+            )}
+
             tag={ArticleBy.tag.map((tagItem) => ({
               tag: tagItem.tag || '',
             }))}

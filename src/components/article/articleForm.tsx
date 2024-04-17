@@ -28,44 +28,75 @@ import { Select, SelectItem, Textarea } from '@nextui-org/react'
 import { Loader2 } from 'lucide-react'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
-import React, { ChangeEvent, useState } from 'react'
+import React, { ChangeEvent, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { CiImageOn } from 'react-icons/ci'
 import * as z from 'zod'
 import { HASHTAG } from '../tag/hashtag'
 import { Button } from '../ui/button'
 import { Input } from '../ui/input'
+import dynamic from 'next/dynamic'
+import 'react-quill/dist/quill.snow.css';
+
+const DynamicQuill = dynamic(() => import('react-quill'), { ssr: false })
+
+
+
 
 interface Props {
   accountId: string
   authUserId: string
-  title: string
-  articleContent: string
-  ArticleImage: string
-  tag: string
 }
 
 export default function ArticleForm({
   accountId,
   authUserId,
-  title,
-  articleContent,
-  ArticleImage,
-  tag,
 }: Props) {
-  const [files, setFiles] = useState<File[]>([])
-  const [selectedImage, setSelectedImage] = useState<string>('')
+  const [ files, setFiles ] = useState<File[]>([])
+  const [ selectedImage, setSelectedImage ] = useState<string>('')
   const { startUpload } = useUploadThing('media')
-  const [isLoading, setIsloading] = useState(false)
-  const [isText, setIsText] = useState('บันทึก')
-  const [imageSelected, setImageSelected] = useState(false)
+  const [ isLoading, setIsloading ] = useState(false)
+  const [ isText, setIsText ] = useState('บันทึก')
+  const [ imageSelected, setImageSelected ] = useState(false)
   const toast = useToast()
+
+  const [ contents, setContents ] = useState('');
+
 
   const pathname = usePathname()
   const postArticle = useForm<z.infer<typeof ArticlePost>>({
     resolver: zodResolver(ArticlePost),
     defaultValues: {},
   })
+
+  const quillModules = {
+    toolbar: [
+      [ { header: [ 1, 2, 3, false ] } ],
+      [ 'bold', 'italic', 'underline', 'strike', 'blockquote' ],
+      [ { list: 'ordered' }, { list: 'bullet' } ],
+      [ 'link', ],
+      [ { align: [] } ],
+      [ { color: [] } ],
+      [ 'code-block' ],
+      [ 'clean' ],
+    ],
+  };
+
+
+  const quillFormats = [
+    'header',
+    'bold',
+    'italic',
+    'underline',
+    'strike',
+    'blockquote',
+    'list',
+    'bullet',
+    'link',
+    'align',
+    'color',
+    'code-block',
+  ];
 
   const onSubmitPost = async (values: z.infer<typeof ArticlePost>) => {
     setIsloading(true)
@@ -75,8 +106,8 @@ export default function ArticleForm({
       const hasImageChange = isBase64Image(blob)
       if (hasImageChange) {
         const imgRes = await startUpload(files)
-        if (imgRes && imgRes[0].url) {
-          values.articleImage = imgRes[0].url
+        if (imgRes && imgRes[ 0 ].url) {
+          values.articleImage = imgRes[ 0 ].url
         }
       }
     }
@@ -113,7 +144,7 @@ export default function ArticleForm({
     const fileReader = new FileReader()
 
     if (e.target.files && e.target.files.length > 0) {
-      const file = e.target.files[0]
+      const file = e.target.files[ 0 ]
       setFiles(Array.from(e.target.files))
       if (!file.type.includes('image')) return
 
@@ -240,17 +271,21 @@ export default function ArticleForm({
                           <FormLabel> เริ่มเขียน Blog ของคุณ </FormLabel>
 
                           <FormControl className="">
-                            <Textarea
-                              labelPlacement="outside"
-                              placeholder="แบ่งปันเรื่องราวดีๆของคุณเข้าสู่แพลตฟอร์ม!"
-                              className="max-w-xs"
+
+                            <DynamicQuill
                               {...field}
+                              modules={quillModules}
+                              formats={quillFormats}
+                              placeholder='เริ่มเขียนบล็อกของคุณที่นี่'
+                              theme='snow'
                             />
                           </FormControl>
                           <FormMessage />
+                          <span dangerouslySetInnerHTML={{ __html: postArticle.getValues('articleContent') || '' }} />
                         </FormItem>
                       )}
                     />
+
                     <Button type="submit" className="mt-3" disabled={isLoading}>
                       {isLoading ? (
                         <>

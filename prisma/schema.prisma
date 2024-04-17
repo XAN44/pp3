@@ -223,6 +223,7 @@ model Article {
     id             String          @id @default(cuid())
     title          String?
     articleContent String?
+    content        String[]
     ArticleImage   String?
     author         User?           @relation(fields: [authorId], references: [id])
     authorId       String?

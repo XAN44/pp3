@@ -1,5 +1,6 @@
 'use client'
-
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 import {
     Form,
     FormControl,
@@ -9,7 +10,7 @@ import {
     FormLabel,
     FormMessage,
 } from '@/components/ui/form'
-import { POSTARTILE } from '@/lib/actions/user.article'
+import { POSTARTILE, POSTARTILETEST } from '@/lib/actions/user.article'
 import { useUploadThing } from '@/lib/uploadthing'
 import { isBase64Image } from '@/lib/utils'
 import { ArticlePost } from '@/lib/validations/Userpost'
@@ -35,23 +36,17 @@ import * as z from 'zod'
 import { HASHTAG } from '../tag/hashtag'
 import { Button } from '../ui/button'
 import { Input } from '../ui/input'
-import { userPost } from '@/lib/actions/user.post'
 
 interface Props {
     accountId: string
     authUserId: string
-    content: string
-    ArticleImage: string
-    tag: string
 }
 
-export default function POSTFORM({
+export default function ArticleFormmany({
     accountId,
     authUserId,
-    content,
-    ArticleImage,
-    tag,
 }: Props) {
+
     const [ files, setFiles ] = useState<File[]>([])
     const [ selectedImage, setSelectedImage ] = useState<string>('')
     const { startUpload } = useUploadThing('media')
@@ -65,7 +60,10 @@ export default function POSTFORM({
         resolver: zodResolver(ArticlePost),
         defaultValues: {},
     })
-
+    const [ contents, setContents ] = useState<string[]>([]);
+    const addContent = () => {
+        setContents([ ...contents, '' ]); // เพิ่มเนื้อหาว่างเข้าไปในอาร์เรย์ contents
+    };
     const onSubmitPost = async (values: z.infer<typeof ArticlePost>) => {
         setIsloading(true)
 
@@ -80,12 +78,13 @@ export default function POSTFORM({
             }
         }
 
-        const UserPromise = userPost({
+        const UserPromise = POSTARTILE({
             authorId: authUserId,
-            content: values.articleContent
+            title: values.title ? String(values.title) : '',
+            articleContent: values.articleContent
                 ? String(values.articleContent)
                 : '',
-            ImagePost: values.articleImage ? String(values.articleImage) : '',
+            ArticleImage: values.articleImage ? String(values.articleImage) : '',
             tag: values.tag ? String(values.tag) : '',
             path: pathname,
         })
@@ -131,7 +130,7 @@ export default function POSTFORM({
         <>
             {accountId === authUserId && (
                 <div className=" ">
-                    <Button onClick={onOpen}>Create Post</Button>
+                    <Button onClick={onOpen}>Create Blog</Button>
                     <AlertDialog
                         motionPreset="slideInBottom"
                         leastDestructiveRef={cancelRef}
@@ -141,7 +140,7 @@ export default function POSTFORM({
                     >
                         <AlertDialogOverlay />
                         <AlertDialogContent>
-                            <AlertDialogHeader>สร้างโพส์ของคุณ !</AlertDialogHeader>
+                            <AlertDialogHeader>สร้างบล็อกของคุณ !</AlertDialogHeader>
                             <AlertDialogCloseButton />
                             <AlertDialogBody>
                                 <Form {...postArticle}>
@@ -149,7 +148,22 @@ export default function POSTFORM({
                                         onSubmit={postArticle.handleSubmit(onSubmitPost)}
                                         className="flex flex-col justify-center gap-10 text-center"
                                     >
-
+                                        <FormField
+                                            control={postArticle.control}
+                                            name="title"
+                                            render={({ field }) => (
+                                                <FormItem className="flex flex-col gap-3 ">
+                                                    <FormLabel> ตั้งชื่อ Blog </FormLabel>
+                                                    <FormControl className=" border-dark-4 border">
+                                                        <Input
+                                                            className=" w-full resize-none rounded-lg bg-base-300 pl-3 pr-3 pt-3 ring-1 ring-black"
+                                                            {...field}
+                                                        />
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
                                         <FormField
                                             control={postArticle.control}
                                             name="articleImage"
@@ -223,17 +237,18 @@ export default function POSTFORM({
                                                     <FormLabel> เริ่มเขียน Blog ของคุณ </FormLabel>
 
                                                     <FormControl className="">
-                                                        <Textarea
-                                                            labelPlacement="outside"
-                                                            placeholder="แบ่งปันเรื่องราวดีๆของคุณเข้าสู่แพลตฟอร์ม!"
-                                                            className="max-w-xs"
+                                                        <ReactQuill
                                                             {...field}
                                                         />
+
                                                     </FormControl>
                                                     <FormMessage />
                                                 </FormItem>
                                             )}
                                         />
+                                        <span dangerouslySetInnerHTML={{ __html: postArticle.watch('articleContent') || '' }}>
+
+                                        </span>
                                         <Button type="submit" className="mt-3" disabled={isLoading}>
                                             {isLoading ? (
                                                 <>

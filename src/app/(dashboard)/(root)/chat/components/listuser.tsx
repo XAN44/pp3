@@ -11,7 +11,7 @@ const ListUser: React.FC<UserListProps> = ({ items }) => {
         <aside className="
         fixed
         pb-20
-        lg:pb-0
+        lg:pb-0 
         lg:left-20
         lg:w-80
         overflow-y-auto
@@ -20,6 +20,7 @@ const ListUser: React.FC<UserListProps> = ({ items }) => {
         block
         w-full
         left-0
+        top-0
         ">
             <div className="px-5">
                 <div className="flex-col">

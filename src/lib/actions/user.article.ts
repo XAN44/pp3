@@ -48,6 +48,49 @@ export async function POSTARTILE({
   }
 }
 
+
+interface PropsARTICLE {
+  authorId: string
+  title: string
+  content:string[]
+  ArticleImage: string
+  path: string
+  tag: string
+}
+
+export async function POSTARTILETEST({
+  authorId,
+  title,
+  content,
+  ArticleImage,
+  path,
+  tag,
+}: PropsARTICLE): Promise<void> {
+  try {
+    if (!authorId) {
+      throw new Error('Pless LOGIN')
+    }
+    await db.article.create({
+      data: {
+        authorId: authorId,
+        title,
+        content,
+        ArticleImage,
+        tag: {
+          create: {
+            tag: tag,
+          },
+        },
+      },
+    })
+    revalidatePath(path)
+  } catch (error: any) {
+    console.error(error) // Log the error for debugging
+
+    throw new Error(`Failed to create/update user: ${error.message}`)
+  }
+}
+
 export async function CommentinArticles(
   articleId: string,
   comment: string,
