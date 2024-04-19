@@ -1,13 +1,13 @@
-"use server";
-import { db } from "@/lib/db";
-import { revalidatePath } from "next/cache";
-import { getCurrentUser } from "../session";
+'use server'
+import { db } from '@/lib/db'
+import { revalidatePath } from 'next/cache'
+import { getCurrentUser } from '../session'
 
 export async function fetchAccount() {
   try {
-    const account = await getCurrentUser();
+    const account = await getCurrentUser()
     if (!account?.id) {
-      return null;
+      return null
     }
     if (account.id) {
       const fetchName = await db.user.findUnique({
@@ -21,16 +21,16 @@ export async function fetchAccount() {
           bio: true,
           image: true,
         },
-      });
-      return fetchName;
+      })
+      return fetchName
     }
   } catch (error) {}
 }
 
 export async function fetchUser(id: string) {
-  const userID = await getCurrentUser();
+  const userID = await getCurrentUser()
   if (!userID?.id) {
-    return null;
+    return null
   }
   if (userID?.id) {
     const fetchUser = await db.user.findUnique({
@@ -44,14 +44,14 @@ export async function fetchUser(id: string) {
         bio: true,
         nickname: true,
       },
-    });
-    return fetchUser;
+    })
+    return fetchUser
   }
 }
 
 export async function fetchUserProfile(id: string) {
   if (!id) {
-    return null;
+    return null
   }
   if (id) {
     const fetchUser = await db.user.findUnique({
@@ -65,16 +65,16 @@ export async function fetchUserProfile(id: string) {
         bio: true,
         nickname: true,
       },
-    });
+    })
 
-    return fetchUser;
+    return fetchUser
   }
 }
 
 interface contactFacebookBy {
-  userId: string;
-  Facebook: string;
-  path: string;
+  userId: string
+  Facebook: string
+  path: string
 }
 
 export async function Facebook({
@@ -83,9 +83,9 @@ export async function Facebook({
   path,
 }: contactFacebookBy): Promise<void> {
   try {
-    const currentUser1 = await getCurrentUser();
+    const currentUser1 = await getCurrentUser()
     if (!currentUser1) {
-      throw new Error("user not found");
+      throw new Error('user not found')
     }
     await db.user.update({
       where: {
@@ -94,24 +94,24 @@ export async function Facebook({
       data: {
         Facebook,
       },
-    });
-    revalidatePath(path);
+    })
+    revalidatePath(path)
   } catch (error: any) {
-    throw new Error(`Failed to create/update user: ${error.message}`);
+    throw new Error(`Failed to create/update user: ${error.message}`)
   }
 }
 
 interface contactIGBy {
-  userId: string;
-  IG: string;
-  path: string;
+  userId: string
+  IG: string
+  path: string
 }
 
 export async function IG({ userId, IG, path }: contactIGBy) {
   try {
-    const user = await getCurrentUser();
+    const user = await getCurrentUser()
     if (!user) {
-      throw new Error("Not found account");
+      throw new Error('Not found account')
     }
 
     await db.user.update({
@@ -121,22 +121,22 @@ export async function IG({ userId, IG, path }: contactIGBy) {
       data: {
         IG,
       },
-    });
-    revalidatePath(path);
+    })
+    revalidatePath(path)
   } catch (error) {}
 }
 
 interface contactTiktokBy {
-  userId: string;
-  Tiktok: string;
-  path: string;
+  userId: string
+  Tiktok: string
+  path: string
 }
 
 export async function tiktok({ userId, Tiktok, path }: contactTiktokBy) {
   try {
-    const user = await getCurrentUser();
+    const user = await getCurrentUser()
     if (!user) {
-      throw new Error("Not found account");
+      throw new Error('Not found account')
     }
 
     await db.user.update({
@@ -146,22 +146,22 @@ export async function tiktok({ userId, Tiktok, path }: contactTiktokBy) {
       data: {
         Tiktok,
       },
-    });
-    revalidatePath(path);
+    })
+    revalidatePath(path)
   } catch (error) {}
 }
 
 interface contactTwitterBy {
-  userId: string;
-  Twitter: string;
-  path: string;
+  userId: string
+  Twitter: string
+  path: string
 }
 
 export async function twitter({ userId, Twitter, path }: contactTwitterBy) {
   try {
-    const user = await getCurrentUser();
+    const user = await getCurrentUser()
     if (!user) {
-      throw new Error("Not found account");
+      throw new Error('Not found account')
     }
 
     await db.user.update({
@@ -171,15 +171,15 @@ export async function twitter({ userId, Twitter, path }: contactTwitterBy) {
       data: {
         Twitter,
       },
-    });
-    revalidatePath(path);
+    })
+    revalidatePath(path)
   } catch (error) {}
 }
 
 interface Params {
-  userId: string;
-  image: string;
-  path: string;
+  userId: string
+  image: string
+  path: string
 }
 
 export async function updateImage({
@@ -188,9 +188,9 @@ export async function updateImage({
   path,
 }: Params): Promise<void> {
   try {
-    const currentUser = await getCurrentUser();
+    const currentUser = await getCurrentUser()
     if (!currentUser) {
-      throw new Error("User not found");
+      throw new Error('User not found')
     }
     await db.user.update({
       where: {
@@ -199,18 +199,18 @@ export async function updateImage({
       data: {
         image,
       },
-    });
-    revalidatePath(path);
+    })
+    revalidatePath(path)
   } catch (error: any) {
-    throw new Error(`Failed to create/update user: ${error.message}`);
+    throw new Error(`Failed to create/update user: ${error.message}`)
   }
 }
 
 export async function FetchImageProfile() {
   try {
-    const user = await getCurrentUser();
+    const user = await getCurrentUser()
     if (!user?.id) {
-      return null;
+      return null
     }
     if (user?.id) {
       const fetchImage = await db.user.findUnique({
@@ -220,18 +220,18 @@ export async function FetchImageProfile() {
         select: {
           image: true,
         },
-      });
-      return fetchImage;
+      })
+      return fetchImage
     }
   } catch (error: any) {
-    throw new Error(`Failed to create/update user: ${error.message}`);
+    throw new Error(`Failed to create/update user: ${error.message}`)
   }
 }
 
 interface Params_bio {
-  userId: string;
-  path: string;
-  bio: string;
+  userId: string
+  path: string
+  bio: string
 }
 
 export async function updateBio({
@@ -240,25 +240,25 @@ export async function updateBio({
   bio,
 }: Params_bio): Promise<void> {
   try {
-    const currentUser1 = await getCurrentUser();
+    const currentUser1 = await getCurrentUser()
     if (!currentUser1) {
-      throw new Error("user not found");
+      throw new Error('user not found')
     }
     await db.user.update({
       where: { id: currentUser1.id },
       data: { bio },
-    });
-    revalidatePath(path);
+    })
+    revalidatePath(path)
   } catch (error: any) {
-    throw new Error(`Failed to create/update user: ${error.message}`);
+    throw new Error(`Failed to create/update user: ${error.message}`)
   }
 }
 
 export async function FetchBio() {
   try {
-    const user = await getCurrentUser();
+    const user = await getCurrentUser()
     if (!user?.id) {
-      return null;
+      return null
     }
     if (user?.id) {
       const fetchUser = await db.user.findUnique({
@@ -268,18 +268,18 @@ export async function FetchBio() {
         select: {
           bio: true,
         },
-      });
-      return fetchUser;
+      })
+      return fetchUser
     }
   } catch (error: any) {
-    throw new Error(`Failed to create/update user: ${error.message}`);
+    throw new Error(`Failed to create/update user: ${error.message}`)
   }
 }
 
 interface Params_Name {
-  userId: string;
-  name: string;
-  path: string;
+  userId: string
+  name: string
+  path: string
 }
 
 export async function updateName({
@@ -288,25 +288,25 @@ export async function updateName({
   path,
 }: Params_Name): Promise<void> {
   try {
-    const currentUser1 = await getCurrentUser();
+    const currentUser1 = await getCurrentUser()
     if (!currentUser1) {
-      throw new Error("user not found");
+      throw new Error('user not found')
     }
     await db.user.update({
       where: { id: currentUser1.id },
       data: { name },
-    });
-    revalidatePath(path);
+    })
+    revalidatePath(path)
   } catch (error: any) {
-    throw new Error(`Failed to create/update user: ${error.message}`);
+    throw new Error(`Failed to create/update user: ${error.message}`)
   }
 }
 
 export async function FetchName() {
   try {
-    const user = await getCurrentUser();
+    const user = await getCurrentUser()
     if (!user?.id) {
-      return null;
+      return null
     }
     if (user.id) {
       const FetchName = await db.user.findUnique({
@@ -316,18 +316,18 @@ export async function FetchName() {
         select: {
           name: true,
         },
-      });
-      return FetchName;
+      })
+      return FetchName
     }
   } catch (error: any) {
-    throw new Error(`Failed to create/update user: ${error.message}`);
+    throw new Error(`Failed to create/update user: ${error.message}`)
   }
 }
 
 interface Params_Nickname {
-  userId: string;
-  nickname: string;
-  path: string;
+  userId: string
+  nickname: string
+  path: string
 }
 
 export async function updateNickname({
@@ -336,25 +336,25 @@ export async function updateNickname({
   path,
 }: Params_Nickname): Promise<void> {
   try {
-    const currentUser1 = await getCurrentUser();
+    const currentUser1 = await getCurrentUser()
     if (!currentUser1) {
-      throw new Error("user not found");
+      throw new Error('user not found')
     }
     await db.user.update({
       where: { id: currentUser1.id },
       data: { nickname },
-    });
-    revalidatePath(path);
+    })
+    revalidatePath(path)
   } catch (error: any) {
-    throw new Error(`Failed to create/update user: ${error.message}`);
+    throw new Error(`Failed to create/update user: ${error.message}`)
   }
 }
 
 export async function FetchNickname() {
   try {
-    const user = await getCurrentUser();
+    const user = await getCurrentUser()
     if (!user?.id) {
-      return null;
+      return null
     }
     if (user.id) {
       const fetchNickname = await db.user.findUnique({
@@ -364,10 +364,10 @@ export async function FetchNickname() {
         select: {
           nickname: true,
         },
-      });
-      return fetchNickname;
+      })
+      return fetchNickname
     }
   } catch (error: any) {
-    throw new Error(`Failed to create/update user: ${error.message}`);
+    throw new Error(`Failed to create/update user: ${error.message}`)
   }
 }

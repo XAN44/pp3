@@ -25,8 +25,8 @@ export async function POST(request: Request) {
       select: {
         id: true,
         authorId: true,
-        content:true
-      }
+        content: true,
+      },
     })
     if (findarticle) {
       const existingLike = await db.like.findFirst({
@@ -41,10 +41,10 @@ export async function POST(request: Request) {
             id: existingLike.id,
           },
         })
-         if (unlike) {
+        if (unlike) {
           await db.notification.delete({
             where: {
-              id: existingLike.id
+              id: existingLike.id,
             },
           })
         }
@@ -57,20 +57,19 @@ export async function POST(request: Request) {
             postId: id,
           },
         })
-         if (like) {
+        if (like) {
           await db.notification.create({
             data: {
-              id:like?.id,
-              current: findarticle.id, 
+              id: like?.id,
+              current: findarticle.id,
               userId: findarticle.authorId,
               body: `ผู้ใช้ ${user?.name} กดไลค์โพสต์ ${findarticle.content}`,
               postId: findarticle?.id,
-              likeId: like?.id
-            }
+              likeId: like?.id,
+            },
           })
         }
         return NextResponse.json(like)
-
       }
     }
   } catch (error) {

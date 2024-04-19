@@ -20,7 +20,6 @@ interface Props {
   tag: string
 }
 
-
 export async function EVENTPOST({
   authorId,
   title,
@@ -36,12 +35,11 @@ export async function EVENTPOST({
   tag,
 }: Props): Promise<any> {
   try {
-    
     if (!authorId) {
       throw new Error('กรุณาเข้าสู่ระบบ')
     }
 
-        await db.event.create({
+    await db.event.create({
       data: {
         author: {
           connect: { id: authorId },
@@ -65,17 +63,13 @@ export async function EVENTPOST({
       },
     })
 
- 
-
-
-  revalidatePath(path)
+    revalidatePath(path)
   } catch (error: any) {
     console.error(error) // Log the error for debugging
 
     throw new Error(`Failed to create/update user: ${error.message}`)
   }
 }
-
 
 export async function CommentinArticles(
   articleId: string,
@@ -369,11 +363,11 @@ export async function CommentinEvent(
       where: {
         id: eventId,
       },
-      select:{
-        id:true,
-        authorId:true,
-        title:true,
-      }
+      select: {
+        id: true,
+        authorId: true,
+        title: true,
+      },
     })
     if (!inArticle) {
       throw new Error('dont have article')
@@ -386,22 +380,22 @@ export async function CommentinEvent(
         authorid: authorId,
       },
     })
-   if(user?.id === inArticle.authorId){
-        revalidatePath(path)
-        return false
-      }
-    if(newCommentInEvent){
-        await db.notification.create({
-          data:{
-            eventId:newCommentInEvent.eventId,
-            current:newCommentInEvent.eventId,
-            userId:inArticle.authorId,
-            body:`ผู้ใช้ ${user?.name} ได้แสดงความคิดเห็น ${newCommentInEvent.text} บนกิจกรรม ${inArticle.title} `, 
-          }
-        })
+    if (user?.id === inArticle.authorId) {
+      revalidatePath(path)
+      return false
+    }
+    if (newCommentInEvent) {
+      await db.notification.create({
+        data: {
+          eventId: newCommentInEvent.eventId,
+          current: newCommentInEvent.eventId,
+          userId: inArticle.authorId,
+          body: `ผู้ใช้ ${user?.name} ได้แสดงความคิดเห็น ${newCommentInEvent.text} บนกิจกรรม ${inArticle.title} `,
+        },
+      })
     }
     revalidatePath(path)
-    return(newCommentInEvent)
+    return newCommentInEvent
   } catch (error: any) {
     throw new Error(`Failed to create/update user: ${error.message}`)
   }

@@ -135,13 +135,13 @@ export default function EventHomePage({
     }
   }
 
-  const [ isJoined, setIsJoined ] = useState(false)
+  const [isJoined, setIsJoined] = useState(false)
 
   useEffect(() => {
     if (join && join.joined) {
       setIsJoined(join.joined)
     }
-  }, [ join ])
+  }, [join])
 
   const handleJoin = async () => {
     try {
@@ -248,7 +248,7 @@ export default function EventHomePage({
                   disabled={
                     checkREGEVENT?.eventparticipants !== '-0' &&
                     join?.totalJoin >=
-                    parseInt(checkREGEVENT?.eventparticipants || '0') &&
+                      parseInt(checkREGEVENT?.eventparticipants || '0') &&
                     !isJoined
                   }
                 >
@@ -263,7 +263,7 @@ export default function EventHomePage({
                     aria-label="delete"
                     variant="light"
                     color="danger"
-                    className="
+                    className=" 
                     relative left-4 overflow-visible 
                     after:absolute after:inset-0 after:bg-background/40 
                     after:transition

@@ -1,12 +1,12 @@
-"use client";
+'use client'
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
-import GoogleSignInButton from "../GoogleSignInButton";
-import { Button } from "../ui/button";
+import { zodResolver } from '@hookform/resolvers/zod'
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { useForm } from 'react-hook-form'
+import * as z from 'zod'
+import GoogleSignInButton from '../GoogleSignInButton'
+import { Button } from '../ui/button'
 import {
   Form,
   FormControl,
@@ -14,60 +14,60 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "../ui/form";
-import { Input } from "../ui/input";
-import { toast } from "../ui/use-toast";
+} from '../ui/form'
+import { Input } from '../ui/input'
+import { toast } from '../ui/use-toast'
 
 const FormSchema = z
   .object({
-    name: z.string().min(1, "Username is required").max(100),
-    email: z.string().min(1, "Email is required").email("Invalid email"),
+    name: z.string().min(1, 'Username is required').max(100),
+    email: z.string().min(1, 'Email is required').email('Invalid email'),
     password: z
       .string()
-      .min(1, "Password is required")
-      .min(8, "Password must have than 8 characters"),
-    confirmPassword: z.string().min(1, "Password confirmation is required"),
+      .min(1, 'Password is required')
+      .min(8, 'Password must have than 8 characters'),
+    confirmPassword: z.string().min(1, 'Password confirmation is required'),
   })
   .refine((data) => data.password === data.confirmPassword, {
-    path: [ "confirmPassword" ],
-    message: "Password do not match",
-  });
+    path: ['confirmPassword'],
+    message: 'Password do not match',
+  })
 
 const SignUpForm = () => {
-  const router = useRouter();
+  const router = useRouter()
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      name: "",
-      email: "",
-      password: "",
-      confirmPassword: "",
+      name: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
     },
-  });
+  })
 
   const onSubmit = async (values: z.infer<typeof FormSchema>) => {
-    const response = await fetch("/api/user", {
-      method: "POST",
+    const response = await fetch('/api/user', {
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json ",
+        'Content-Type': 'application/json ',
       },
       body: JSON.stringify({
         name: values.name,
         email: values.email,
         password: values.password,
       }),
-    });
+    })
 
     if (response.ok) {
-      router.push("/sign-in");
+      router.push('/sign-in')
     } else {
       toast({
-        title: "Error",
-        description: "เกิดปัญหาจากข้อผิดพลาดบางอย่าง",
-        variant: "destructive",
-      });
+        title: 'Error',
+        description: 'เกิดปัญหาจากข้อผิดพลาดบางอย่าง',
+        variant: 'destructive',
+      })
     }
-  };
+  }
 
   return (
     <Form {...form}>
@@ -134,7 +134,7 @@ const SignUpForm = () => {
             )}
           />
         </div>
-        <Button className="w-full mt-6" type="submit">
+        <Button className="mt-6 w-full" type="submit">
           Sign up
         </Button>
       </form>
@@ -142,14 +142,14 @@ const SignUpForm = () => {
         or
       </div>
       <GoogleSignInButton>Sign up with Google</GoogleSignInButton>
-      <p className="text-center text-sm text-gray-600 mt-2">
+      <p className="mt-2 text-center text-sm text-gray-600">
         If you don&apos;t have an account, please&nbsp;
         <Link className="text-blue-500 hover:underline" href="/sign-in">
           Sign in
         </Link>
       </p>
     </Form>
-  );
-};
+  )
+}
 
-export default SignUpForm;
+export default SignUpForm

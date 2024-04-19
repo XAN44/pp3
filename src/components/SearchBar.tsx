@@ -32,9 +32,9 @@ async function fetcher(url: string) {
 }
 
 export default function SearchBar() {
-  const [ queryArticle, setQueryArticle ] = React.useState('')
-  const [ queryEvent, setQueryEvent ] = React.useState('')
-  const [ queryProfile, setQueryProfile ] = React.useState('')
+  const [queryArticle, setQueryArticle] = React.useState('')
+  const [queryEvent, setQueryEvent] = React.useState('')
+  const [queryProfile, setQueryProfile] = React.useState('')
   const { data: session, status } = useSession()
 
   // TODO: 3 อันดับ
@@ -176,7 +176,7 @@ export default function SearchBar() {
             <ModalContent>
               {(onClose) => (
                 <>
-                  <ModalHeader className="flex items-center justify-center text-white text-center font-bold">
+                  <ModalHeader className="flex items-center justify-center text-center font-bold text-white">
                     ค้นหาสิ่งที่คุณอยากเจอ !
                   </ModalHeader>
                   <ModalBody>
@@ -207,7 +207,6 @@ export default function SearchBar() {
                             */}
                                 {ToptierProfile?.map((Profile, index) => (
                                   <>
-
                                     <Link href={`/profile/${Profile.id}`}>
                                       <div
                                         key={index}
@@ -284,12 +283,13 @@ export default function SearchBar() {
                                   <>
                                     {history.user && (
                                       <>
-                                        <Link href={`/profile/${history.user.id}`}>
+                                        <Link
+                                          href={`/profile/${history.user.id}`}
+                                        >
                                           <div
                                             key={index}
                                             className="mt-6 flex items-start justify-start"
                                           >
-
                                             <Image
                                               isBlurred
                                               src={history.user.image}
@@ -327,7 +327,6 @@ export default function SearchBar() {
                                         key={index}
                                         className=" mt-6 flex items-start justify-start"
                                       >
-
                                         <Image
                                           isBlurred
                                           src={Article.ArticleImage}
@@ -345,7 +344,6 @@ export default function SearchBar() {
                                             ผู้เขียน {Article.author.name}
                                           </Text>
                                         </div>
-
                                       </div>
                                     </Link>
                                   </>
@@ -402,9 +400,10 @@ export default function SearchBar() {
                                 {searchHistory?.map((history, index) => (
                                   <>
                                     {history.article && (
-
                                       <>
-                                        <Link href={`/article/${history.article.id}`}>
+                                        <Link
+                                          href={`/article/${history.article.id}`}
+                                        >
                                           <div
                                             key={index}
                                             className="mt-6 flex items-start justify-start"
@@ -446,7 +445,6 @@ export default function SearchBar() {
                                 {ToptierEvent?.map((Event, index) => (
                                   <>
                                     <Link href={`/event/${Event.id}`}>
-
                                       <div
                                         key={index}
                                         className=" mt-6 flex items-start justify-start"
@@ -461,14 +459,15 @@ export default function SearchBar() {
                                           className=" h-43 w-full object-scale-down"
                                         />
                                         <div className="ml-3 ">
-                                          <Text color="white">{Event.title}</Text>
+                                          <Text color="white">
+                                            {Event.title}
+                                          </Text>
                                           <Text color="white">
                                             ผู้เขียน {Event.author.name}
                                           </Text>
                                         </div>
                                       </div>
                                     </Link>
-
                                   </>
                                 ))}
                               </div>
@@ -526,10 +525,7 @@ export default function SearchBar() {
                                     {event.event && (
                                       <>
                                         <Link href={`/event/${event.event.id}`}>
-                                          <div
-                                            className="mt-6 flex items-start justify-start"
-                                          >
-
+                                          <div className="mt-6 flex items-start justify-start">
                                             <Image
                                               isBlurred
                                               src={event.event.eventImage}
@@ -544,7 +540,8 @@ export default function SearchBar() {
                                                 {event.event.title}
                                               </Text>
                                               <Text color="white">
-                                                ผู้เขียน {event.event.author.name}
+                                                ผู้เขียน{' '}
+                                                {event.event.author.name}
                                               </Text>
                                             </div>
                                           </div>

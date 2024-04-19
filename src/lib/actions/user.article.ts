@@ -48,11 +48,10 @@ export async function POSTARTILE({
   }
 }
 
-
 interface PropsARTICLE {
   authorId: string
   title: string
-  content:string[]
+  content: string[]
   ArticleImage: string
   path: string
   tag: string
@@ -156,13 +155,13 @@ export async function FetchArticleByID(id: string) {
           orderBy: {
             createdAt: 'asc',
           },
-          
+
           select: {
             id: true,
             text: true,
             authorid: true,
             createdAt: true,
-            
+
             author: {
               select: {
                 id: true,
@@ -182,9 +181,9 @@ export async function FetchArticleByID(id: string) {
             },
             Reply: {
               select: {
-                id:true,
+                id: true,
                 replytext: true,
-                authorid:true,
+                authorid: true,
                 author: {
                   select: {
                     id: true,
@@ -204,7 +203,6 @@ export async function FetchArticleByID(id: string) {
       },
     })
 
-
     if (!article) {
       throw new Error('Article not found')
     }
@@ -215,32 +213,28 @@ export async function FetchArticleByID(id: string) {
   }
 }
 
-export async function getRepl(id:string) {
+export async function getRepl(id: string) {
   try {
     const getReply = await db.reply.findMany({
       where: {
-        replyCommet:{
-          id:id
-        }
+        replyCommet: {
+          id: id,
+        },
       },
       select: {
         id: true,
-        replytext:true,
+        replytext: true,
         author: {
           select: {
-            id:true,
-            name:true,
-            image:true
-          }
-        }
-      }
-
+            id: true,
+            name: true,
+            image: true,
+          },
+        },
+      },
     })
-  } catch (error) {
-    
-  }
+  } catch (error) {}
 }
-
 
 export async function FetchPOSTeByID(id: string) {
   try {
@@ -301,7 +295,7 @@ export async function FetchPOSTeByID(id: string) {
             },
             Reply: {
               select: {
-                id:true,
+                id: true,
                 replytext: true,
                 author: {
                   select: {
@@ -373,7 +367,7 @@ export async function CommentinArticlesHome(
         data: {
           articleId: articleId,
           userId: inArticle.authorId,
-          current:articleId,
+          current: articleId,
           body: `ผู้ใช้ ${user?.name} ได้แสดงความคิดเห็นบนบล็อกของคุณ ${inArticle.title}`,
         },
       })

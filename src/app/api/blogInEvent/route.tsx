@@ -13,6 +13,7 @@ export async function GET(request: Request) {
       id: true,
       title: true,
       ArticleImage: true,
+      tag: true,
     },
   })
   return NextResponse.json(Blog)

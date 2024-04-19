@@ -43,8 +43,7 @@ const Navbars = async ({ userId }: User) => {
             <HandMetal />
           </Link>
           <NavbarContent className="hidden gap-4 sm:flex" justify="center">
-            <NavbarBrand>
-            </NavbarBrand>
+            <NavbarBrand></NavbarBrand>
             <NavbarBrand>
               <NotificationCard />
             </NavbarBrand>
@@ -103,8 +102,7 @@ const Navbars = async ({ userId }: User) => {
                             </DropdownMenuShortcut>
                           </DropdownMenuItem>
 
-                          <DropdownMenuItem>
-                          </DropdownMenuItem>
+                          <DropdownMenuItem></DropdownMenuItem>
 
                           <DropdownMenuSeparator />
                           <UserAccountnav />

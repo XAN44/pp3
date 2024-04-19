@@ -13,17 +13,16 @@ export async function GET(request: Request) {
       select: {
         id: true,
         body: true,
-        current:true,
-        articleId:true,
-        postId:true,
-        eventId:true,
-        likeId:true,
-        readStatus:true,
-        createAt:true
+        current: true,
+        articleId: true,
+        postId: true,
+        eventId: true,
+        likeId: true,
+        readStatus: true,
+        createAt: true,
       },
     })
-    
-    
+
     return NextResponse.json(notifications)
   } catch (error: any) {
     console.error(`Error fetching notifications: ${error.message}`)
@@ -31,20 +30,17 @@ export async function GET(request: Request) {
   }
 }
 
-
-
 export async function POST(request: Request) {
   try {
-
     const user = await getCurrentUser()
-    
+
     const updateRead = await db.notification.updateMany({
-      where:{
-        userId:user?.id,
+      where: {
+        userId: user?.id,
       },
-      data:{
-        readStatus:true
-      }
+      data: {
+        readStatus: true,
+      },
     })
 
     return NextResponse.json(updateRead)

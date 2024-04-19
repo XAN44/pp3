@@ -20,7 +20,12 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
-import { DELETE, DELETEREPLYEVENT, replyComments, replyCommentsEvent } from '@/lib/actions/user.comment'
+import {
+  DELETE,
+  DELETEREPLYEVENT,
+  replyComments,
+  replyCommentsEvent,
+} from '@/lib/actions/user.comment'
 import { replyComment } from '@/lib/validations/Userpost'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
@@ -69,10 +74,10 @@ const CommentEventandreply = ({
   isComment,
   isReply,
 }: Props) => {
-  const [ replying, setReplying ] = useState(false)
-  const [ showReply, setShowReply ] = useState(false)
-  const [ showComment, setShowComment ] = useState(false)
-  const [ replyVisible, setReplyVisible ] = useState(false)
+  const [replying, setReplying] = useState(false)
+  const [showReply, setShowReply] = useState(false)
+  const [showComment, setShowComment] = useState(false)
+  const [replyVisible, setReplyVisible] = useState(false)
   const path = usePathname() ?? ''
 
   const handleShowComment = () => {
@@ -124,10 +129,10 @@ const CommentEventandreply = ({
 
   const handleDeleteReply = async (replyId: string) => {
     try {
-      await DELETEREPLYEVENT(replyId, path);
+      await DELETEREPLYEVENT(replyId, path)
       // เพิ่มโค้ดเพื่ออัปเดตหรือรีเฟรชข้อมูลหลังจากลบ reply ได้ตามต้องการ
     } catch (error) {
-      console.error('เกิดข้อผิดพลาดในการลบการตอบกลับ:', error);
+      console.error('เกิดข้อผิดพลาดในการลบการตอบกลับ:', error)
     }
   }
   const onSubmitReply = async (values: z.infer<typeof replyComment>) => {
@@ -213,7 +218,6 @@ const CommentEventandreply = ({
                 <button onClick={handleHiddenReply}>ซ่อนการตอบกลับ</button>
               </div>
               <div className="mb-4 ml-6">
-
                 {reply.map((r, index) => (
                   <div key={r.id} className="mb-3 flex gap-3">
                     <>
@@ -227,8 +231,6 @@ const CommentEventandreply = ({
 
                       <div className="grid text-start">
                         <div className="flex items-center">
-
-
                           <Text>{r.author?.name}</Text>
                           {current.id === r.author?.id && (
                             <>
@@ -248,7 +250,6 @@ const CommentEventandreply = ({
                               >
                                 <Delete />
                               </Button>
-
                             </>
                           )}
                         </div>

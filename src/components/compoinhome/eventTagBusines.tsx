@@ -27,6 +27,9 @@ import VisitEvent from '../visit/visitEvent'
 export default async function EventTagBusiness() {
   const otherInfo = await fetchEventByTagBusiness()
   const user = await getCurrentUser()
+  if (otherInfo.length === 0) {
+    return <Text color='red'>ไม่มีข้อมูล</Text>;
+  }
   return (
     <>
       <Carousel
@@ -40,7 +43,7 @@ export default async function EventTagBusiness() {
             <>
               <CarouselItem
                 key={index}
-                className="pl-1 md:basis-1/2 lg:basis-1/3"
+                className="pl-3 md:basis-1/2 lg:basis-1/3"
               >
                 <div className="p-1">
                   <Card className="max-w-96">
@@ -96,17 +99,16 @@ export default async function EventTagBusiness() {
                               </span>
                             </Text>
                           </div>
-                          <div className="">
-                            <Link href={`/event/${article.id}`}>
-                              <VisitEvent
-                                id={article.id}
-                                userId={user?.id || ''}
-                              />
-                            </Link>
-                          </div>
+
                         </div>
                       </div>
                     </CardFooter>
+                    <Link href={`/event/${article.id}`}>
+                      <VisitEvent
+                        id={article.id}
+                        userId={user?.id || ''}
+                      />
+                    </Link>
                   </Card>
                 </div>
               </CarouselItem>

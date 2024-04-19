@@ -76,7 +76,7 @@ model Room {
     users         User[]    @relation("UserRoom")
     createdAt     DateTime  @default(now())
     lastMessageAt DateTime  @default(now())
-    sender        User?     @relation(fields: [senderId], references: [id])
+    sender        User?     @relation(fields: [senderId], references: [id], onDelete: Cascade)
     senderId      String?
     messages      Message[] @relation(name: "RoomMessages")
 }
@@ -87,9 +87,9 @@ model Message {
     image          String?
     createdAt      DateTime      @default(now())
     rooms          Room[]        @relation(name: "RoomMessages")
-    sender         User          @relation(fields: [senderId], references: [id])
+    sender         User          @relation(fields: [senderId], references: [id], onDelete: Cascade)
     senderId       String
-    conversation   Conversation? @relation(fields: [conversationId], references: [id])
+    conversation   Conversation? @relation(fields: [conversationId], references: [id], onDelete: Cascade)
     conversationId String?
     seen           User[]        @relation("Seen")
 }
@@ -131,7 +131,7 @@ model Post {
     id            String          @id @default(cuid())
     content       String?
     ImagePost     String?
-    author        User?           @relation(fields: [authorId], references: [id])
+    author        User?           @relation(fields: [authorId], references: [id], onDelete: Cascade)
     authorId      String?
     createdAt     DateTime        @default(now())
     comments      Comment[]
@@ -148,10 +148,10 @@ model Visit {
     userId    String?
     articleId String?
     count     Int
-    post      Post?    @relation(fields: [pageId], references: [id])
-    user      User?    @relation(fields: [userId], references: [id])
-    Article   Article? @relation(fields: [articleId], references: [id])
-    Event     Event?   @relation(fields: [eventId], references: [id])
+    post      Post?    @relation(fields: [pageId], references: [id], onDelete: Cascade)
+    user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+    Article   Article? @relation(fields: [articleId], references: [id], onDelete: Cascade)
+    Event     Event?   @relation(fields: [eventId], references: [id], onDelete: Cascade)
     eventId   String?
 }
 
@@ -162,11 +162,11 @@ model SearchHistory {
     userId     String?
     userTraget String?
     user       User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
-    article    Article? @relation(fields: [articleId], references: [id])
+    article    Article? @relation(fields: [articleId], references: [id], onDelete: Cascade)
     articleId  String?
-    event      Event?   @relation(fields: [eventId], references: [id])
+    event      Event?   @relation(fields: [eventId], references: [id], onDelete: Cascade)
     eventId    String?
-    Post       Post?    @relation(fields: [postId], references: [id])
+    Post       Post?    @relation(fields: [postId], references: [id], onDelete: Cascade)
     postId     String?
 }
 
@@ -177,9 +177,9 @@ model Like {
     articleId    String?
     isLiked      Boolean        @default(false)
     createdAt    DateTime       @default(now())
-    article      Article?       @relation(fields: [articleId], references: [id])
-    post         Post?          @relation(fields: [postId], references: [id])
-    user         User?          @relation(fields: [userId], references: [id])
+    article      Article?       @relation(fields: [articleId], references: [id], onDelete: Cascade)
+    post         Post?          @relation(fields: [postId], references: [id], onDelete: Cascade)
+    user         User?          @relation(fields: [userId], references: [id], onDelete: Cascade)
     Notification Notification[]
 
     @@unique([postId, userId])
@@ -190,14 +190,14 @@ model Event {
     title             String?
     eventContent      String?
     eventImage        String?
-    author            User?           @relation(fields: [authorId], references: [id])
+    author            User?           @relation(fields: [authorId], references: [id], onDelete: Cascade)
     authorId          String?
     eventstartTime    String? //*กิจกรรมเริ่มวันที่
     eventlocation     String? //*สถานที่จัดกิจกรรม
     eventparticipants String? //*จำนวนเปิดรับกิจกรรม
     eventcreator      String? //*ผู้สร้างกิจกรรม
     eventmore         String? //*เพิ่มเติม
-    blogInArticle     Article?        @relation(fields: [articleId], references: [id])
+    blogInArticle     Article?        @relation(fields: [articleId], references: [id], onDelete: Cascade)
     createAt          DateTime        @default(now())
     comment           Comment[]
     tag               ArticleTag[]
@@ -210,9 +210,9 @@ model Event {
 
 model RegisterEvent {
     id        String    @id @default(cuid())
-    user      User?     @relation(fields: [userID], references: [id])
+    user      User?     @relation(fields: [userID], references: [id], onDelete: Cascade)
     userID    String?
-    event     Event?    @relation(fields: [eventID], references: [id])
+    event     Event?    @relation(fields: [eventID], references: [id], onDelete: Cascade)
     eventID   String?
     createdAt DateTime? @default(now())
 
@@ -225,7 +225,7 @@ model Article {
     articleContent String?
     content        String[]
     ArticleImage   String?
-    author         User?           @relation(fields: [authorId], references: [id])
+    author         User?           @relation(fields: [authorId], references: [id], onDelete: Cascade)
     authorId       String?
     createAt       DateTime        @default(now())
     comment        Comment[]
@@ -240,11 +240,11 @@ model Article {
 model ArticleTag {
     id        String   @id @default(cuid())
     tag       String?
-    Article   Article? @relation(fields: [articleId], references: [id])
+    Article   Article? @relation(fields: [articleId], references: [id], onDelete: Cascade)
     articleId String?
-    Event     Event?   @relation(fields: [eventId], references: [id])
+    Event     Event?   @relation(fields: [eventId], references: [id], onDelete: Cascade)
     eventId   String?
-    Post      Post?    @relation(fields: [postId], references: [id])
+    Post      Post?    @relation(fields: [postId], references: [id], onDelete: Cascade)
     postId    String?
 }
 
@@ -252,14 +252,14 @@ model Comment {
     id           String         @id @default(cuid())
     text         String
     createdAt    DateTime?      @default(now())
-    author       User?          @relation(fields: [authorid], references: [id])
+    author       User?          @relation(fields: [authorid], references: [id], onDelete: Cascade)
     authorid     String?
-    Post         Post?          @relation(fields: [postId], references: [id])
+    Post         Post?          @relation(fields: [postId], references: [id], onDelete: Cascade)
     postId       String?
     Reply        Reply[]
-    Article      Article?       @relation(fields: [articleId], references: [id])
+    Article      Article?       @relation(fields: [articleId], references: [id], onDelete: Cascade)
     articleId    String?
-    Event        Event?         @relation(fields: [eventId], references: [id])
+    Event        Event?         @relation(fields: [eventId], references: [id], onDelete: Cascade)
     eventId      String?
     Notification Notification[]
 }
@@ -278,21 +278,21 @@ model Notification {
     articleId String?
     eventId   String?
     replyId   String?
-    reply     Reply?   @relation(fields: [replyId], references: [id])
-    liked     Like?    @relation(fields: [likeId], references: [id])
+    reply     Reply?   @relation(fields: [replyId], references: [id], onDelete: Cascade)
+    liked     Like?    @relation(fields: [likeId], references: [id], onDelete: Cascade)
     user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
-    comment   Comment? @relation(fields: [commentId], references: [id])
-    post      Post?    @relation(fields: [postId], references: [id])
-    article   Article? @relation(fields: [articleId], references: [id])
-    event     Event?   @relation(fields: [eventId], references: [id])
+    comment   Comment? @relation(fields: [commentId], references: [id], onDelete: Cascade)
+    post      Post?    @relation(fields: [postId], references: [id], onDelete: Cascade)
+    article   Article? @relation(fields: [articleId], references: [id], onDelete: Cascade)
+    event     Event?   @relation(fields: [eventId], references: [id], onDelete: Cascade)
 }
 
 model Reply {
     id             String         @id @default(cuid())
     replytext      String
-    author         User?          @relation(fields: [authorid], references: [id])
+    author         User?          @relation(fields: [authorid], references: [id], onDelete: Cascade)
     authorid       String?
-    replyCommet    Comment?       @relation(fields: [replyCommentid], references: [id])
+    replyCommet    Comment?       @relation(fields: [replyCommentid], references: [id], onDelete: Cascade)
     replyCommentid String?
     Notification   Notification[]
 }

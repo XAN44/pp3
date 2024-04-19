@@ -99,7 +99,7 @@ export async function fetchEventByTagFamily() {
       title: true,
       eventImage: true,
       eventContent: true,
-
+      eventparticipants: true,
       createAt: true,
       authorId: true,
 
@@ -255,12 +255,12 @@ export async function fetchEventByTagBusiness() {
   return fetchUser
 }
 
-export async function fetchEventByTagFood() {
+export async function fetchEventByTagResident() {
   const fetchUser = await db.event.findMany({
     where: {
       tag: {
         some: {
-          tag: 'อาหาร',
+          tag: 'ชุมชน',
         },
       },
     },

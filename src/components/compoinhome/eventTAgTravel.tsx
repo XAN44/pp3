@@ -18,20 +18,19 @@ import {
   CarouselPrevious,
 } from '@/components/ui/carousel'
 import { Text } from '@chakra-ui/react'
-import { TotalVisit, TotalVisit1 } from '@/lib/actions/user.visit'
-import VisitBtnArticle from '../visit/visitArticle'
-import VisitBtnArticleC from '../visit/visitArticleC'
 import { getCurrentUser } from '@/lib/session'
-import { fetchBlogByTag, fetchInBlogPage } from '@/lib/actions/user.carousel'
-import { fetchBlogByTagTravel } from '@/lib/actions/user.article.tag'
 import { fetchEventByTagTravel } from '@/lib/actions/user.event.tag'
-import VisitEvent from '../visit/visitEvent'
+import VisitEventTag from '../visit/visitTag/visiteventTag'
 
 export default async function EventTagTravel() {
   const otherInfo = await fetchEventByTagTravel()
   const user = await getCurrentUser()
-  return (
+
+  if (otherInfo.length === 0) {
+    return <Text color='red'>ไม่มีข้อมูล</Text>;
+  } return (
     <>
+
       <Carousel
         opts={{
           align: 'start',
@@ -43,7 +42,7 @@ export default async function EventTagTravel() {
             <>
               <CarouselItem
                 key={index}
-                className="pl-1 md:basis-1/2 lg:basis-1/3"
+                className="pl-3 md:basis-1/2 lg:basis-1/3"
               >
                 <div className="p-1">
                   <Card className="max-w-96">
@@ -100,17 +99,16 @@ export default async function EventTagTravel() {
                               </span>
                             </Text>
                           </div>
-                          <div className="">
-                            <Link href={`/event/${event.id}`}>
-                              <VisitEvent
-                                id={event.id}
-                                userId={user?.id || ''}
-                              />
-                            </Link>
-                          </div>
+
                         </div>
                       </div>
                     </CardFooter>
+                    <Link href={`/event/${event.id}`}>
+                      <VisitEventTag
+                        id={event.id}
+                        userId={user?.id || ''}
+                      />
+                    </Link>
                   </Card>
                 </div>
               </CarouselItem>

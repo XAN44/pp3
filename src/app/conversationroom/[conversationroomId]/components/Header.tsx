@@ -1,89 +1,89 @@
-"use client"
+'use client'
 
-import useOtherChat from "@/app/hooks/useOtherchat"
-import Avatars from "@/components/sidebar/Avatar"
-import { Room, User } from "@prisma/client"
-import Link from "next/link"
-import { useMemo, useState } from "react"
-import { HiChevronLeft } from "react-icons/hi"
-import { HiEllipsisHorizontal } from "react-icons/hi2"
-import ProfileDrawer from "./ProfileDrawer"
-
+import useOtherChat from '@/app/hooks/useOtherchat'
+import Avatars from '@/components/sidebar/Avatar'
+import { Room, User } from '@prisma/client'
+import Link from 'next/link'
+import { useMemo, useState } from 'react'
+import { HiChevronLeft } from 'react-icons/hi'
+import { HiEllipsisHorizontal } from 'react-icons/hi2'
+import ProfileDrawer from './ProfileDrawer'
 
 interface HeaderProps {
-    room: Room & {
-        users: User[]
-    }
+  room: Room & {
+    users: User[]
+  }
 }
-const Header: React.FC<HeaderProps> = ({
-    room
-}) => {
-    const otherUser = useOtherChat(room)
+const Header: React.FC<HeaderProps> = ({ room }) => {
+  const otherUser = useOtherChat(room)
 
-    const [ drawerOpen, setDrawerOpen ] = useState(false)
+  const [drawerOpen, setDrawerOpen] = useState(false)
 
-
-    return (
-        <>
-            <ProfileDrawer
-                data={room}
-                isOpen={drawerOpen}
-                onClose={() => setDrawerOpen(false)}
-            />
-            <div className="
-        bg-white
+  return (
+    <>
+      <ProfileDrawer
+        data={room}
+        isOpen={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+      />
+      <div
+        className="
+        flex
         w-full
-        flex 
-        border-r-[1px]
-        py-3
-        px-4
-        lg:px-6
+        items-center 
         justify-between
-        items-center
+        border-r-[1px]
+        bg-white
+        px-4
+        py-3
         shadow-sm
-        ">
-                <div className="
+        lg:px-6
+        "
+      >
+        <div
+          className="
             flex 
-            gap-3 
             items-center 
-            ">
-                    <div className="flex gap-3 items-center">
-
-                        <Link
-                            className="
-                            lg:hidden
+            gap-3 
+            "
+        >
+          <div className="flex items-center gap-3">
+            <Link
+              className="
                             block
-                            text-sky-500
-                            hover:text-sky-600
-                            transition
                             cursor-pointer
+                            text-sky-500
+                            transition
+                            hover:text-sky-600
+                            lg:hidden
                             "
-                            href="/conversationroom">
-                            <HiChevronLeft size={30} />
-                        </Link>
-                        <Avatars user={otherUser} />
-                        <div className="
+              href="/conversationroom"
+            >
+              <HiChevronLeft size={30} />
+            </Link>
+            <Avatars user={otherUser} />
+            <div
+              className="
                     flex flex-col
-                    ">
-                            {room.name || otherUser.name}
-                        </div>
-                        <HiEllipsisHorizontal
-                            size={32}
-                            onClick={() => setDrawerOpen(true)}
-                            className="
-                   text-sky-500
-                   cursor-pointer
-                   hover:text-sky-600
-                   transition
-                   "
-                        />
-                    </div>
-                </div>
+                    "
+            >
+              {room.name || otherUser.name}
             </div>
-        </>
-
-    )
+            <HiEllipsisHorizontal
+              size={32}
+              onClick={() => setDrawerOpen(true)}
+              className="
+                   cursor-pointer
+                   text-sky-500
+                   transition
+                   hover:text-sky-600
+                   "
+            />
+          </div>
+        </div>
+      </div>
+    </>
+  )
 }
-
 
 export default Header

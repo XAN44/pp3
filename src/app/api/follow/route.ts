@@ -47,16 +47,15 @@ export async function POST(request: Request) {
           id: true,
         },
       })
-    if(follow){
-      await db.notification.create({
-        data:{
-          id:authorId,
-          userId:authorId,
-          body:`@${user?.name} ได้ติดตามคุณ`,
-          
-        }
-      })
-    }
+      if (follow) {
+        await db.notification.create({
+          data: {
+            id: authorId,
+            userId: authorId,
+            body: `@${user?.name} ได้ติดตามคุณ`,
+          },
+        })
+      }
       return NextResponse.json(follow)
     }
 

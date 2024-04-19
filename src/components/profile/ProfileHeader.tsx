@@ -9,7 +9,7 @@ import { Text } from '@chakra-ui/react'
 import useSWR from 'swr'
 import { Image } from '@nextui-org/react'
 import { MessageSquarePlus } from 'lucide-react'
-import { useRouter } from "next/navigation";
+import { useRouter } from 'next/navigation'
 import { useCallback, useState } from 'react'
 import axios from 'axios'
 import { User } from '@prisma/client'
@@ -36,9 +36,7 @@ interface Props {
     twitter: string
     tiktok: string
   }
-
 }
-
 
 async function fetcher(url: string) {
   const response = await fetch(url)
@@ -79,11 +77,9 @@ function ProfileHeader({
   )
   const router = useRouter()
 
-
-  const handleClick = (() => {
+  const handleClick = () => {
     router.push(`/conversationroom/`)
-  })
-
+  }
 
   const visitHandler = async (articleId: string) => {
     await fetch('/api/search', {
@@ -154,8 +150,6 @@ function ProfileHeader({
           />
         )}
 
-
-
         <div className="mt-3 flex items-center justify-center space-x-10 text-center xl:grid xl:items-start xl:justify-start xl:space-x-0 xl:text-start">
           <div className="flex ">
             <div className="w-[83px]">
@@ -175,9 +169,10 @@ function ProfileHeader({
           </div>
           <div className="mt-3 flex items-center justify-center space-x-5 xl:ml-6 xl:grid xl:items-start xl:justify-start xl:space-x-0 xl:text-start">
             {accountId !== authUserId && (
-              <div className="
-            mt-3 
-            w-13 flex
+              <div
+                className="
+            w-13 
+            mt-3 flex
             cursor-pointer
             "
                 onClick={handleClick}

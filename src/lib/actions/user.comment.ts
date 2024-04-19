@@ -47,16 +47,15 @@ export async function CommentInPost(
       },
     })
 
-    if(newComment && Inpost.authorId !== authorId){
+    if (newComment && Inpost.authorId !== authorId) {
       await db.notification.create({
-        data:{
-          current:Inpost.id,
-          commentId:newComment.id,
-          postId:Inpost.id,
-          userId:Inpost.authorId,
-          body:`ผู้ใช้ ${user?.name} ได้แสดงความคิดเห็นในโพสต์ ${Inpost.content} `,
-
-        }
+        data: {
+          current: Inpost.id,
+          commentId: newComment.id,
+          postId: Inpost.id,
+          userId: Inpost.authorId,
+          body: `ผู้ใช้ ${user?.name} ได้แสดงความคิดเห็นในโพสต์ ${Inpost.content} `,
+        },
       })
     }
 
@@ -149,21 +148,21 @@ export async function replyComments(
       where: {
         id: commentId,
       },
-      select:{
-        text:true,
-        authorid:true,
-        postId:true,
-        Post:{
-          select:{
-            content:true
+      select: {
+        text: true,
+        authorid: true,
+        postId: true,
+        Post: {
+          select: {
+            content: true,
           },
         },
-        Article:{
-          select:{
-            title:true
-          }
-        }
-      }
+        Article: {
+          select: {
+            title: true,
+          },
+        },
+      },
     })
     if (findComment) {
       console.log('Attempting to create reply...')
@@ -175,31 +174,27 @@ export async function replyComments(
           authorid: authorId,
         },
       })
-      if(user?.id === findComment.authorid){
+      if (user?.id === findComment.authorid) {
         revalidatePath(path)
         return false
       }
-      if(repy){
+      if (repy) {
         await db.notification.create({
-          data:{
-            postId:findComment.postId,
-            current:findComment.postId,
-            userId:findComment.authorid,
-            body:`ผู้ใช้ ${user?.name} ได้ตอบกลับความคิดเห็น ${findComment.text} บนบทความ ${findComment.Post?.content} `, 
-            replyId:repy.id 
-          }
+          data: {
+            postId: findComment.postId,
+            current: findComment.postId,
+            userId: findComment.authorid,
+            body: `ผู้ใช้ ${user?.name} ได้ตอบกลับความคิดเห็น ${findComment.text} บนบทความ ${findComment.Post?.content} `,
+            replyId: repy.id,
+          },
         })
       }
       revalidatePath(path)
-
     }
 
     return reply
   } catch (error) {}
 }
-
-
-
 
 export async function replyCommentsEvent(
   commentId: string,
@@ -213,27 +208,27 @@ export async function replyCommentsEvent(
       where: {
         id: commentId,
       },
-      select:{
-        text:true,
-        authorid:true,
-        postId:true,
-        eventId:true,
-        Event:{
-          select:{
-            title:true
-          }
-        },
-        Post:{
-          select:{
-            content:true
+      select: {
+        text: true,
+        authorid: true,
+        postId: true,
+        eventId: true,
+        Event: {
+          select: {
+            title: true,
           },
         },
-        Article:{
-          select:{
-            title:true
-          }
-        }
-      }
+        Post: {
+          select: {
+            content: true,
+          },
+        },
+        Article: {
+          select: {
+            title: true,
+          },
+        },
+      },
     })
     if (findComment) {
       console.log('Attempting to create reply...')
@@ -245,29 +240,27 @@ export async function replyCommentsEvent(
           authorid: authorId,
         },
       })
-      if(user?.id === findComment.authorid){
+      if (user?.id === findComment.authorid) {
         revalidatePath(path)
         return false
       }
-      if(repy){
+      if (repy) {
         await db.notification.create({
-          data:{
-            eventId:findComment.eventId,
-            current:findComment.eventId,
-            userId:findComment.authorid,
-            body:`ผู้ใช้ ${user?.name} ได้ตอบกลับความคิดเห็น ${findComment.text} บนกิจกรรม ${findComment.Event?.title} `, 
-            replyId:repy.id 
-          }
+          data: {
+            eventId: findComment.eventId,
+            current: findComment.eventId,
+            userId: findComment.authorid,
+            body: `ผู้ใช้ ${user?.name} ได้ตอบกลับความคิดเห็น ${findComment.text} บนกิจกรรม ${findComment.Event?.title} `,
+            replyId: repy.id,
+          },
         })
       }
       revalidatePath(path)
-
     }
 
     return reply
   } catch (error) {}
 }
-
 
 export async function replyCommentsBlog(
   commentId: string,
@@ -281,28 +274,28 @@ export async function replyCommentsBlog(
       where: {
         id: commentId,
       },
-      select:{
-        text:true,
-        authorid:true,
-        postId:true,
-        eventId:true,
-        articleId:true,
-        Event:{
-          select:{
-            title:true
-          }
-        },
-        Post:{
-          select:{
-            content:true
+      select: {
+        text: true,
+        authorid: true,
+        postId: true,
+        eventId: true,
+        articleId: true,
+        Event: {
+          select: {
+            title: true,
           },
         },
-        Article:{
-          select:{
-            title:true
-          }
-        }
-      }
+        Post: {
+          select: {
+            content: true,
+          },
+        },
+        Article: {
+          select: {
+            title: true,
+          },
+        },
+      },
     })
     if (findComment) {
       console.log('Attempting to create reply...')
@@ -313,35 +306,32 @@ export async function replyCommentsBlog(
           replytext: reply,
           authorid: authorId,
         },
-        select:{
-          id:true,
-        }
+        select: {
+          id: true,
+        },
       })
-      if(user?.id === findComment.authorid){
+      if (user?.id === findComment.authorid) {
         revalidatePath(path)
         return false
       }
-      if(repy){
+      if (repy) {
         await db.notification.create({
-          data:{
-            id:repy.id,
-            articleId:findComment.articleId,
-            current:findComment.articleId,
-            userId:findComment.authorid,
-            body:`ผู้ใช้ ${user?.name} ได้ตอบกลับความคิดเห็น ${findComment.text} บนบล็อก ${findComment.Article?.title} `, 
-            replyId:repy.id 
-          }
+          data: {
+            id: repy.id,
+            articleId: findComment.articleId,
+            current: findComment.articleId,
+            userId: findComment.authorid,
+            body: `ผู้ใช้ ${user?.name} ได้ตอบกลับความคิดเห็น ${findComment.text} บนบล็อก ${findComment.Article?.title} `,
+            replyId: repy.id,
+          },
         })
       }
       revalidatePath(path)
-
     }
 
     return reply
   } catch (error) {}
 }
-
-
 
 export async function CommentinArticlesHome(
   postId: string,
@@ -357,7 +347,7 @@ export async function CommentinArticlesHome(
       },
       select: {
         authorId: true,
-        comments:true
+        comments: true,
       },
     })
     if (!inArticle) {
@@ -367,7 +357,7 @@ export async function CommentinArticlesHome(
     const newCommentInArticle = await db.comment.create({
       data: {
         text: comment,
-        postId:postId,
+        postId: postId,
         authorid: authorId,
       },
       include: {
@@ -382,7 +372,7 @@ export async function CommentinArticlesHome(
       // เพิ่มเงื่อนไขนี้
       await db.notification.create({
         data: {
-          postId:postId,
+          postId: postId,
           userId: inArticle.authorId,
           body: `ผู้ใช้ ${user?.name} ได้แสดงความคิดเห็นบนบล็อกของคุณ ${inArticle.comments}`,
         },
@@ -394,31 +384,30 @@ export async function CommentinArticlesHome(
     throw new Error(`Faied to creat comment : ${error.message}`)
   }
 }
- 
+
 export async function DELETEReply(id: string, path: string) {
   try {
     const user = await getCurrentUser()
 
-
-      const deleteReply = await db.reply.delete({
-        where: {
-          id
-        },
-        select:{
-          id:true
-        }
-      })
-      revalidatePath(path)
+    const deleteReply = await db.reply.delete({
+      where: {
+        id,
+      },
+      select: {
+        id: true,
+      },
+    })
+    revalidatePath(path)
 
     console.log(deleteReply)
 
-      if(deleteReply){
-        await db.notification.delete({
-          where:{
-            id:deleteReply.id
-          }
-        })
-      }
+    if (deleteReply) {
+      await db.notification.delete({
+        where: {
+          id: deleteReply.id,
+        },
+      })
+    }
     revalidatePath(path)
     return deleteReply
   } catch (error) {
@@ -426,31 +415,29 @@ export async function DELETEReply(id: string, path: string) {
     throw error
   }
 }
-
 
 export async function DELETEREPLYPOST(replyId: string, path: string) {
   try {
- 
     console.log(replyId)
-      const deleteReply = await db.reply.delete({
-        where: {  
-          id:replyId
-        },
-        select:{
-          id:true
-        }
-      })
-      revalidatePath(path)
+    const deleteReply = await db.reply.delete({
+      where: {
+        id: replyId,
+      },
+      select: {
+        id: true,
+      },
+    })
+    revalidatePath(path)
 
     console.log(deleteReply)
 
-      if(deleteReply){
-        await db.notification.delete({
-          where:{
-            id:deleteReply.id
-          }
-        })
-      }
+    if (deleteReply) {
+      await db.notification.delete({
+        where: {
+          id: deleteReply.id,
+        },
+      })
+    }
     revalidatePath(path)
     return deleteReply
   } catch (error) {
@@ -458,32 +445,30 @@ export async function DELETEREPLYPOST(replyId: string, path: string) {
     throw error
   }
 }
-
 
 export async function DELETEREPLYEVENT(id: string, path: string) {
   try {
     const user = await getCurrentUser()
 
-
-      const deleteReply = await db.reply.delete({
-        where: {
-          id
-        },
-        select:{
-          id:true
-        }
-      })
-      revalidatePath(path)
+    const deleteReply = await db.reply.delete({
+      where: {
+        id,
+      },
+      select: {
+        id: true,
+      },
+    })
+    revalidatePath(path)
 
     console.log(deleteReply)
 
-      if(deleteReply){
-        await db.notification.delete({
-          where:{
-            id:deleteReply.id
-          }
-        })
-      }
+    if (deleteReply) {
+      await db.notification.delete({
+        where: {
+          id: deleteReply.id,
+        },
+      })
+    }
     revalidatePath(path)
     return deleteReply
   } catch (error) {
@@ -492,58 +477,53 @@ export async function DELETEREPLYEVENT(id: string, path: string) {
   }
 }
 
-
-
- 
-
 export async function DELETE(id: string, path: string) {
   try {
     const user = await getCurrentUser()
 
-
-      const check = await db.comment.findFirst({
-        where: {
-          id,
+    const check = await db.comment.findFirst({
+      where: {
+        id,
+      },
+      select: {
+        id: true,
+        Article: {
+          select: {
+            authorId: true,
+          },
         },
-        select: {
-          id:true,
-          Article:{
-            select:{
-            authorId:true
-            }
+        author: {
+          select: {
+            id: true,
           },
-          author: {
-            select: {
-              id: true,
-            },
-          },
+        },
+      },
+    })
+    console.log(check)
+    if (check?.id) {
+      await db.comment.delete({
+        where: {
+          id: check.id,
         },
       })
-      console.log(check)
-      if(check?.id){
-        await db.comment.delete({
-          where:{
-            id:check.id
-          }
-        })
-      }
-      
-      // if (check?.author?.id === user?.id) {
-      //   const deleteArticle = await db.comment.delete({
-      //     where: {
-      //       id,
-      //     },
-      //   })
-      // revalidatePath(path)
+    }
 
-      //   if(deleteArticle && user?.id !== check?.author?.id){
-      //     await db.notification.delete({
-      //       where:{
-      //         id:check?.id
-      //       }
-      //     })
-      //   }
-      // }
+    // if (check?.author?.id === user?.id) {
+    //   const deleteArticle = await db.comment.delete({
+    //     where: {
+    //       id,
+    //     },
+    //   })
+    // revalidatePath(path)
+
+    //   if(deleteArticle && user?.id !== check?.author?.id){
+    //     await db.notification.delete({
+    //       where:{
+    //         id:check?.id
+    //       }
+    //     })
+    //   }
+    // }
     revalidatePath(path)
     return check
   } catch (error) {
@@ -551,6 +531,3 @@ export async function DELETE(id: string, path: string) {
     throw error
   }
 }
-
- 
-

@@ -1,131 +1,131 @@
-"use client";
-import { useState, ChangeEvent } from "react";
-import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
-import "./Register.css";
-import axios from "axios";
-import React from "react";
+'use client'
+import { useState, ChangeEvent } from 'react'
+import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai'
+import './Register.css'
+import axios from 'axios'
+import React from 'react'
 
 function Register() {
-  const [profileImage, setProfileImage] = useState<string | null>(null);
+  const [profileImage, setProfileImage] = useState<string | null>(null)
 
-  const [passwordVisible, setPasswordVisible] = useState(false);
-  const [password, setPassword] = useState("");
-  const [email, setEmail] = useState("");
-  const [username, setUsername] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [emailError, setEmailError] = useState("");
-  const [usernameError, setUsernameError] = useState("");
-  const [registrationError, setRegistrationError] = useState("");
+  const [passwordVisible, setPasswordVisible] = useState(false)
+  const [password, setPassword] = useState('')
+  const [email, setEmail] = useState('')
+  const [username, setUsername] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const [emailError, setEmailError] = useState('')
+  const [usernameError, setUsernameError] = useState('')
+  const [registrationError, setRegistrationError] = useState('')
 
   const togglePasswordVisibility = () => {
-    setPasswordVisible(!passwordVisible);
-  };
+    setPasswordVisible(!passwordVisible)
+  }
 
   const handlePasswordConfirm = (event: ChangeEvent<HTMLInputElement>) => {
-    setConfirmPassword(event.target.value);
-  };
+    setConfirmPassword(event.target.value)
+  }
 
   const handlePasswordChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setPassword(event.target.value);
-  };
+    setPassword(event.target.value)
+  }
 
   const handleEmailChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const emailValue = event.target.value;
-    setEmail(emailValue);
-    setEmailError("");
+    const emailValue = event.target.value
+    setEmail(emailValue)
+    setEmailError('')
 
-    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
 
     if (!emailValue.match(emailPattern)) {
-      setEmailError("รูปแบบ Email ไม่ถูกต้อง");
+      setEmailError('รูปแบบ Email ไม่ถูกต้อง')
     }
-  };
+  }
 
   const handleUsernameChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setUsername(event.target.value);
-    setUsernameError("");
-  };
+    setUsername(event.target.value)
+    setUsernameError('')
+  }
 
   const handleRegister = async () => {
     try {
-      const formData = new FormData();
+      const formData = new FormData()
 
       // เพิ่มข้อมูลรูปภาพโปรไฟล์
       const selectedImage = document.getElementById(
-        "profileImage",
-      ) as HTMLInputElement;
+        'profileImage'
+      ) as HTMLInputElement
       if (selectedImage?.files && selectedImage.files[0]) {
-        formData.append("profileImage", selectedImage.files[0]);
+        formData.append('profileImage', selectedImage.files[0])
       } else {
-        setEmailError("กรุณาเลือกรูปโปรไฟล์");
-        return;
+        setEmailError('กรุณาเลือกรูปโปรไฟล์')
+        return
       }
 
       // เพิ่มข้อมูลอื่นๆ
-      formData.append("username", username);
-      formData.append("email", email);
-      formData.append("password", password);
+      formData.append('username', username)
+      formData.append('email', email)
+      formData.append('password', password)
 
       // ทำการส่งข้อมูล
-      await axios.post("http://127.0.0.1:3000/register", formData);
+      await axios.post('http://127.0.0.1:3000/register', formData)
 
-      console.log("สมัครสมาชิกสำเร็จ");
+      console.log('สมัครสมาชิกสำเร็จ')
     } catch (error: unknown) {
-      console.error("เกิดข้อผิดพลาดในการสมัครสมาชิก", error);
+      console.error('เกิดข้อผิดพลาดในการสมัครสมาชิก', error)
       if (axios.isAxiosError(error) && error.response?.data?.error) {
-        const errorMessage = error.response.data.error;
-        if (errorMessage.includes("Email")) {
-          setEmailError(errorMessage);
-        } else if (errorMessage.includes("Username")) {
-          setUsernameError(errorMessage);
+        const errorMessage = error.response.data.error
+        if (errorMessage.includes('Email')) {
+          setEmailError(errorMessage)
+        } else if (errorMessage.includes('Username')) {
+          setUsernameError(errorMessage)
         } else {
-          setRegistrationError(errorMessage); // Set registration error message
+          setRegistrationError(errorMessage) // Set registration error message
         }
       }
     }
-  };
+  }
 
   const handleProfileImageChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const selectedImage = event.target.files && event.target.files[0];
+    const selectedImage = event.target.files && event.target.files[0]
     if (selectedImage) {
-      const imageUrl = URL.createObjectURL(selectedImage);
-      const imgCircle = document.querySelector(".ImgProfile-Cicrle");
+      const imageUrl = URL.createObjectURL(selectedImage)
+      const imgCircle = document.querySelector('.ImgProfile-Cicrle')
       if (imgCircle instanceof HTMLElement) {
-        imgCircle.style.backgroundImage = `url('${imageUrl}')`;
+        imgCircle.style.backgroundImage = `url('${imageUrl}')`
       }
-      setProfileImage(imageUrl);
+      setProfileImage(imageUrl)
     }
-  };
+  }
 
   return (
     <div
       className="
-    min-h-screen 
-    flex flex-col
-    justify-center
+    flex 
+    min-h-screen flex-col
     items-center
+    justify-center
     "
     >
       <div
         className=" 
-      w-full
-      max-w-xs 
-      p-4
-      rounded-lg first-
+      first-
+      w-full 
+      max-w-xs
+      rounded-lg p-4
       shadow-lg"
       >
         <h1
-          className=" text-2xl
-         text-center 
-         font-bold 
-         justify-center 
+          className=" mb-10
          items-center 
-         mb-10"
+         justify-center 
+         text-center 
+         text-2xl 
+         font-bold"
         >
           AGRIC
         </h1>
 
-        <div className=" relative flex items-center justify-center mb-10">
+        <div className=" relative mb-10 flex items-center justify-center">
           <label className="ImgProfile-Cicrle" htmlFor="profileImage">
             {profileImage ? (
               <div
@@ -147,7 +147,7 @@ function Register() {
         </div>
 
         <div className="mb-4 ">
-          <label htmlFor="Email" className=" block mb-3">
+          <label htmlFor="Email" className=" mb-3 block">
             Email:
           </label>
           <input
@@ -156,10 +156,10 @@ function Register() {
             name="Email"
             onChange={handleEmailChange}
             value={email}
-            className="text-black
-            w-full
-            border rounded-lg 
-            py-1 px-2"
+            className="w-full
+            rounded-lg
+            border px-2 
+            py-1 text-black"
           />
           {emailError && (
             <p
@@ -173,7 +173,7 @@ function Register() {
         </div>
 
         <div className="mb-4">
-          <label htmlFor="Username" className="block mb-3 ">
+          <label htmlFor="Username" className="mb-3 block ">
             Username:
           </label>
           <input
@@ -182,35 +182,35 @@ function Register() {
             name="Username"
             onChange={handleUsernameChange}
             value={username}
-            className="text-black
-            w-full
+            className="w-full
             rounded-lg
-            py-1 px-2"
+            px-2
+            py-1 text-black"
           />
           {usernameError && <p className="text-red-600  ">{usernameError}</p>}
         </div>
 
-        <div className="mb-4 relative ">
-          <label htmlFor="Password" className=" block mb-3 ">
+        <div className="relative mb-4 ">
+          <label htmlFor="Password" className=" mb-3 block ">
             Password:
           </label>
           <input
-            type={passwordVisible ? "text" : "password"}
+            type={passwordVisible ? 'text' : 'password'}
             id="Password"
             name="Password"
             value={password}
             onChange={handlePasswordChange}
-            className="text-black
-            w-full 
+            className="w-full
+            rounded-lg 
             border
-            rounded-lg
-            py-1 px-2"
+            px-2
+            py-1 text-black"
           />
           <div
             className="absolute
-          text-gray-800
           inset-y-11
           right-2
+          text-gray-800
            "
             onClick={togglePasswordVisibility}
           >
@@ -219,19 +219,19 @@ function Register() {
         </div>
 
         <div className=" mb-4">
-          <label htmlFor="confirmPassword" className="block mb-3">
+          <label htmlFor="confirmPassword" className="mb-3 block">
             Confirm Password:
           </label>
           <input
-            type={passwordVisible ? "text" : "password"}
+            type={passwordVisible ? 'text' : 'password'}
             id="confirmPassword"
             value={confirmPassword}
             onChange={handlePasswordConfirm}
-            className="text-black
-            w-full
-            border
+            className="w-full
             rounded-lg
-            py-1 px-2"
+            border
+            px-2
+            py-1 text-black"
           />
         </div>
 
@@ -254,10 +254,10 @@ function Register() {
           สมัครสมาชิก
         </button>
 
-        <div className=" block m-3"></div>
+        <div className=" m-3 block"></div>
       </div>
     </div>
-  );
+  )
 }
 
-export default Register;
+export default Register

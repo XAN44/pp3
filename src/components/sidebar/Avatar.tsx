@@ -8,23 +8,22 @@ interface AvatarProps {
   user?: User
 }
 
-const Avatars: React.FC<AvatarProps> = ({
-  user
-}) => {
+const Avatars: React.FC<AvatarProps> = ({ user }) => {
   return (
-    <div className='relative'>
-      <div className="
+    <div className="relative">
+      <div
+        className="
       relative
       inline-block
-      rounded-full
-      overflow-hidden
       h-9
       w-9
+      overflow-hidden
+      rounded-full
       md:h-11
       md:w-11
-      ">
+      "
+      >
         <Avatar src={user?.image || ''} />
-
       </div>
     </div>
   )

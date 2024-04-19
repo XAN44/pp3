@@ -23,11 +23,9 @@ import { Metadata } from 'next'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 
-
 export const metadata: Metadata = {
-  title: 'Profile'
+  title: 'Profile',
 }
-
 
 export default async function Page({ params }: { params: { id: string } }) {
   if (!params.id) return null
@@ -52,7 +50,7 @@ export default async function Page({ params }: { params: { id: string } }) {
   if (!userInfo) redirect('/sign-in') // ! และถ้าหากว่าไม่มี Prarams.id จะทำการ redireact ไปที่หน้า Sign-ins
 
   return (
-    <div className=" animate-in mb-[590px]  flex h-32 flex-col gap-0 ">
+    <div className=" mb-[590px] flex  h-32 flex-col gap-0 animate-in ">
       {userInfo.map((Account) => (
         <>
           <aside
@@ -98,7 +96,6 @@ export default async function Page({ params }: { params: { id: string } }) {
                     <TabsTrigger value="event"> กิจกรรม</TabsTrigger>
                   </TabsList>
                   <TabsContent value="POST">
-
                     <div className="mb-3 mt-5 place-items-center p-3 text-center ">
                       {userInfo?.map((Account) => (
                         <>
@@ -106,13 +103,9 @@ export default async function Page({ params }: { params: { id: string } }) {
                             key={Account.id}
                             accountId={Account.id}
                             authUserId={user?.id || ''}
-                            ArticleImage={''}
-                            content={''}
-                            tag={''}
                           />
                         </>
                       ))}
-
 
                       {otherPost.map(async (post: any, index: any) => (
                         <>
@@ -234,7 +227,12 @@ export default async function Page({ params }: { params: { id: string } }) {
                           author={Event.author}
                           comments={Event.comment}
                           createAt={new Date(Event.createAt).toLocaleString()}
-                          totalVisit={await TotalVisitEvent(Event.id)} eventlocation={null} eventstartTime={null} eventparticipants={null} registerCount={0} />
+                          totalVisit={await TotalVisitEvent(Event.id)}
+                          eventlocation={null}
+                          eventstartTime={null}
+                          eventparticipants={null}
+                          registerCount={0}
+                        />
                       ))}
                     </div>
                   </TabsContent>

@@ -19,11 +19,9 @@ import { Container, Heading } from '@radix-ui/themes'
 import { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 
-
 export const metadata: Metadata = {
-  title: 'Article'
+  title: 'Article',
 }
-
 
 const Page = async ({ params }: { params: { id: string } }) => {
   if (!params.id) return null
@@ -79,7 +77,6 @@ const Page = async ({ params }: { params: { id: string } }) => {
             comment={comment.text}
             id={comment.id}
             articleId={ArticleBy.id}
-
             current={
               user || {
                 id: '',
