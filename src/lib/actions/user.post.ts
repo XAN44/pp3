@@ -252,7 +252,7 @@ export async function fetchUserProfileByID(id: string) {
               Twitter: true,
             },
           },
-               tag: {
+          tag: {
             select: {
               id: true,
               tag: true,

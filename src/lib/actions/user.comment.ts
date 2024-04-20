@@ -383,7 +383,7 @@ export async function CommentinArticlesHome(
       await db.notification.create({
         data: {
           postId:postId,
-          userId: inArticle.authorId,
+          userId: inArticle.authorId, 
           body: `ผู้ใช้ ${user?.name} ได้แสดงความคิดเห็นบนบล็อกของคุณ ${inArticle.comments}`,
         },
       })
