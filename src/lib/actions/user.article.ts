@@ -24,10 +24,13 @@ export async function POSTARTILE({
   tag,
 }: Props): Promise<void> {
   try {
+    const user = await getCurrentUser()
     if (!authorId) {
       throw new Error('Pless LOGIN')
     }
-    await db.article.create({
+    
+
+    const create = await db.article.create({
       data: {
         authorId: authorId,
         title,
@@ -38,9 +41,46 @@ export async function POSTARTILE({
             tag: tag,
           },
         },
-      },
+      },  
+      select:{
+        id:true,
+        title:true,
+        author:{
+         include:{
+          followers:true,
+          following:true
+        }
+        },
+      }
     })
+    if(create){
+      const findFollow = await db.follows.findMany({
+        where:{
+          followerId:create.author?.id
+        },
+        select:{
+          following:true
+        }
+      })
+      if(!findFollow){return}
+       if(findFollow){
+        for(const follow of findFollow){
+        const createNotification = await db.notification.create({
+          data:{
+            userId:follow.following.id,
+            body:`ผู้ใช้ ${create?.author?.name} ที่คุณติดตามได้ทำการสร้างบทความ ${create?.title}`,
+            articleId:create?.id
+            
+          }
+        })
+        }
+      }
+    }
+
+    
+
     revalidatePath(path)
+    return 
   } catch (error: any) {
     console.error(error) // Log the error for debugging
 
@@ -368,7 +408,7 @@ export async function CommentinArticlesHome(
           articleId: articleId,
           userId: inArticle.authorId,
           current: articleId,
-          body: `ผู้ใช้ ${user?.name} ได้แสดงความคิดเห็นบนบล็อกของคุณ ${inArticle.title}`,
+          body: `ผู้ใช้ ${user?.name} ได้แสดงความคิดเห็นบนบทความของคุณ ${inArticle.title}`,
         },
       })
     }

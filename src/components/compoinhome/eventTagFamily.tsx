@@ -40,7 +40,7 @@ export default async function EventTagFamily() {
   const otherInfo = await fetchEventByTagFamily()
   const user = await getCurrentUser()
   if (otherInfo.length === 0) {
-    return <Text color='red'>ไม่มีข้อมูล</Text>;
+    return <Text color="red">ไม่มีข้อมูล</Text>
   }
   return (
     <>
@@ -111,7 +111,6 @@ export default async function EventTagFamily() {
                               </span>
                             </Text>
                           </div>
-
                         </div>
                         <div className="flex">
                           <Text as="b" fontSize="small">
@@ -124,10 +123,7 @@ export default async function EventTagFamily() {
                       </div>
                     </CardFooter>
                     <Link href={`/event/${event.id}`}>
-                      <VisitEventTag
-                        id={event.id}
-                        userId={user?.id || ''}
-                      />
+                      <VisitEventTag id={event.id} userId={user?.id || ''} />
                     </Link>
                   </Card>
                 </div>

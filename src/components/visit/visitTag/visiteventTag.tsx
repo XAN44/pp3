@@ -16,7 +16,7 @@ export default function VisitEventTag({
 
   const visit = async () => {
     try {
-      await VisitEventt(userId, id, pathname)
+      await VisitEventt(userId, id, pathname || '')
     } catch (error) {
       console.error('Error:', error)
     }
@@ -27,22 +27,21 @@ export default function VisitEventTag({
       <Button
         onClick={visit}
         disableRipple
-
         className="
         relative 
         w-full 
-        transition
-        overflow-visible 
-        rounded-full rounded-tl-none rounded-tr-none 
-        bg-gray-800 px-12 text-white shadow-xl 
+        overflow-visible
+        rounded-full 
+        rounded-tl-none rounded-tr-none bg-gray-800 
+        px-12 text-white shadow-xl transition 
         after:absolute after:inset-0 after:z-[-1] 
-        after:rounded-full after:rounded-tl-none 
-        after:rounded-tr-none after:bg-black 
-        after:text-white after:transition 
-        after:!duration-500 after:content-center
-        hover:transition
-      hover:text-white hover:after:scale-150 hover:after:opacity-0
-        hover:rounded-br-none hover:rounded-bl-none hover:duration-100
+        after:content-center after:rounded-full 
+        after:rounded-tl-none after:rounded-tr-none 
+        after:bg-black after:text-white 
+        after:transition after:!duration-500
+        hover:rounded-bl-none
+      hover:rounded-br-none hover:text-white hover:transition
+        hover:duration-100 hover:after:scale-150 hover:after:opacity-0
         "
       >
         เยี่ยมชม

@@ -13,18 +13,19 @@ import { Badge, Text } from '@chakra-ui/react'
 import Link from 'next/link'
 import VisitEventTag from '@/components/visit/visitTag/visiteventTag'
 import { useSession } from 'next-auth/react'
+import { Allevent } from '@/types/articleIndex'
 
 type EventInitial = {
-  data: UserInEvent[] | null
+  data: Allevent[] | null
 }
 
-const EventAllTravel: React.FC<EventInitial> = ({ data }) => {
+const ArticleAllResident: React.FC<EventInitial> = ({ data }) => {
   const session = useSession()
 
   const [currentPage, setCurrentPage] = useState(1)
 
   const itemPerPage = 4
-  const totalPage = Math.ceil((data?.length || 0) / itemPerPage) || 0
+  const totalPage = Math.ceil((data?.length || 0) / itemPerPage) || 1
 
   const handlePageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber)
@@ -44,7 +45,6 @@ const EventAllTravel: React.FC<EventInitial> = ({ data }) => {
       </div>
     )
   }
-
   return (
     <div className=" flex flex-col items-center justify-center">
       {currentData?.length === 0 && (
@@ -61,7 +61,7 @@ const EventAllTravel: React.FC<EventInitial> = ({ data }) => {
                 <CardBody className="flex items-center justify-center p-0 ">
                   <Image
                     isZoomed
-                    src={d.eventImage || ' '}
+                    src={d.ArticleImage || ' '}
                     alt="articleImage"
                     radius="md"
                     width="100%"
@@ -71,7 +71,7 @@ const EventAllTravel: React.FC<EventInitial> = ({ data }) => {
                 <CardFooter className="px-3  text-small">
                   <div className="w-full ">
                     <div className="text-center">
-                      <Text as="b">{d.eventContent}</Text>
+                      <Text as="b">{d.title}</Text>
                     </div>
                     <div className=" mt-3 flex">
                       <Avatar
@@ -122,15 +122,17 @@ const EventAllTravel: React.FC<EventInitial> = ({ data }) => {
           </div>
         ))}
       </div>
-      <Pagination
-        showShadow
-        color="primary"
-        total={totalPage}
-        page={currentPage}
-        onChange={handlePageChange}
-      />
+      {currentData ? (
+        <Pagination
+          showShadow
+          color="primary"
+          total={totalPage}
+          page={currentPage}
+          onChange={handlePageChange}
+        />
+      ) : null}
     </div>
   )
 }
 
-export default EventAllTravel
+export default ArticleAllResident

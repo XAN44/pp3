@@ -7,10 +7,7 @@ export const HASHTAG = [
     label: 'ครอบครัว',
     value: 'ครอบครัว',
   },
-  {
-    label: 'อาหาร',
-    value: 'อาหาร',
-  },
+
   {
     label: 'ธุรกิจ',
     value: 'ธุรกิจ',

@@ -26,9 +26,9 @@ function Followbtn({
     try {
       setisisDisabled(true) // เริ่มต้นโหลดข้อมูล
       if (checkFollow) {
-        await unFollower(ProfileId, isFollowing, path)
+        await unFollower(ProfileId, isFollowing, path || '')
       } else {
-        await Follower(ProfileId, isFollowing, path)
+        await Follower(ProfileId, isFollowing, path || '  ')
       }
       setisisDisabled(false) // จบการโหลดข้อมูล
     } catch (error) {

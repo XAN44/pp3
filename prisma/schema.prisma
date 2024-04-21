@@ -117,12 +117,13 @@ model Session {
 }
 
 model Follows {
-    id          String  @default(cuid())
-    follower    User    @relation("follower", fields: [followerId], references: [id])
-    followerId  String
-    following   User    @relation("following", fields: [followingId], references: [id])
-    followingId String
-    isFollow    Boolean @default(false)
+    id           String         @default(cuid())
+    follower     User           @relation("follower", fields: [followerId], references: [id])
+    followerId   String
+    following    User           @relation("following", fields: [followingId], references: [id])
+    followingId  String
+    isFollow     Boolean        @default(false)
+    Notification Notification[]
 
     @@id([followerId, followingId])
 }
@@ -269,22 +270,26 @@ model Notification {
     body       String
     readStatus Boolean @default(false)
 
-    userId    String?
-    current   String?
-    likeId    String?
-    createAt  DateTime @default(now())
-    commentId String?
-    postId    String?
-    articleId String?
-    eventId   String?
-    replyId   String?
-    reply     Reply?   @relation(fields: [replyId], references: [id], onDelete: Cascade)
-    liked     Like?    @relation(fields: [likeId], references: [id], onDelete: Cascade)
-    user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
-    comment   Comment? @relation(fields: [commentId], references: [id], onDelete: Cascade)
-    post      Post?    @relation(fields: [postId], references: [id], onDelete: Cascade)
-    article   Article? @relation(fields: [articleId], references: [id], onDelete: Cascade)
-    event     Event?   @relation(fields: [eventId], references: [id], onDelete: Cascade)
+    userId             String?
+    current            String?
+    likeId             String?
+    createAt           DateTime @default(now())
+    commentId          String?
+    postId             String?
+    articleId          String?
+    eventId            String?
+    replyId            String?
+    followsFollowerId  String?
+    followsFollowingId String?
+
+    reply   Reply?   @relation(fields: [replyId], references: [id], onDelete: Cascade)
+    liked   Like?    @relation(fields: [likeId], references: [id], onDelete: Cascade)
+    user    User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+    comment Comment? @relation(fields: [commentId], references: [id], onDelete: Cascade)
+    post    Post?    @relation(fields: [postId], references: [id], onDelete: Cascade)
+    article Article? @relation(fields: [articleId], references: [id], onDelete: Cascade)
+    event   Event?   @relation(fields: [eventId], references: [id], onDelete: Cascade)
+    Follows Follows? @relation(fields: [followsFollowerId, followsFollowingId], references: [followerId, followingId])
 }
 
 model Reply {

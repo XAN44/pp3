@@ -35,6 +35,8 @@ export default async function FollowinHomePage() {
   return (
     <>
       <div className="grid text-center">
+        <h1>โพสต์จากผู้ใช้ที่คุณติดตาม</h1>
+
         {otherInfo && otherInfo.length > 0 ? (
           <>
             <div className="">

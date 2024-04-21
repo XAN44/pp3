@@ -22,8 +22,9 @@ export async function userPost({
   try {
     if (!authorId) {
       throw new Error('ไม่มีผู้ใช้')
-    }
-    await db.post.create({
+    } 
+    
+     const create = await db.post.create({
       data: {
         authorId: authorId,
         content,
@@ -34,7 +35,40 @@ export async function userPost({
           },
         },
       },
+      select:{
+        id:true,
+        content:true,
+      author:{
+      select:{
+        id:true,
+        name:true,
+
+      }}
+      }
     })
+    if(create){
+    const findFollow = await db.follows.findMany({
+        where:{
+          followerId:create.author?.id
+        },
+        select:{
+          following:true
+        }
+      })
+       if(!findFollow){return}
+       if(findFollow){
+        for(const follow of findFollow){
+        const createNotification = await db.notification.create({
+          data:{
+            userId:follow.following.id,
+            body:`ผู้ใช้ ${create?.author?.name} ที่คุณติดตามาได้ทำการสร้างบทความ ${create?.content}`,
+            postId:create?.id
+            
+          }
+        })
+        }
+      }
+    }
     revalidatePath(path)
   } catch (error: any) {
     throw new Error(`Failed to create/update user: ${error.message}`)

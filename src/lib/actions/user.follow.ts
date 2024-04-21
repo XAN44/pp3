@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache'
 import { db } from '../db'
+import { getCurrentUser } from '../session'
 
 export async function Follower(
   accountId: string,
@@ -11,6 +12,7 @@ export async function Follower(
   // Todo: เช็คผู้ใช้ที่กำลัง Login
 
   try {
+    const user = await getCurrentUser()
     if (accountId === currentId) {
       return false
     } else {
@@ -30,6 +32,18 @@ export async function Follower(
             followingId: currentId,
           },
         })
+        if(newFollower){  
+         const follow = await db.notification.create({
+          data: {
+            id: accountId,
+            userId: newFollower.followerId,
+            body: `@${user?.name} ได้ติดตามคุณ`,
+            followsFollowerId: newFollower.followerId,
+            followsFollowingId: newFollower.followingId,
+          },
+        })  
+        console.log(follow)
+      }
 
         console.log('Added new follow:', newFollower)
         revalidatePath(path)
@@ -53,6 +67,7 @@ export async function unFollower(
   path: string
 ) {
   try {
+    const user = await getCurrentUser()
     if (accountId !== currentId) {
       const isFollow = await db.follows.findFirst({
         where: {
@@ -68,6 +83,17 @@ export async function unFollower(
             followingId: currentId,
           },
         })
+          
+        if(deletedFollow){
+          await db.notification.delete({
+            where:{
+              id: accountId,
+            },
+            
+          })
+        }
+
+
         revalidatePath(path)
         console.log(`Deleted follow relation: ${JSON.stringify(deletedFollow)}`)
       }

@@ -31,6 +31,10 @@ import {
 export default async function ArticleTagFamily() {
   const otherInfo = await fetchBlogByTagFamily()
   const user = await getCurrentUser()
+
+  if (otherInfo.length === 0) {
+    return <Text color="red">ไม่มีข้อมูล</Text>
+  }
   return (
     <>
       <Carousel

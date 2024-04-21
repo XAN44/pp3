@@ -20,6 +20,8 @@ export async function GET(request: Request) {
         likeId: true,
         readStatus: true,
         createAt: true,
+        followsFollowerId:true,
+        followsFollowingId:true
       },
     })
 

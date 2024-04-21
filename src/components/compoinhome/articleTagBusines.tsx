@@ -25,6 +25,10 @@ import { fetchBlogByTagBusiness } from '@/lib/actions/user.article.tag'
 export default async function ArticleTagBusiness() {
   const otherInfo = await fetchBlogByTagBusiness()
   const user = await getCurrentUser()
+
+  if (otherInfo.length === 0) {
+    return <Text color="red">ไม่มีข้อมูล</Text>
+  }
   return (
     <>
       <Carousel

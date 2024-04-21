@@ -39,8 +39,6 @@ export default function NotificationCard({ data }: user) {
   const path = usePathname() ?? ''
 
   const { data: notifications } = useSWR(`/api/notification`, fetcher)
-  const { data: notificationEvent } = useSWR(`/api/notificationEvent`, fetcher)
-  console.log('EEEEEE', notificationEvent)
 
   const { data: noi } = useSWR(`/api/countnoi`, fetcher)
 
@@ -98,6 +96,7 @@ export default function NotificationCard({ data }: user) {
                   <TabsTrigger value="Post"> โพสต์</TabsTrigger>
                   <TabsTrigger value="Blog"> บทความ</TabsTrigger>
                   <TabsTrigger value="event"> กิจกรรม</TabsTrigger>
+                  <TabsTrigger value="other"> อื่นๆ</TabsTrigger>
                 </TabsList>
                 <TabsContent value="Post">
                   {notifications.map((notification: any) => (
@@ -143,7 +142,7 @@ export default function NotificationCard({ data }: user) {
                   {notifications.map((notification: any) => (
                     <>
                       <div className="flex items-center justify-start ">
-                        {notification?.current === notification?.articleId && (
+                        {notification?.articleId && (
                           <>
                             <Link href={`/event/${notification?.articleId}`}>
                               <div className="grid">
@@ -182,7 +181,46 @@ export default function NotificationCard({ data }: user) {
                   {notifications.map((notification: any) => (
                     <>
                       <div className="flex items-center justify-start ">
-                        {notification?.current === notification?.eventId && (
+                        {notification?.eventId && (
+                          <>
+                            <Link href={`/event/${notification?.eventId}`}>
+                              <div className="grid">
+                                <p>{notification.body}</p>
+                                <p className="text-green-600">
+                                  {' '}
+                                  เมื่อ{' '}
+                                  {formatDistanceToNow(
+                                    new Date(notification?.createAt),
+                                    {
+                                      addSuffix: true,
+                                      locale: th,
+                                    }
+                                  )}{' '}
+                                </p>
+                              </div>
+                            </Link>
+
+                            <Delete
+                              className="
+                                relative left-4 overflow-visible 
+                                after:absolute after:inset-0 after:bg-background/40 
+                                after:transition after:!duration-500
+                                hover:-translate-y-2 hover:cursor-pointer hover:after:scale-150 hover:after:opacity-0
+                                "
+                              onClick={() => handleDelete(notification.id)}
+                              size={20}
+                            />
+                          </>
+                        )}
+                      </div>
+                    </>
+                  ))}
+                </TabsContent>
+                <TabsContent value="other">
+                  {notifications.map((notification: any) => (
+                    <>
+                      <div className="flex items-center justify-start ">
+                        {notification?.followsFollowingId && (
                           <>
                             <Link href={`/event/${notification?.eventId}`}>
                               <div className="grid">

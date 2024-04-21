@@ -45,14 +45,12 @@ export default async function CorosuleFollowPost() {
               className="w-full max-w-full "
             >
               <CarouselContent>
-                <CarouselItem
-                  key={index}
-                  className="pl-1 md:basis-1/2 lg:basis-1/3"
-                >
-                  {article.following.post.map((post) => (
-                    <>
-                      <h1>โพสต์จากผู้ใช้ที่คุณติดตาม</h1>
-
+                {article.follower.post.map((post) => (
+                  <>
+                    <CarouselItem
+                      key={index}
+                      className="pl-1 md:basis-1/2 lg:basis-1/3"
+                    >
                       <div className="p-1">
                         <Card className="max-w-96">
                           <CardBody className="flex items-center justify-center p-0 ">
@@ -69,6 +67,7 @@ export default async function CorosuleFollowPost() {
                             <div className="w-full ">
                               <div className="text-center">
                                 <Text as="b">{post.content}</Text>
+
                                 {/* <Text>{article.articleContent}</Text> */}
                               </div>
                               <div className=" mt-3 flex">
@@ -119,9 +118,9 @@ export default async function CorosuleFollowPost() {
                           </CardFooter>
                         </Card>
                       </div>
-                    </>
-                  ))}
-                </CarouselItem>
+                    </CarouselItem>
+                  </>
+                ))}
               </CarouselContent>
               <CarouselPrevious />
               <CarouselNext />

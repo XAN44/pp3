@@ -255,12 +255,12 @@ export async function fetchBlogByTagBusiness() {
   return fetchUser
 }
 
-export async function fetchBlogByTagFood() {
+export async function fetchBlogByTagResident() {
   const fetchUser = await db.article.findMany({
     where: {
       tag: {
         some: {
-          tag: 'อาหาร',
+          tag: 'ชุมชน',
         },
       },
     },

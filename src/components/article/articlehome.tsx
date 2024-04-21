@@ -17,6 +17,7 @@ import {
   ModalFooter,
   useDisclosure,
 } from '@nextui-org/react'
+import parse from 'html-react-parser'
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json())
 
@@ -312,9 +313,7 @@ export default function ArticleHome({
         <div className="mt-3">
           <Text as="b">{title}</Text>
         </div>
-        <div className="mt-1 p-3">
-          <Text>{articleContent}</Text>
-        </div>
+        <div className="mt-1 p-3">{parse(articleContent || '')}</div>
       </div>
     </div>
   )

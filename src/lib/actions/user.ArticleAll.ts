@@ -2,14 +2,14 @@ import { revalidatePath } from 'next/cache'
 import { db } from '../db'
 import { getCurrentUser } from '../session'
 
-export async function getEVENTALL() {
+export async function getArticleAllTarvel() {
   try {
     const user = await getCurrentUser()
     if (!user?.id) {
       return []
     }
 
-    const userJoin = await db.event.findMany({
+    const userJoin = await db.article.findMany({
       where: {
         tag: {
           some:{
@@ -28,14 +28,14 @@ export async function getEVENTALL() {
   } catch (error) {}
 }
 
-export async function getResidentAll() {
+export async function getArticleAllResident() {
   try {
     const user = await getCurrentUser()
     if (!user?.id) {
       return []
     }
 
-    const userJoin = await db.event.findMany({
+    const userJoin = await db.article.findMany({
       where: {
         tag: {
           some:{
@@ -54,14 +54,14 @@ export async function getResidentAll() {
   } catch (error) {}
 }
 
-export async function getBusinesAll() {
+export async function getArticleAllBusines() {
   try {
     const user = await getCurrentUser()
     if (!user?.id) {
       return []
     }
 
-    const userJoin = await db.event.findMany({
+    const userJoin = await db.article.findMany({
       where: {
         tag: {
           some:{

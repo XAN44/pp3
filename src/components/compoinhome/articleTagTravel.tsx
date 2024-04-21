@@ -28,6 +28,11 @@ import { fetchBlogByTagTravel } from '@/lib/actions/user.article.tag'
 export default async function ArticleTagTravel() {
   const otherInfo = await fetchBlogByTagTravel()
   const user = await getCurrentUser()
+
+  if (otherInfo.length === 0) {
+    return <Text color="red">ไม่มีข้อมูล</Text>
+  }
+
   return (
     <>
       <Carousel

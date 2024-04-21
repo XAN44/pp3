@@ -22,12 +22,16 @@ import VisitBtnArticleC from '../visit/visitArticleC'
 import { getCurrentUser } from '@/lib/session'
 import {
   fetchBlogByTagBusiness,
-  fetchBlogByTagFood,
+  fetchBlogByTagResident,
 } from '@/lib/actions/user.article.tag'
 
-export default async function ArticleTagFood() {
-  const otherInfo = await fetchBlogByTagFood()
+export default async function ArticleTagResident() {
+  const otherInfo = await fetchBlogByTagResident()
   const user = await getCurrentUser()
+
+  if (otherInfo.length === 0) {
+    return <Text color="red">ไม่มีข้อมูล</Text>
+  }
   return (
     <>
       <Carousel

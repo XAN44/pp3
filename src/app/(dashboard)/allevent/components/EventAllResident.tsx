@@ -18,13 +18,13 @@ type EventInitial = {
   data: UserInEvent[] | null
 }
 
-const EventAllTravel: React.FC<EventInitial> = ({ data }) => {
+const EventAllResident: React.FC<EventInitial> = ({ data }) => {
   const session = useSession()
 
   const [currentPage, setCurrentPage] = useState(1)
 
   const itemPerPage = 4
-  const totalPage = Math.ceil((data?.length || 0) / itemPerPage) || 0
+  const totalPage = Math.ceil((data?.length || 0) / itemPerPage) || 1
 
   const handlePageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber)
@@ -46,13 +46,7 @@ const EventAllTravel: React.FC<EventInitial> = ({ data }) => {
   }
 
   return (
-    <div className=" flex flex-col items-center justify-center">
-      {currentData?.length === 0 && (
-        <Text as="b" fontSize="inherit" color="red">
-          ไม่มีเนื้อหาเกี่ยวกับการท่องเที่ยว
-        </Text>
-      )}
-
+    <div className=" flex h-full max-h-full flex-col items-center justify-center">
       <div className="grid grid-cols-4 items-center justify-center">
         {currentData?.map((d, index) => (
           <div key={index} className="max-w-full ">
@@ -122,15 +116,17 @@ const EventAllTravel: React.FC<EventInitial> = ({ data }) => {
           </div>
         ))}
       </div>
-      <Pagination
-        showShadow
-        color="primary"
-        total={totalPage}
-        page={currentPage}
-        onChange={handlePageChange}
-      />
+      {currentData ? (
+        <Pagination
+          showShadow
+          color="primary"
+          total={totalPage}
+          page={currentPage}
+          onChange={handlePageChange}
+        />
+      ) : null}
     </div>
   )
 }
 
-export default EventAllTravel
+export default EventAllResident

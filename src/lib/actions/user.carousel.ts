@@ -91,10 +91,10 @@ export async function fetchInFollowInPage() {
     if (user.id) {
       const fetchcontent = await db.follows.findMany({
         where: {
-          followerId: user.id,
+          followingId: user.id,
         },
         include: {
-          following: {
+          follower: {
             select: {
               post: {
                 select: {

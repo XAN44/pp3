@@ -27,10 +27,10 @@ export default async function EventTagTravel() {
   const user = await getCurrentUser()
 
   if (otherInfo.length === 0) {
-    return <Text color='red'>ไม่มีข้อมูล</Text>;
-  } return (
+    return <Text color="red">ไม่มีข้อมูล</Text>
+  }
+  return (
     <>
-
       <Carousel
         opts={{
           align: 'start',
@@ -99,15 +99,11 @@ export default async function EventTagTravel() {
                               </span>
                             </Text>
                           </div>
-
                         </div>
                       </div>
                     </CardFooter>
                     <Link href={`/event/${event.id}`}>
-                      <VisitEventTag
-                        id={event.id}
-                        userId={user?.id || ''}
-                      />
+                      <VisitEventTag id={event.id} userId={user?.id || ''} />
                     </Link>
                   </Card>
                 </div>

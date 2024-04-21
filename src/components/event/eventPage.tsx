@@ -199,14 +199,7 @@ export default function EventHomePage({
               <Text>{author && author.bio}</Text>
             </div>
           </Flex>
-          {currentId?.id !== authorId && (
-            <Followbtn
-              key={authorId}
-              ProfileId={currentId?.id || ''}
-              isFollowing={authorId || ''}
-              checkFollow={isFollow}
-            />
-          )}
+
           <div className="mt-3 flex items-center justify-center space-x-10 text-center xl:grid xl:items-start xl:justify-start xl:space-x-0 xl:text-start">
             <div className="flex ">
               <div className="w-[83px]">

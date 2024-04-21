@@ -39,7 +39,7 @@ export async function EVENTPOST({
       throw new Error('กรุณาเข้าสู่ระบบ')
     }
 
-    await db.event.create({
+   const create = await db.event.create({
       data: {
         author: {
           connect: { id: authorId },
@@ -61,7 +61,39 @@ export async function EVENTPOST({
           },
         },
       },
+      select:{
+        id:true,
+        title:true,
+        author:{
+          include:{
+            followers:true,
+            following:true,
+          }
+        }
+      }
     })
+     if(create){
+      const findFollow = await db.follows.findMany({
+        where:{
+          followerId:create.author?.id
+        },
+        select:{
+          following:true
+        }
+      })      
+      if(!findFollow){return }
+      if(findFollow){
+       for(const follow of findFollow){
+        await db.notification.create({
+          data:{
+            body:`ผู้ใช้ ${create.author?.name} ที่คุณติดตามได้สร้างกิจกรรม ${create.title}`,
+            eventId:create.id,
+            userId:follow.following.id
+          }
+        })
+      }
+      }
+    }
 
     revalidatePath(path)
   } catch (error: any) {
