@@ -8,11 +8,21 @@ import EventTagFamily from '@/components/compoinhome/eventTagFamily'
 import { Text } from '@chakra-ui/react'
 import { Image } from '@nextui-org/react'
 import React from 'react'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { getEventHasJoin } from '@/lib/actions/user.join.event'
+import { usePathname } from 'next/navigation'
+import Urevent from './components/urEvent'
+import EventTagResident from '@/components/compoinhome/eventTagResident'
+import EventAllTarvel from './components/EventAllTarvel'
+import { getEVENTALL } from '@/lib/actions/user.EventALL'
 
-export default function page() {
+export default async function Page() {
+  const HasEvent = await getEventHasJoin()
+  const eventAll = await getEVENTALL()
+
   return (
     <>
-      <div className="h-full w-full items-center justify-center text-center ">
+      <div className="h-full w-full max-w-full items-center justify-center text-center">
         <Text as="b">คุณสามารถเลือกหาบทความได้ที่นี่</Text>
         <Text>เนื้อหาใหม่ของเราพร้อมแล้ว! ไปอ่านกันเลย</Text>
         <div className="mt-10 flex justify-center gap-5 space-x-4">
@@ -24,35 +34,61 @@ export default function page() {
             เราเข้าใจและรู้ว่าการเที่ยวนั้นเป็นหนึ่งในความสุขที่หลายคนกำลังมองหาอยู่
             และคำถามที่ทุกคนตั้งใจถามกันจริงๆ คือ &quot; ต้องไปที่ไหนดี?
             อยากเที่ยวให้สนุก &quot;
-            <div className=" text-end">
-              <Text as="b">ดูทั้งหมด</Text>
+          </div>
+        </div>
+
+        <Tabs defaultValue="All" className='mt-14'>
+          <TabsList className="">
+            <TabsTrigger value="All">ทั้งหมด</TabsTrigger>
+            <TabsTrigger value="Tarvel">ท่องเที่ยว</TabsTrigger>
+            <TabsTrigger value="urEvent">กิจกรรมของคุณ</TabsTrigger>
+
+          </TabsList>
+          <TabsContent value="All">
+            <div className="mx-auto mt-6 w-[690px] items-center justify-center">
+              <div className="text-start">
+                <Text as="b">ท่องเที่ยว</Text>
+              </div>
+              <EventTagTravel />
+              <div className="divider" />
             </div>
-          </div>
-        </div>
-        <div className=" mx-auto mt-6 w-[690px]  items-center justify-center">
-          <div className="text-start">
-            <Text as="b">ท่องเที่ยว</Text>
-          </div>
-          <EventTagTravel />
-        </div>
-        <div className=" mx-auto mt-6 w-[690px]  items-center justify-center">
-          <div className="text-start">
-            <Text as="b">ครอบครัว</Text>
-          </div>
-          <EventTagFamily />
-        </div>
-        <div className=" mx-auto mt-6 w-[690px]  items-center justify-center">
-          <div className="text-start">
-            <Text as="b">ธุรกิจ</Text>
-          </div>
-          <EventTagBusiness />
-        </div>
-        <div className=" mx-auto mt-6 w-[690px]  items-center justify-center">
-          <div className="text-start">
-            <Text as="b">อาหาร</Text>
-          </div>
-          <ArticleTagFood />
-        </div>
+
+            <div className="mx-auto mt-6 w-[690px] items-center justify-center ">
+              <div className="text-start">
+                <Text as="b">ชุมชน</Text>
+              </div>
+              <EventTagResident />
+              <div className="divider" />
+            </div>
+
+            <div className="mx-auto mt-6 w-[690px] items-center justify-center">
+              <div className="text-start">
+                <Text as="b">ครอบครัว</Text>
+              </div>
+              <EventTagFamily />
+              <div className="divider" />
+            </div>
+
+            <div className="mx-auto mt-6 w-[690px] items-center justify-center">
+              <div className="text-start">
+                <Text as="b">ธุรกิจ</Text>
+              </div>
+              <EventTagBusiness />
+              <div className="divider" />
+
+            </div>
+
+
+          </TabsContent>
+          <TabsContent value='Tarvel'>
+            <div className="w-full flex items-center justify-center">
+              <EventAllTarvel data={eventAll || []} />
+            </div>
+          </TabsContent>
+          <TabsContent value="urEvent">
+            <Urevent data={HasEvent || null} />
+          </TabsContent>
+        </Tabs>
       </div>
     </>
   )

@@ -59,9 +59,8 @@ import FollowinHomePage from '@/components/compoinhome/followinhomepage'
 import { Metadata } from 'next'
 import ArticleFormmany from '@/components/article/articleFormMany'
 
-
 export const metadata: Metadata = {
-  title: 'Home'
+  title: 'Home',
 }
 
 export default async function Page() {
@@ -85,9 +84,7 @@ export default async function Page() {
 
   return (
     <>
-      <div
-        className="mt-[250px] w-full xl:w-full "
-      >
+      <div className="mt-[250px] w-full xl:w-full ">
         <HomePageHeader />
       </div>
       <div className="  mb-[590px] flex h-32 flex-col gap-0 xl:w-full xl:flex-row ">
@@ -150,7 +147,6 @@ export default async function Page() {
                   <TabsTrigger value="follow"> ติดตาม</TabsTrigger>
                 </TabsList>
 
-
                 <TabsContent value="article">
                   <div className="mb-6">
                     <div className="mb-3 mt-5 place-items-center p-3 text-center ">
@@ -161,16 +157,11 @@ export default async function Page() {
                             accountId={Account.id}
                             authUserId={user?.id || ''}
                           />
-
                         </>
                       ))}
-
-
                     </div>
                     <Articleinhomepage />
                   </div>
-
-
                 </TabsContent>
                 <TabsContent value="event">
                   <div className="mb-6">
@@ -184,11 +175,9 @@ export default async function Page() {
                           />
                         </>
                       ))}
-
                     </div>
                     <EventInhomepage />
                   </div>
-
                 </TabsContent>
 
                 <TabsContent value="follow">
@@ -278,13 +267,9 @@ export default async function Page() {
                       key={Account.id}
                       accountId={Account.id}
                       authUserId={user?.id || ''}
-                      ArticleImage={''}
-                      content={''}
-                      tag={''}
                     />
                   </>
                 ))}
-
 
                 {otherPost.map(async (post: any, index: any) => (
                   <>
@@ -294,15 +279,13 @@ export default async function Page() {
                           key={post?.id}
                           id={post?.id}
                           content={post.content}
-                          ImagePost={post?.ImagePost}
+                          ImagePost={[post?.ImagePost]}
                           tag={post.tag}
                           currentId={user?.id || ''}
                           authorId={post.authorId}
                           author={post.author}
                           comments={post.comments}
-                          createAt={new Date(
-                            post.createdAt
-                          ).toLocaleString()}
+                          createAt={new Date(post.createdAt).toLocaleString()}
                         />
                       </div>
                       <div className="left-3 mt-7 ">
@@ -313,39 +296,37 @@ export default async function Page() {
                         />
                       </div>
                       <div className="mb-10 mt-10">
-                        {post.comments
-                          .slice(0, 4)
-                          .map((comments: any) => (
-                            <>
-                              <CommentPostHome
-                                key={comments.id}
-                                id={comments.id}
-                                comments={comments?.text}
-                                postId={comments.articleId}
-                                current={
-                                  user || {
-                                    id: '',
-                                    name: '',
-                                    image: '',
-                                  }
+                        {post.comments.slice(0, 4).map((comments: any) => (
+                          <>
+                            <CommentPostHome
+                              key={comments.id}
+                              id={comments.id}
+                              comments={comments?.text}
+                              postId={comments.articleId}
+                              current={
+                                user || {
+                                  id: '',
+                                  name: '',
+                                  image: '',
                                 }
-                                authorId={comments.authorId}
-                                createAt={new Date(
-                                  comments.createdAt
-                                ).toLocaleString()}
-                                author={
-                                  comments.author || {
-                                    id: '',
-                                    name: '',
-                                    image: '',
-                                  }
+                              }
+                              authorId={comments.authorId}
+                              createAt={new Date(
+                                comments.createdAt
+                              ).toLocaleString()}
+                              author={
+                                comments.author || {
+                                  id: '',
+                                  name: '',
+                                  image: '',
                                 }
-                                reply={comments.Reply}
-                                isComment
-                                isReply
-                              />
-                            </>
-                          ))}
+                              }
+                              reply={comments.Reply}
+                              isComment
+                              isReply
+                            />
+                          </>
+                        ))}
                         <Link href={`/post/${post.id}`}>
                           <VisitBtnPOSTAll
                             id={post.id}

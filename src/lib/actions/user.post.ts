@@ -9,7 +9,7 @@ interface userPost {
   path: string
   ImagePost: string
   content: string
-  tag:string
+  tag: string
 }
 
 export async function userPost({
@@ -28,11 +28,11 @@ export async function userPost({
         authorId: authorId,
         content,
         ImagePost,
-        tag:{
-          create:{
-            tag:tag
-          }
-        }
+        tag: {
+          create: {
+            tag: tag,
+          },
+        },
       },
     })
     revalidatePath(path)
@@ -234,7 +234,6 @@ export async function fetchUserProfileByID(id: string) {
       },
       // TODO: POST
       post: {
-   
         select: {
           id: true,
           content: true,
@@ -261,16 +260,16 @@ export async function fetchUserProfileByID(id: string) {
           // TODO:COMMENT
           comments: {
             select: {
-              Reply:{
-                select:{
-                  author:{
-                    select:{
-                      id:true,
-                      name:true,
-                      image:true
-                    }
-                  }
-                }
+              Reply: {
+                select: {
+                  author: {
+                    select: {
+                      id: true,
+                      name: true,
+                      image: true,
+                    },
+                  },
+                },
               },
               author: {
                 select: {
@@ -281,7 +280,6 @@ export async function fetchUserProfileByID(id: string) {
               },
             },
           },
-
         },
       },
     },

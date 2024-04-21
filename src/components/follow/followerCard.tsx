@@ -1,10 +1,10 @@
-"use client";
+'use client'
 
 interface FollowerCardProps {
   accountId: {
-    follower: number;
-    following: number;
-  };
+    follower: number
+    following: number
+  }
 }
 
 function FollowerCard({ accountId }: FollowerCardProps) {
@@ -17,7 +17,7 @@ function FollowerCard({ accountId }: FollowerCardProps) {
         <p> Following {accountId.following}</p>
       </div>
     </div>
-  );
+  )
 }
 
-export default FollowerCard;
+export default FollowerCard

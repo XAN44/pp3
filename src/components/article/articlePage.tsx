@@ -6,17 +6,11 @@ import Link from 'next/link'
 import { Text } from '@chakra-ui/react'
 import { Heart, Trash2 } from 'lucide-react'
 import useSWR from 'swr'
+import parse from 'html-react-parser'
+
 import { useEffect, useState } from 'react'
-import VisitBtnArticleC from '../visit/visitArticleC'
 import Followbtn from '../follow/followbtn'
-import { Card, CardBody, CardFooter } from '@nextui-org/react'
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from '@/components/ui/carousel'
+
 import {
   Modal,
   ModalContent,
@@ -128,15 +122,15 @@ export default function ArticleHomePage({
     }
   }
 
-  const [ follow, setFollow ] = useState(false)
-  const [ liked, setLiked ] = useState(false)
+  const [follow, setFollow] = useState(false)
+  const [liked, setLiked] = useState(false)
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
 
   useEffect(() => {
     if (Follow && Follow.Followed) {
       setFollow(Follow.Followed)
     }
-  }, [ Follow ])
+  }, [Follow])
 
   const handleFollow = async () => {
     try {
@@ -161,7 +155,7 @@ export default function ArticleHomePage({
     if (Like && Like.liked) {
       setLiked(Like.liked)
     }
-  }, [ Like ])
+  }, [Like])
 
   const handleLike = async () => {
     try {
@@ -309,21 +303,18 @@ export default function ArticleHomePage({
                 </>
               )}
             </div>
-            <Text as="small">
-              เขียนวันที่ {createAt}
-
-            </Text>
+            <Text as="small">เขียนวันที่ {createAt}</Text>
           </div>
         </div>
       </div>
 
       {/* Content */}
       <div className="mt-6 grid w-full  rounded-lg p-3 shadow-xl ring-1 ring-gray-400">
-        <div className="mt-5 text-center w-full">
+        <div className="mt-5 w-full text-center">
           <Text as="b">{title}</Text>
         </div>
-        <div className="mt-3 flex flex-col overflow-y-auto max-h-[400px]">
-          <div dangerouslySetInnerHTML={{ __html: articleContent || '' }} />
+        <div className="mt-3 flex max-h-[400px] flex-col overflow-y-auto">
+          {parse(articleContent || '')}
         </div>
         <div className="mt-3 flex w-full items-center justify-center p-0">
           {ArticleImage && (

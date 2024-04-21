@@ -42,7 +42,6 @@ const Page = async ({ params }: { params: { id: string } }) => {
   if (!userInfo) redirect('/profile')
 
   const ArticleBy = await FetchEventByID(params.id)
-  const commentC = ArticleBy.comment.map((c) => c.id)
   const checkFollower = await CheckFollow(params.id, user.id)
   const userfollow = await getTotalFollowers(params.id)
   const userfollowing = await getTotalFollowing(params.id)

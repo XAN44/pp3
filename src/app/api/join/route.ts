@@ -60,11 +60,10 @@ export async function POST(request: Request) {
           },
         })
 
-    
         if (joinEvent) {
           await db.notification.create({
             data: {
-              current:joinEvent.eventID,
+              current: joinEvent.eventID,
               userId: findEvent.authorId,
               eventId: joinEvent.eventID,
               body: `ผู้ใช้ ${user.name} ได้เข้าร่วมกิจกรรม ${findEvent.title} ของคุณ`,

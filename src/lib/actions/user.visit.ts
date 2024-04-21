@@ -79,12 +79,7 @@ export async function VisitArticle(
   }
 }
 
-
-export async function VisitPost(
-  userId: string,
-  pageId: string,
-  path: string
-) {
+export async function VisitPost(userId: string, pageId: string, path: string) {
   try {
     const visit = await db.visit.upsert({
       where: {
@@ -106,8 +101,6 @@ export async function VisitPost(
     throw new Error('Can not visit')
   }
 }
-
-
 
 export async function TotalVisit(pageId: string) {
   try {

@@ -29,10 +29,19 @@ import {
 } from '@/lib/actions/user.article.tag'
 import { fetchEventByTagFamily } from '@/lib/actions/user.event.tag'
 import VisitEvent from '../visit/visitEvent'
+import VisitEventTag from '../visit/visitTag/visiteventTag'
+import { Event } from '@prisma/client'
+
+interface Props {
+  data: Event[]
+}
 
 export default async function EventTagFamily() {
   const otherInfo = await fetchEventByTagFamily()
   const user = await getCurrentUser()
+  if (otherInfo.length === 0) {
+    return <Text color='red'>ไม่มีข้อมูล</Text>;
+  }
   return (
     <>
       <Carousel
@@ -46,7 +55,7 @@ export default async function EventTagFamily() {
             <>
               <CarouselItem
                 key={index}
-                className="pl-1 md:basis-1/2 lg:basis-1/3"
+                className="pl-3 md:basis-1/2 lg:basis-1/3"
               >
                 <div className="p-1">
                   <Card className="max-w-96">
@@ -102,17 +111,24 @@ export default async function EventTagFamily() {
                               </span>
                             </Text>
                           </div>
-                          <div className="">
-                            <Link href={`/event/${event.id}`}>
-                              <VisitEvent
-                                id={event.id}
-                                userId={user?.id || ''}
-                              />
-                            </Link>
-                          </div>
+
+                        </div>
+                        <div className="flex">
+                          <Text as="b" fontSize="small">
+                            จำนวนที่เปิดรับผู้เข้าร่วม {event.eventparticipants}
+                          </Text>
+                          <Text as="code" color="gray" fontSize="small">
+                            กดเยี่ยมชมเพื่ออ่านเพิ่มเติม
+                          </Text>
                         </div>
                       </div>
                     </CardFooter>
+                    <Link href={`/event/${event.id}`}>
+                      <VisitEventTag
+                        id={event.id}
+                        userId={user?.id || ''}
+                      />
+                    </Link>
                   </Card>
                 </div>
               </CarouselItem>

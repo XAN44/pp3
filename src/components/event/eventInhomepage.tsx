@@ -124,7 +124,6 @@ export default async function EventInhomepage() {
       <div className="flex w-full flex-col">
         <div className="items-end justify-end text-end">
           <Link href="/allevent">ดูทั้งหมด</Link>
-
         </div>
         <div className="divider divider-neutral "></div>
       </div>

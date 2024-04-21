@@ -1,26 +1,24 @@
-import { db } from "@/lib/db"
-import { getCurrentUser } from "@/lib/session";
-import { NextResponse } from "next/server"
+import { db } from '@/lib/db'
+import { getCurrentUser } from '@/lib/session'
+import { NextResponse } from 'next/server'
 
-
-
-export async function DELETE(request:Request) {
+export async function DELETE(request: Request) {
   try {
-    const {id} = await request.json();
+    const { id } = await request.json()
     const user = await getCurrentUser()
-   
+
     const check = await db.comment.findFirst({
       where: {
         id,
       },
       select: {
-        id:true,
-        Article:{
-          select:{
-          authorId:true
-          }
+        id: true,
+        Article: {
+          select: {
+            authorId: true,
+          },
         },
-        author: {   
+        author: {
           select: {
             id: true,
           },
@@ -34,11 +32,11 @@ export async function DELETE(request:Request) {
         },
       })
 
-      if(deleteArticle && user?.id !== check?.author?.id){
+      if (deleteArticle && user?.id !== check?.author?.id) {
         await db.notification.delete({
-          where:{
-            id:check?.id
-          }
+          where: {
+            id: check?.id,
+          },
         })
       }
     }
@@ -48,5 +46,3 @@ export async function DELETE(request:Request) {
     throw error
   }
 }
-
- 

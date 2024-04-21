@@ -1,9 +1,9 @@
 type Props = {
-  article?: boolean;
-  content: boolean;
-  activity: boolean;
-  product: boolean;
-};
+  article?: boolean
+  content: boolean
+  activity: boolean
+  product: boolean
+}
 
 export default function tabmenuinProfile({
   article,
@@ -15,5 +15,5 @@ export default function tabmenuinProfile({
     <>
       <h1></h1>
     </>
-  );
+  )
 }

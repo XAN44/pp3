@@ -1,48 +1,46 @@
-"use client"
+'use client'
 
-import { FieldValues, UseFormRegister } from "react-hook-form"
-import { HiPaperAirplane } from "react-icons/hi2"
+import { FieldValues, UseFormRegister } from 'react-hook-form'
+import { HiPaperAirplane } from 'react-icons/hi2'
 
 interface MessageInputProps {
-    placeholder?: string
-    id: string
-    type?: string
-    required?: boolean
-    register: UseFormRegister<FieldValues>
-    errors: FieldValues
+  placeholder?: string
+  id: string
+  type?: string
+  required?: boolean
+  register: UseFormRegister<FieldValues>
+  errors: FieldValues
 }
 
 const MessageInput: React.FC<MessageInputProps> = ({
-    placeholder,
-    id,
-    type,
-    required,
-    register,
-    errors
-
+  placeholder,
+  id,
+  type,
+  required,
+  register,
+  errors,
 }) => {
-
-    return (
-        <div className="relative w-full">
-            <input
-                id={id}
-                type={type}
-                autoComplete={id}
-                {...register(id, { required })}
-                placeholder={placeholder}
-                className="
-                text-black
-                font-light
-                py-2
-                px-4
-                bg-neutral-100
+  return (
+    <div className="relative w-full">
+      <input
+        id={id}
+        type={type}
+        autoComplete={id}
+        {...register(id, { required })}
+        placeholder={placeholder}
+        className="
                 w-full
                 rounded-full
+                bg-neutral-100
+                px-4
+                py-2
+                font-light
+                text-black
                 focus:outline-none
                 "
-            />
-
-        </div>)
+      />
+    </div>
+  )
 }
 
-export default MessageInput;
+export default MessageInput

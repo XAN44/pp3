@@ -1,18 +1,18 @@
-import { NextAuthOptions } from "next-auth";
-import CredentialsProvider from "next-auth/providers/credentials";
-import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import { db } from "./db";
-import { compare } from "bcrypt";
-import GoogleProvider from "next-auth/providers/google";
+import { NextAuthOptions } from 'next-auth'
+import CredentialsProvider from 'next-auth/providers/credentials'
+import { PrismaAdapter } from '@next-auth/prisma-adapter'
+import { db } from './db'
+import { compare } from 'bcrypt'
+import GoogleProvider from 'next-auth/providers/google'
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(db),
   secret: process.env.NEXTAUTH_SECRET,
   session: {
-    strategy: "jwt",
+    strategy: 'jwt',
   },
   pages: {
-    signIn: "/sign-in",
+    signIn: '/sign-in',
   },
   providers: [
     GoogleProvider({
@@ -20,14 +20,14 @@ export const authOptions: NextAuthOptions = {
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     }),
     CredentialsProvider({
-      name: "Credentials",
+      name: 'Credentials',
       credentials: {
-        email: { label: "Email", type: "email", placeholder: "xa@gmail.com  " },
-        password: { label: "Password", type: "password" },
+        email: { label: 'Email', type: 'email', placeholder: 'xa@gmail.com  ' },
+        password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) {
-          return null;
+          return null
         }
         const existingUser = await db.user.findUnique({
           where: { email: credentials.email },
@@ -40,22 +40,22 @@ export const authOptions: NextAuthOptions = {
             bio: true,
             nickname: true,
           },
-        });
+        })
         if (!existingUser) {
-          return null;
+          return null
         }
         if (existingUser.password) {
           const passwordMatch = await compare(
             credentials.password,
-            existingUser.password,
-          );
+            existingUser.password
+          )
           if (!passwordMatch) {
-            return null;
+            return null
           }
         }
-        const userProfileImage = existingUser.image;
-        const userBio = existingUser.bio;
-        const userNickname = existingUser.nickname;
+        const userProfileImage = existingUser.image
+        const userBio = existingUser.bio
+        const userNickname = existingUser.nickname
 
         return {
           id: `${existingUser.id}`,
@@ -64,26 +64,26 @@ export const authOptions: NextAuthOptions = {
           image: userProfileImage,
           bio: userBio,
           nickname: userNickname,
-        };
+        }
       },
     }),
   ],
 
   callbacks: {
     async jwt({ token, user, session, trigger }) {
-      if (trigger === "update" && session?.bio) {
-        token.bio = session.bio;
+      if (trigger === 'update' && session?.bio) {
+        token.bio = session.bio
       }
 
-      if (trigger === "update" && session?.image) {
-        token.picture = session.image;
+      if (trigger === 'update' && session?.image) {
+        token.picture = session.image
       }
 
-      if (trigger === "update" && session?.name) {
-        token.name = session.name;
+      if (trigger === 'update' && session?.name) {
+        token.name = session.name
       }
-      if (trigger === "update" && session?.nickname) {
-        token.nickname = session.nickname;
+      if (trigger === 'update' && session?.nickname) {
+        token.nickname = session.nickname
       }
 
       if (user) {
@@ -94,10 +94,10 @@ export const authOptions: NextAuthOptions = {
           image: user.image,
           bio: user.bio,
           nickname: user.nickname,
-        };
+        }
       }
 
-      return token;
+      return token
     },
     async session({ session, token, user }) {
       return {
@@ -110,7 +110,7 @@ export const authOptions: NextAuthOptions = {
           bio: token.bio,
           nickname: token.nickname,
         },
-      };
+      }
     },
   },
-};
+}

@@ -12,15 +12,15 @@ import { Providers } from './providers'
 import Navbar from '@/components/Navbar'
 import Navbars from '@/components/Navbar'
 
-const inter = Inter({ subsets: [ 'latin' ] })
+const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: {
     absolute: '',
     default: 'Agric ',
-    template: '%s | Agric'
+    template: '%s | Agric',
   },
-  description: 'website for community'
+  description: 'website for community',
 }
 
 export default async function RootLayout({
@@ -31,14 +31,18 @@ export default async function RootLayout({
   const user = await getCurrentUser()
 
   return (
-    <html lang="en" suppressHydrationWarning={true} className='scroll-smooth focus:scroll-auto'>
+    <html
+      lang="en"
+      suppressHydrationWarning={true}
+      className="scroll-smooth focus:scroll-auto"
+    >
       <body className="relative">
         <Theme>
           <Provider>
             <Providers>
               <ChakraProvi>
                 <Navbars userId={user?.id || ''} />
-                <main className="w-full flex h-screen flex-col items-center justify-center">
+                <main className="flex h-screen w-full flex-col items-center justify-center">
                   {children}
                   <Toaster />
                 </main>

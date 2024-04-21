@@ -98,100 +98,101 @@ export async function DELETENOTI(id: string, path: string) {
   }
 }
 
-export async function getNotificationLike (id:string){
+export async function getNotificationLike(id: string) {
   try {
     await db.notification.findFirst({
-      where:{
-        id
+      where: {
+        id,
       },
-      select:{
-        likeId:true
-      }
+      select: {
+        likeId: true,
+      },
     })
-  } catch (error) {
-    
-  }
+  } catch (error) {}
 }
 
 export async function getNOITI() {
   try {
     const user = await getCurrentUser()
     const getnoti = await db.notification.findMany({
-      where:{
-        userId: user?.id
+      where: {
+        userId: user?.id,
       },
-      select:{
-        body:true,
-        user:{
-          select:{
-            id:true,
-            name:true,
-            image:true,
-            
-          }
-        }
-      }
+      select: {
+        body: true,
+        user: {
+          select: {
+            id: true,
+            name: true,
+            image: true,
+          },
+        },
+      },
     })
     return getnoti
-  } catch (error) {
-    
-  }
+  } catch (error) {}
 }
 
-export async function creatNotificationForLikeArticle(userId:string , body:string, articleId:string,likeId:string) {
+export async function creatNotificationForLikeArticle(
+  userId: string,
+  body: string,
+  articleId: string,
+  likeId: string
+) {
   try {
     await db.notification.create({
-      data:{
+      data: {
         userId,
         body,
         articleId,
-        likeId
-      }
+        likeId,
+      },
     })
-  } catch (error) {
-    
-  }
+  } catch (error) {}
 }
 
-
-export async function createNotificatipnForJoin(userId:string ,body:string,eventId:string) {
+export async function createNotificatipnForJoin(
+  userId: string,
+  body: string,
+  eventId: string
+) {
   try {
-   if (!userId || !eventId) {
+    if (!userId || !eventId) {
       throw new Error('User ID or Event ID is missing or null')
     }
     await db.notification.create({
-      data:{
+      data: {
         userId,
         body,
-        eventId
-      }
+        eventId,
+      },
     })
-    
   } catch (error) {
     throw error
-    
   }
 }
 
-
-export async function createNotificatipnForCommentEvent(id:string,userId:string ,body:string,eventId:string,commentId:string) {
+export async function createNotificatipnForCommentEvent(
+  id: string,
+  userId: string,
+  body: string,
+  eventId: string,
+  commentId: string
+) {
   try {
-   if (!userId || !eventId) {
+    if (!userId || !eventId) {
       throw new Error('User ID or Event ID is missing or null')
     }
     await db.notification.create({
-      data:{
+      data: {
         id,
         userId,
         body,
         eventId,
-        commentId
-      }
+        commentId,
+      },
     })
-    
   } catch (error) {
     throw error
-    
   }
 }
-

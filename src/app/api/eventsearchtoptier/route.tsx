@@ -25,6 +25,9 @@ export async function GET(request: Request) {
     })
     return NextResponse.json(topArticle)
   } catch (error) {
-  return NextResponse.json({ message: 'มีข้อผิดพลาดบางอย่าง' }, { status: 500 })
+    return NextResponse.json(
+      { message: 'มีข้อผิดพลาดบางอย่าง' },
+      { status: 500 }
+    )
   }
 }

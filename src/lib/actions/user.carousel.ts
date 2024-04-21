@@ -80,55 +80,51 @@ export async function fetchInBlogPage() {
   return fetchUser
 }
 
-
-
 export async function fetchInFollowInPage() {
   const user = await getCurrentUser()
 
   try {
-    if(!user?.id){  
+    if (!user?.id) {
       return null
     }
 
-
-    if(user.id){
+    if (user.id) {
       const fetchcontent = await db.follows.findMany({
-        where:{
-          followerId:user.id
+        where: {
+          followerId: user.id,
         },
-        include:{
-          following:{
-            select:{
-              post:{
-                select:{
+        include: {
+          following: {
+            select: {
+              post: {
+                select: {
                   id: true,
-                  content:true,                       
-                  ImagePost:true,
-                  author:true,
-                  tag:true,
-                  Visit:{
-                    select:{
-                      count:true
-                    }
+                  content: true,
+                  ImagePost: true,
+                  author: true,
+                  tag: true,
+                  Visit: {
+                    select: {
+                      count: true,
+                    },
                   },
-                  comments:{
-                    select:{
-                      id:true,
-                      text:true,
-                      author:true
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
+                  comments: {
+                    select: {
+                      id: true,
+                      text: true,
+                      author: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
       })
       return fetchcontent
     }
-
   } catch (error) {
-    throw error    
+    throw error
   }
 }
 
@@ -209,7 +205,6 @@ export async function fetchEventInBlogPage() {
   })
   return fetchUser
 }
-
 
 export async function fetchBlogByTag() {
   const fetchUser = await db.article.findMany({
@@ -306,7 +301,7 @@ export async function geteventregister(eventID: string) {
 }
 
 export async function fetchPostcarosule() {
-   const fetchUser = await db.post.findMany({
+  const fetchUser = await db.post.findMany({
     select: {
       id: true,
       ImagePost: true,
@@ -380,12 +375,10 @@ export async function fetchPostcarosule() {
   return fetchUser
 }
 
-
-
 export async function fetchPostcarosuleByID(id: string) {
-   const fetchUser = await db.post.findMany({
-    where:{
-      authorId:id
+  const fetchUser = await db.post.findMany({
+    where: {
+      authorId: id,
     },
     select: {
       id: true,

@@ -79,11 +79,11 @@ export default function ArticleinHome({
             className="h-[140px] w-full rounded-xl object-cover"
           />
         </CardBody>
-        <CardFooter className="text-small flex place-items-center items-center justify-between px-3">
+        <CardFooter className="flex place-items-center items-center justify-between px-3 text-small">
           <aside className="w-full ">
             <div className="w-40">
               <b className="">{title}</b>
-              <p className="text-default-500 text-start">{articleContent}</p>
+              <p className="text-start text-default-500">{articleContent}</p>
             </div>
           </aside>
           <div className=" grid place-items-center items-center justify-center">

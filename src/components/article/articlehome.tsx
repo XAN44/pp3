@@ -87,14 +87,14 @@ export default function ArticleHome({
     fetcher
   )
 
-  const [ follow, setFollow ] = useState(false)
-  const [ liked, setLiked ] = useState(false)
+  const [follow, setFollow] = useState(false)
+  const [liked, setLiked] = useState(false)
 
   useEffect(() => {
     if (Follow && Follow.Followed) {
       setFollow(Follow.Followed)
     }
-  }, [ Follow ])
+  }, [Follow])
 
   const handleFollow = async () => {
     try {
@@ -137,7 +137,7 @@ export default function ArticleHome({
     if (Like && Like.liked) {
       setLiked(Like.liked)
     }
-  }, [ Like ])
+  }, [Like])
 
   const handleLike = async () => {
     try {
