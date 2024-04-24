@@ -17,6 +17,10 @@ import {
   ModalFooter,
   useDisclosure,
 } from '@nextui-org/react'
+import { HiEllipsisHorizontal, HiEllipsisVertical } from 'react-icons/hi2'
+import PostDelete from './components/PostDelete'
+import PostOption from './components/PostOption'
+import Link from 'next/link'
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json())
 
@@ -113,6 +117,8 @@ export default function Posthome({
     }
   }
 
+  const [openDelete, setOpenDelete] = useState(false)
+
   const handleDelete = async () => {
     try {
       const response = await fetch('/api/deletepost', {
@@ -159,7 +165,7 @@ export default function Posthome({
 
   return (
     <div className="h-full w-full  ">
-      <div className="flex">
+      <div className="flex justify-between">
         <Avatar className="h-14 w-14">
           {author?.image && (
             <AvatarImage
@@ -170,8 +176,16 @@ export default function Posthome({
             />
           )}
         </Avatar>
-        <div className=" ml-3 mt-3 grid w-full justify-start text-start">
-          <div className="flex items-center justify-center ">
+        <div
+          className=" 
+          ml-3 
+          mt-3 
+          grid 
+          w-full
+          justify-between 
+          text-start"
+        >
+          <div className="flex w-full max-w-full  flex-grow  items-center justify-center ">
             <Text as="b"> {author && author.name}</Text>
             <div className="divider divider-neutral divider-horizontal mt-3 h-5 w-2 items-center justify-center" />
             <div className="mb-2 mr-3">
@@ -179,90 +193,39 @@ export default function Posthome({
                 <div className="badge badge-neutral mt-3">โพสต์ของคุณ</div>
               )}
             </div>
-            <div className=" flex place-items-end items-center justify-end ">
-              <div className="">
-                {currentId !== author?.id && (
-                  <>
-                    {Follow && (
-                      <Button onClick={handleFollow}>
-                        {follow ? 'Unfollow' : 'Follow'}
-                      </Button>
-                    )}
-                  </>
-                )}
-              </div>
-              <div className="ml-60">
-                {currentId === author?.id && (
-                  <>
-                    <Button
-                      isIconOnly
-                      size="sm"
-                      aria-label="delete"
-                      variant="light"
-                      color="danger"
-                      className="
-              relative left-4 overflow-visible 
-              after:absolute after:inset-0 after:bg-background/40 
-              after:transition
-              after:!duration-500 hover:-translate-y-2 hover:after:scale-150 hover:after:opacity-0
-              "
-                      onPress={onOpen}
-                    >
-                      <Trash2 />
-                    </Button>
-                    <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
-                      <ModalContent>
-                        {(onClose) => (
-                          <>
-                            <ModalHeader className="flex flex-col gap-1">
-                              คุณต้องการที่จะลบบทความนี้ ?
-                            </ModalHeader>
-                            <ModalBody>
-                              <p>
-                                การลบจะทำให้หายไปจากไทม์ไลน์ของคุณและผู้อื่นจะไม่สามารถอ่านบทความนี้ได้อีก
-                              </p>
-                            </ModalBody>
-                            <ModalFooter>
-                              <Button
-                                color="danger"
-                                variant="light"
-                                onPress={handleDelete}
-                              >
-                                ลบ
-                              </Button>
-                              <Button color="primary" onPress={onClose}>
-                                ยกเลิก
-                              </Button>
-                            </ModalFooter>
-                          </>
-                        )}
-                      </ModalContent>
-                    </Modal>
-                  </>
-                )}
-              </div>
+            <div className="  items-center justify-center ">
+              <Link href={`/profile/${author?.id}`}>
+                <Text
+                  as="b"
+                  color="blue"
+                  cursor="pointer"
+                  className="hover:underline"
+                >
+                  เยี่ยมชมโปรไฟล์
+                </Text>
+              </Link>
+            </div>
+            <div className="ml-44 flex items-center justify-center ">
+              {currentId === author?.id && (
+                <div className="max-w-full">
+                  <PostOption id={id} content={content || ''} />
+                </div>
+              )}
             </div>
           </div>
           <div className="">
-            <Text>{createAt}</Text>
+            <Text> {createAt}</Text>
           </div>
         </div>
       </div>
       <div className="mt-4 grid place-items-center items-center justify-center ">
         <div className="mt-4 grid place-items-center items-center justify-center">
-          {/* {ImagePost && Array.isArray(ImagePost) ? (
-                        ImagePost.map((url, index) => (
-                            <Image key={index} alt={`Blog Image ${index + 1}`} src={url} />
-                        ))
-                    ) : (
-                        <Image alt="Blog Image" src={ImagePost || ''} />
-                    )} */}
           {ImagePost.map((image, i) => (
             <div key={i}>
               <Image alt={`Blog Image ${i + 1}`} src={image} />
             </div>
           ))}
-        </div>{' '}
+        </div>
       </div>
 
       <div className="mt-6 text-start">

@@ -58,6 +58,8 @@ import VisitBtnPOSTAll from '@/components/visit/visitPost'
 import FollowinHomePage from '@/components/compoinhome/followinhomepage'
 import { Metadata } from 'next'
 import ArticleFormmany from '@/components/article/articleFormMany'
+import { format, formatDistanceToNow } from 'date-fns'
+import { th } from 'date-fns/locale'
 
 export const metadata: Metadata = {
   title: 'Home',
@@ -84,9 +86,6 @@ export default async function Page() {
 
   return (
     <>
-      <div className="mt-[250px] w-full xl:w-full ">
-        <HomePageHeader />
-      </div>
       <div className="  mb-[590px] flex h-32 flex-col gap-0 xl:w-full xl:flex-row ">
         <aside
           className=" 
@@ -211,7 +210,10 @@ export default async function Page() {
                           authorId={post.authorId}
                           author={post.author}
                           comments={post.comments}
-                          createAt={new Date(post.createdAt).toLocaleString()}
+                          createAt={formatDistanceToNow(
+                            new Date(post.createdAt),
+                            { locale: th, addSuffix: true }
+                          )}
                         />
                       </div>
                       <div className="left-3 mt-7 ">

@@ -61,7 +61,7 @@ export async function userPost({
         const createNotification = await db.notification.create({
           data:{
             userId:follow.following.id,
-            body:`ผู้ใช้ ${create?.author?.name} ที่คุณติดตามาได้ทำการสร้างบทความ ${create?.content}`,
+            body:`ผู้ใช้ ${create?.author?.name} ที่คุณติดตามาได้ทำการสร้างโพสต์ ${create?.content}`,
             postId:create?.id
             
           }

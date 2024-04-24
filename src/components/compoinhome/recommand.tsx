@@ -38,17 +38,17 @@ export default function Recommand({ id, tag, currentId }: Props) {
 
   return (
     <>
-      <div className="mb-3">
+      <div className="mb-3 h-full w-full max-w-full">
         <Text as="b" fontSize="large">
           แนะนำเพิ่มเติม
         </Text>
       </div>
-      <div className="mt-3">
+      <div className="mt-3 ">
         <Carousel
           opts={{
             align: 'start',
           }}
-          className="w-full max-w-full "
+          className="w-[750px] max-w-full "
         >
           <CarouselContent>
             {hashtag &&

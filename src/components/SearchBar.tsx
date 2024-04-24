@@ -21,6 +21,7 @@ import useSWR from 'swr'
 import { useSession } from 'next-auth/react'
 import { Text } from '@chakra-ui/react'
 import Link from 'next/link'
+import { SearchIcon } from 'lucide-react'
 
 async function fetcher(url: string) {
   const response = await fetch(url)
@@ -158,7 +159,9 @@ export default function SearchBar() {
     <>
       {session?.user.id ? (
         <>
-          <Button onPress={onOpen}>Search</Button>
+          <Button onPress={onOpen} className="bg-transparent ">
+            <SearchIcon className="text-white" />
+          </Button>
           <Modal
             scrollBehavior="inside"
             backdrop="blur"

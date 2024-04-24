@@ -12,6 +12,12 @@ export const ArticlePost = z.object({
   articleImage: z.string().url().nonempty(),
 })
 
+
+export const EditArticle = z.object({
+  title:z.string().nonempty().optional(),
+  articleContent: z.string().nonempty().optional(),
+})
+
 export const PostPost = z.object({
   title: z.string().nonempty().optional(),
   articleContent: z.string().nonempty().optional(),

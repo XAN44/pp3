@@ -1,7 +1,8 @@
 import { RegisterEvent } from './../../../node_modules/.prisma/client/index.d'
 import { db } from '../db'
 import { getCurrentUser } from '../session'
-
+import { DataPost } from '../../types/postindex'
+import { revalidatePath } from 'next/cache'
 export async function fetchInBlogPage() {
   const fetchUser = await db.article.findMany({
     select: {
@@ -299,8 +300,10 @@ export async function geteventregister(eventID: string) {
   })
   return fetchUser
 }
+ 
 
-export async function fetchPostcarosule() {
+ 
+  export async function fetchPostcarosule() {
   const fetchUser = await db.post.findMany({
     select: {
       id: true,

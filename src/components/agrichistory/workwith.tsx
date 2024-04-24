@@ -81,7 +81,7 @@ export default async function Workwithus() {
                 <Image src="/ig.png" alt="youtube" width="32" height="32" />:
                 INSTRAGRAM
               </Text>
-              <Text className="btn-prim btn btn flex place-items-center justify-center gap-3 text-center">
+              <Text className="btn-prim  flex place-items-center justify-center gap-3 text-center">
                 <Image src="/tiktok.png" alt="youtube" width="32" height="32" />
                 : TIKTOK
               </Text>

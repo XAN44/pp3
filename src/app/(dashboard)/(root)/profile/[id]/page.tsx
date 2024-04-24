@@ -19,6 +19,8 @@ import { fetchUserProfileByID } from '@/lib/actions/user.post'
 import { TotalVisit1, TotalVisitEvent } from '@/lib/actions/user.visit'
 import { getCurrentUser } from '@/lib/session'
 import { Divider, ScrollShadow } from '@nextui-org/react'
+import { formatDistanceToNow } from 'date-fns'
+import { th } from 'date-fns/locale'
 import { Metadata } from 'next'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
@@ -121,9 +123,10 @@ export default async function Page({ params }: { params: { id: string } }) {
                                 authorId={post.authorId}
                                 author={post.author}
                                 comments={post.comments}
-                                createAt={new Date(
-                                  post.createdAt
-                                ).toLocaleString()}
+                                createAt={formatDistanceToNow(
+                                  new Date(post.createdAt),
+                                  { locale: th, addSuffix: true }
+                                )}
                               />
                             </div>
                             <div className="left-3 mt-7 ">

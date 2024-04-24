@@ -28,14 +28,15 @@ import axios from 'axios'
 import { format, formatDistanceToNow } from 'date-fns'
 import { th } from 'date-fns/locale' // import locale for Thai language
 import { User } from '@prisma/client'
+import { IoNotifications } from 'react-icons/io5'
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json())
 
 interface user {
-  data: User
+  userId: string
 }
 
-export default function NotificationCard({ data }: user) {
+export default function NotificationCard({ userId }: user) {
   const path = usePathname() ?? ''
 
   const { data: notifications } = useSWR(`/api/notification`, fetcher)
@@ -78,11 +79,14 @@ export default function NotificationCard({ data }: user) {
   return (
     <>
       <Dialog>
-        <DialogTrigger>
+        <DialogTrigger className="items-center justify-center">
           <button onClick={handleRead}>
             <Badge content={notificationCount} color="default" variant="faded">
               <div className="hover:	hover:cursor-pointer">
-                <AiFillNotification />
+                <IoNotifications
+                  className="
+                text-white"
+                />
               </div>
             </Badge>
           </button>

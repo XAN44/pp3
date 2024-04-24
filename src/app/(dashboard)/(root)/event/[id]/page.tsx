@@ -26,10 +26,8 @@ import { Metadata } from 'next'
 import { th } from 'date-fns/locale'
 import { format, formatDistanceToNow, parseISO } from 'date-fns'
 
-
-
 export const metadata: Metadata = {
-  title: 'Event'
+  title: 'Event',
 }
 
 const Page = async ({ params }: { params: { id: string } }) => {
@@ -79,17 +77,18 @@ const Page = async ({ params }: { params: { id: string } }) => {
         </TabsList>
         <TabsContent value="about">
           <CardEvent
+            id={ArticleBy.id}
             key="card"
             articleContent={ArticleBy.eventContent}
             eventcreator={ArticleBy.eventcreator}
             eventlocation={ArticleBy.eventlocation}
             eventmore={ArticleBy.eventmore}
             eventparticipants={ArticleBy.eventparticipants}
-
-            eventstartTime={format(parseISO(ArticleBy?.eventstartTime || ''),
-              "'วัน' EEEE 'ที่' d MMMM yyyy 'เวลา' HH:mm ", { locale: th }
+            eventstartTime={format(
+              parseISO(ArticleBy?.eventstartTime || ''),
+              "'วัน' EEEE 'ที่' d MMMM yyyy 'เวลา' HH:mm ",
+              { locale: th }
             )}
-
             tag={ArticleBy.tag.map((tagItem) => ({
               tag: tagItem.tag || '',
             }))}

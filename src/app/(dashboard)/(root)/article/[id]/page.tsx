@@ -16,6 +16,8 @@ import {
 import { TotalVisit1 } from '@/lib/actions/user.visit'
 import { getCurrentUser } from '@/lib/session'
 import { Container, Heading } from '@radix-ui/themes'
+import { format, formatDistanceToNow } from 'date-fns'
+import { th } from 'date-fns/locale'
 import { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 
@@ -38,7 +40,7 @@ const Page = async ({ params }: { params: { id: string } }) => {
   const checkFollower = await CheckFollow(params.id, user.id)
 
   return (
-    <Container className=" inset-y-28 top-24 mt-32 h-full place-items-start ">
+    <Container className=" inset-y-28 top-24 mt-32 h-full max-w-full place-items-start ">
       <div className="">
         <ArticleCardPage
           key={ArticleBy?.id}
@@ -56,7 +58,10 @@ const Page = async ({ params }: { params: { id: string } }) => {
           authorId={ArticleBy.authorId}
           author={ArticleBy.author}
           comments={ArticleBy.comment}
-          createAt={new Date(ArticleBy.createAt).toLocaleString()}
+          createAt={formatDistanceToNow(new Date(ArticleBy.createAt), {
+            locale: th,
+            addSuffix: true,
+          })}
           totalVisit={await TotalVisit1(ArticleBy.id)}
         />
       </div>

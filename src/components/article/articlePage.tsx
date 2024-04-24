@@ -8,7 +8,7 @@ import { Heart, Trash2 } from 'lucide-react'
 import useSWR from 'swr'
 import parse from 'html-react-parser'
 
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import Followbtn from '../follow/followbtn'
 
 import {
@@ -22,6 +22,13 @@ import {
 import { AiOutlineDelete } from 'react-icons/ai'
 import { useRouter } from 'next/navigation'
 import { format } from 'date-fns'
+import { CiEdit } from 'react-icons/ci'
+import 'react-quill/dist/quill.snow.css'
+import dynamic from 'next/dynamic'
+import axios from 'axios'
+
+const DynamicQuill = dynamic(() => import('react-quill'), { ssr: false })
+
 const fetcher = (url: string) => fetch(url).then((res) => res.json())
 
 interface Props {
@@ -90,6 +97,32 @@ export default function ArticleHomePage({
 }: Props) {
   const router = useRouter()
 
+  const quillModules = {
+    toolbar: [
+      [{ header: [1, 2, 3, false] }],
+      ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+      [{ list: 'ordered' }, { list: 'bullet' }],
+      ['link'],
+      [{ color: [] }],
+      ['code-block'],
+      ['clean'],
+    ],
+  }
+
+  const quillFormats = [
+    'header',
+    'bold',
+    'italic',
+    'underline',
+    'strike',
+    'blockquote',
+    'list',
+    'bullet',
+    'link',
+    'align',
+    'color',
+    'code-block',
+  ]
   const { data: Like, mutate: MutaLike } = useSWR<LikeData>(
     `/api/like?id=${id}`,
     fetcher
@@ -104,6 +137,10 @@ export default function ArticleHomePage({
     `/api/recommend?tag=${tag.map((tag) => tag.tag)}`,
     fetcher
   )
+
+  const [Textcontent, setTextContent] = useState('')
+  const [Textheader, setTextheader] = useState('')
+
   const handleDelete = async () => {
     try {
       const response = await fetch('/api/deleteArticle', {
@@ -122,6 +159,29 @@ export default function ArticleHomePage({
     }
   }
 
+  useEffect(() => {
+    setTextheader(title || '')
+    setTextContent(articleContent || '')
+  }, [setTextheader, title, setTextContent, articleContent])
+
+  const handleEdit = useCallback(() => {
+    axios
+      .put('/api/ArticleEdit', {
+        id,
+        ...(Textcontent !== articleContent
+          ? { articleContent: Textcontent }
+          : { articleContent: articleContent }),
+        ...(Textheader !== title ? { title: Textheader } : { title: title }),
+      })
+      .then((res) => {
+        router.refresh()
+        console.log(res)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }, [id, Textheader, title, Textcontent, articleContent, router])
+
   const [follow, setFollow] = useState(false)
   const [liked, setLiked] = useState(false)
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
@@ -131,25 +191,6 @@ export default function ArticleHomePage({
       setFollow(Follow.Followed)
     }
   }, [Follow])
-
-  const handleFollow = async () => {
-    try {
-      const response = await fetch('/api/follow', {
-        method: 'POST',
-        body: JSON.stringify({ authorId }),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
-      const data = await response.json()
-      if (response.ok) {
-        setFollow(!follow)
-        MutaFollow()
-      }
-    } catch (error) {
-      console.error('เกิดข้อผิดพลาดในการติดตาม:', error)
-    }
-  }
 
   useEffect(() => {
     if (Like && Like.liked) {
@@ -249,50 +290,106 @@ export default function ArticleHomePage({
               )}
               {currentId === author?.id && (
                 <>
-                  <Button
-                    isIconOnly
-                    size="sm"
-                    aria-label="delete"
-                    variant="light"
-                    color="danger"
-                    className="
-              relative left-4 overflow-visible 
-              after:absolute after:inset-0 after:bg-background/40 
-              after:transition
-              after:!duration-500 hover:-translate-y-2 hover:after:scale-150 hover:after:opacity-0
-              "
-                    onPress={onOpen}
-                  >
-                    <Trash2 />
-                  </Button>
-                  <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
-                    <ModalContent>
-                      {(onClose) => (
-                        <>
-                          <ModalHeader className="flex flex-col gap-1">
-                            คุณต้องการที่จะลบบทความนี้ ?
-                          </ModalHeader>
-                          <ModalBody>
-                            <p>
-                              การลบจะทำให้หายไปจากไทม์ไลน์ของคุณและผู้อื่นจะไม่สามารถอ่านบทความนี้ได้อีก
-                            </p>
-                          </ModalBody>
-                          <ModalFooter>
-                            <Button
-                              color="danger"
-                              variant="light"
-                              onPress={handleDelete}
-                            >
-                              ลบ
-                            </Button>
-                            <Button color="primary" onPress={onClose}>
-                              ยกเลิก
-                            </Button>
-                          </ModalFooter>
-                        </>
-                      )}
-                    </ModalContent>
-                  </Modal>
+                  <div className="">
+                    <Button
+                      isIconOnly
+                      size="sm"
+                      aria-label="delete"
+                      variant="light"
+                      color="danger"
+                      className="
+                    relative left-4 overflow-visible 
+                    after:absolute after:inset-0 after:bg-background/40 
+                    after:transition
+                    after:!duration-500 hover:-translate-y-2 hover:after:scale-150 hover:after:opacity-0
+                    "
+                      onPress={onOpen}
+                    >
+                      <Trash2 />
+                    </Button>
+                    <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+                      <ModalContent>
+                        {(onClose) => (
+                          <>
+                            <ModalHeader className="flex flex-col gap-1">
+                              คุณต้องการที่จะลบบทความนี้ ?
+                            </ModalHeader>
+                            <ModalBody>
+                              <p>
+                                การลบจะทำให้หายไปจากไทม์ไลน์ของคุณและผู้อื่นจะไม่สามารถอ่านบทความนี้ได้อีก
+                              </p>
+                            </ModalBody>
+                            <ModalFooter>
+                              <Button
+                                color="danger"
+                                variant="light"
+                                onPress={handleDelete}
+                              >
+                                ลบ
+                              </Button>
+                              <Button color="primary" onPress={onClose}>
+                                ยกเลิก
+                              </Button>
+                            </ModalFooter>
+                          </>
+                        )}
+                      </ModalContent>
+                    </Modal>
+                    <Button
+                      isIconOnly
+                      size="sm"
+                      aria-label="delete"
+                      variant="light"
+                      color="danger"
+                      className="
+                    relative left-4 overflow-visible 
+                    after:absolute after:inset-0 after:bg-background/40 
+                    after:transition
+                    after:!duration-500 hover:-translate-y-2 hover:after:scale-150 hover:after:opacity-0
+                    "
+                      onPress={onOpen}
+                    >
+                      <CiEdit size={25} className="hover:cursor-pointer" />
+                    </Button>
+                  </div>
+                  <div className="">
+                    <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+                      <ModalContent>
+                        {(onClose) => (
+                          <>
+                            <ModalHeader className="flex flex-col gap-1">
+                              เริ่มการแก้ไขบทความ
+                            </ModalHeader>
+                            <ModalBody>
+                              <input
+                                type="text"
+                                onChange={(e) => setTextheader(e.target.value)}
+                              />
+                              <DynamicQuill
+                                modules={quillModules}
+                                formats={quillFormats}
+                                placeholder="เริ่มเขียนบล็อกของคุณที่นี่"
+                                theme="snow"
+                                onChange={(value) => setTextContent(value)}
+                              />
+                            </ModalBody>
+                            <ModalFooter>
+                              <Button
+                                color="danger"
+                                variant="light"
+                                onPress={handleEdit}
+                              >
+                                แก้ไขบทความ
+                              </Button>
+                              <Button color="primary" onPress={onClose}>
+                                ยกเลิก
+                              </Button>
+                            </ModalFooter>
+                          </>
+                        )}
+                      </ModalContent>
+                    </Modal>
+                  </div>
                 </>
               )}
             </div>

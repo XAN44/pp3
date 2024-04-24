@@ -43,6 +43,7 @@ import { CommentinArticlesHome } from '@/lib/actions/user.article'
 import { CommentinEvent } from '@/lib/actions/user.event'
 import { replyComments } from '@/lib/actions/user.comment'
 import { useRouter } from 'next/navigation'
+import PostOption from '../post/components/PostOption'
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json())
 

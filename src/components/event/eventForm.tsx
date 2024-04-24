@@ -124,7 +124,7 @@ export default function EventForm({ accountId, authUserId }: Props) {
       eventmore: values.eventmore ? String(values.eventmore) : '',
       blogInArticle: values.blogInArticle ? String(values.blogInArticle) : '',
       tag: values.tag ? String(values.tag) : '',
-      path: pathname,
+      path: pathname || '',
     })
 
     toast.promise(UserPromise, {
@@ -341,60 +341,27 @@ export default function EventForm({ accountId, authUserId }: Props) {
                       control={postArticle.control}
                       name="blogInArticle"
                       render={({ field }) => (
-                        <FormItem className="flex flex-col items-center justify-center gap-3 ">
-                          <Select
-                            items={blogInEvent}
-                            variant="bordered"
-                            required
-                            value={field.value}
-                            onChange={(value) => field.onChange(value)}
-                            isMultiline={true}
-                            selectionMode="multiple"
-                            placeholder="เลือก BLOG ที่สอดคล้องกับกิจกรรมของคุณ  "
-                            labelPlacement="outside"
-                            classNames={{
-                              label: 'group-data-[filled=true]:-translate-y-5',
-                              trigger: 'min-h-unit-16',
-                              listboxWrapper: 'max-h-[400px]',
-                            }}
-                            renderValue={(items: SelectedItems<Blog>) => {
-                              return items.map((item, index) => (
-                                <div
-                                  key={index}
-                                  className="item-center  flex gap-2"
-                                >
-                                  <Avatar
-                                    src={item.data?.ArticleImage}
-                                    alt="test"
-                                    className="flex-shrink-0"
-                                  />
-                                  <div className="flex flex-col gap-2">
-                                    <span>{item.data?.title}</span>
+                        <FormItem className="flex flex-col  items-center justify-center gap-3">
+                          <label className="form-control w-full">
+                            <select
+                              {...field}
+                              value={field.value}
+                              onChange={(value) => field.onChange(value)}
+                              className="select select-bordered select-ghost w-full max-w-xs"
+                            >
+                              <option disabled selected>
+                                เลือกบทความของคุณ
+                              </option>
+                              {blogInEvent?.map((d, index) => (
+                                <option key={index} value={d.id}>
+                                  <div className="flex">
+                                    <Avatar src={d.ArticleImage} alt="img" />
+                                    <div className="">{d.title}</div>
                                   </div>
-                                </div>
-                              ))
-                            }}
-                          >
-                            {(blog) => (
-                              <SelectItem key={blog.id} textValue={blog.title}>
-                                <div className="flex items-center gap-2 p-3">
-                                  <div className="flex flex-col">
-                                    <div className="p-3">
-                                      <Image
-                                        src={blog.ArticleImage}
-                                        alt="lol"
-                                      />
-                                    </div>
-                                    <div className="text-center">
-                                      <Text as="b" fontSize="medium">
-                                        {blog.title}
-                                      </Text>
-                                    </div>
-                                  </div>
-                                </div>
-                              </SelectItem>
-                            )}
-                          </Select>
+                                </option>
+                              ))}
+                            </select>
+                          </label>
                           <FormMessage />
                         </FormItem>
                       )}

@@ -67,7 +67,7 @@ export async function POST(request: Request) {
               userId: findarticle.authorId,
               body: `ผู้ใช้ ${user?.name} กดไลค์บทความ ${findarticle.title}`,
               articleId: findarticle?.id,
-              likeId: like?.id,
+ 
             },
           })
         }
