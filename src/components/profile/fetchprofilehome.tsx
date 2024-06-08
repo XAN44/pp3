@@ -1,12 +1,16 @@
 'use client'
-import { Avatar } from '@radix-ui/themes'
 
 import { Text } from '@chakra-ui/react'
 import useSWR from 'swr'
-import { Image } from '@nextui-org/react'
+import { Avatar, Image } from '@nextui-org/react'
 import { FaRegistered } from 'react-icons/fa'
 import { LogInIcon } from 'lucide-react'
 import Link from 'next/link'
+import HomePageFollow from '../../app/(dashboard)/home/components/HomepageFollow'
+import HomepageChat from '../../app/(dashboard)/home/components/HomepageChart'
+import POSTFORM from '../post/postform'
+import ArticleForm from '../article/articleForm'
+import EventForm from '../event/eventForm'
 
 interface Props {
   accountId: string
@@ -82,170 +86,58 @@ function Fetchprofilehome({
 
   return (
     <>
-      <div className="  item-center grid justify-center  ">
-        <div className="item-center grid place-items-center justify-center ">
-          {/* AVATAR */}
-          <div className="grid items-center justify-center xl:flex ">
-            <div className=" grid items-center justify-center xl:mr-5">
-              {authUserId ? (
-                <div className="">
-                  <Avatar
-                    size="8"
-                    fallback={name}
-                    src={image}
-                    radius="full"
-                    className="ring-1 ring-black"
-                  />
-                </div>
-              ) : (
-                <>
-                  <div className="">
-                    <Avatar
-                      size="8"
-                      fallback="Dont have avatar"
-                      src="/defaultAvatar.png"
-                      radius="full"
-                      className="ring-1 ring-black  "
-                    />
-                  </div>
-                </>
-              )}
-            </div>
-            {/* NAME AND NICKNAME */}
-            <div className=" mt-4 grid items-center justify-center text-center xl:mr-4 xl:items-start xl:justify-start xl:text-start ">
-              <div
-                className="flex items-center  justify-center text-center
-                xl:mr-4 xl:items-start xl:justify-start xl:text-start"
-              >
-                <div>
-                  {name ? (
-                    <Text fontSize="large" as="b">
-                      {name}
-                    </Text>
-                  ) : (
-                    <Text fontSize="large" as="b">
-                      คุณยังไม่มีโปรไฟล์
-                    </Text>
-                  )}
-                </div>
-                <div className="ml-2">
-                  {authUserId ? (
-                    <>
-                      {nickname && nickname ? (
-                        <Text fontSize="small">@{nickname}</Text>
-                      ) : (
-                        <Text fontSize="small">@Dont have nickname</Text>
-                      )}
-                    </>
-                  ) : null}
-                </div>
-              </div>
-              <div className=" ">
-                <Text>{bio}</Text>
-              </div>
-            </div>
+      <div
+        className="
+      opacity-300 h-full
+      max-h-screen
+      items-center
+      justify-center
+      rounded-lg
+      border border-gray-300
+      pb-3 pt-3
+      "
+      >
+        <div className="mt-4 grid w-full items-center justify-center text-center">
+          <div className="flex flex-col items-center justify-center">
+            <Image
+              src={image}
+              width={100}
+              height={100}
+              alt="Profile"
+              className=" rounded-full ring-1"
+            />
           </div>
-        </div>
-
-        <div className="mt-3 flex items-center justify-center space-x-10 text-center xl:grid xl:items-start xl:justify-start xl:space-x-0 xl:text-start">
-          {authUserId ? (
-            <>
-              <div className="flex ">
-                <div className="w-[83px]">
-                  <Text>ผู้ติดตาม</Text>
+          <div className="mt-3">
+            <Text as="b" fontSize="medium">
+              {name}
+            </Text>
+            <Text>{bio}</Text>
+          </div>
+          <div className="mt-3">
+            <HomePageFollow
+              follower={totalFollower}
+              following={totalFollowing}
+              accountId={accountId}
+            />
+          </div>
+          <div className="mt-10 text-center">
+            <HomepageChat />
+          </div>
+          <div className="">
+            {accountId === authUserId ? (
+              <>
+                <div className="mt-3">
+                  <POSTFORM accountId={accountId} authUserId={authUserId} />
                 </div>
-                <Text>{totalFollower}</Text>
-              </div>
-              <div className="flex space-x-2">
-                <Text>กำลังติดตาม </Text>
-                <Text>{totalFollowing}</Text>
-              </div>
-            </>
-          ) : null}
-        </div>
-      </div>
-
-      <div className="flex items-center justify-center space-x-10 xl:grid xl:items-start xl:justify-start xl:space-x-0 ">
-        <div className="mt-3 grid">
-          <Text as="b" fontSize="large" textAlign="center">
-            มาแรง
-          </Text>
-          {authUserId ? (
-            <>
-              <div className="space-x-6 text-center">
-                <div className="flex items-center justify-center xl:grid">
-                  {ToptierArticle?.map((Article, index) => (
-                    <>
-                      <div
-                        key={index}
-                        className=" ml-3 mr-6 mt-3 grid items-start justify-start  xl:flex"
-                      >
-                        <Link
-                          href={`/article/${article.id}`}
-                          onClick={() => {
-                            visitHandler(article.id)
-                          }}
-                        >
-                          <Image
-                            isBlurred
-                            src={Article.ArticleImage}
-                            alt={Article.ArticleImage}
-                            radius="md"
-                            width={200}
-                            height={100}
-                            className="relative"
-                          />
-                          <div className="mt-3">
-                            <Text as="b">{Article.title}</Text>
-                          </div>
-                        </Link>
-                      </div>
-                    </>
-                  ))}
-
-                  {ToptierEvent?.map((Event, index) => (
-                    <>
-                      <div
-                        key={index}
-                        className=" mt-6 grid items-start justify-start xl:flex"
-                      >
-                        <Link
-                          href={`/event/${event.id}`}
-                          onClick={() => {
-                            visitEvent(event.id)
-                          }}
-                        >
-                          <Image
-                            isBlurred
-                            src={Event.eventImage}
-                            alt={Event.eventImage}
-                            radius="md"
-                            width={100}
-                            height={100}
-                            className=" h-43 w-full object-scale-down"
-                          />
-                        </Link>
-                        <div className="ml-3 text-center xl:text-start">
-                          <h1>ผู้เขียน {Event.author.name}</h1>
-                        </div>
-                      </div>
-                    </>
-                  ))}
+                <div className="mt-3">
+                  <ArticleForm accountId={accountId} authUserId={authUserId} />
                 </div>
-              </div>
-            </>
-          ) : (
-            <>
-              <div className="space-y-3 text-blue-800 xl:grid">
-                <Link href="/sign-in" className="hover:underline">
-                  ลงชื่อเข้าใช้
-                </Link>
-                <Link href="/sign-up" className="hover:underline">
-                  สมัครใช้งาน
-                </Link>
-              </div>
-            </>
-          )}
+                <div className="mt-3">
+                  <EventForm accountId={accountId} authUserId={authUserId} />
+                </div>
+              </>
+            ) : null}
+          </div>
         </div>
       </div>
     </>

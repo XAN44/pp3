@@ -28,9 +28,6 @@ export default function EventJoin({ id }: Props) {
     fetcher
   )
 
-  // const noi = await getNOITI()
-  // console.log(noi)
-
   return (
     <div className="grid">
       <Text as="b">สมาชิกที่เข้าร่วม</Text>

@@ -10,7 +10,7 @@ export default async function ConversationLayout({
   const conversation = await getRoom()
   return (
     <Chatsidebar>
-      <div className="h-full w-full">
+      <div className="h-full w-full ">
         <RoomList initialItem={conversation} />
         {children}
       </div>

@@ -31,20 +31,15 @@ export default async function RootLayout({
   const user = await getCurrentUser()
 
   return (
-    <html
-      lang="en"
-      suppressHydrationWarning={true}
-      className="scroll-smooth focus:scroll-auto"
-    >
-      <body className="relative">
+    <html lang="en" suppressHydrationWarning={true}>
+      <body className=" ">
         <Theme>
           <Provider>
             <Providers>
               <ChakraProvi>
-                <Navbars userId={user?.id || ''} />
                 <main className="flex h-screen w-full flex-col items-center justify-center">
-                  {children}
                   <Toaster />
+                  {children}
                 </main>
               </ChakraProvi>
             </Providers>

@@ -18,7 +18,7 @@ export async function userPost({
   ImagePost,
   tag,
   path,
-}: userPost): Promise<void> {
+}: userPost): Promise<string> {
   try {
     if (!authorId) {
       throw new Error('ไม่มีผู้ใช้')
@@ -55,7 +55,7 @@ export async function userPost({
           following:true
         }
       })
-       if(!findFollow){return}
+       if(!findFollow){return ''}
        if(findFollow){
         for(const follow of findFollow){
         const createNotification = await db.notification.create({
@@ -70,6 +70,7 @@ export async function userPost({
       }
     }
     revalidatePath(path)
+    return create.id
   } catch (error: any) {
     throw new Error(`Failed to create/update user: ${error.message}`)
   }

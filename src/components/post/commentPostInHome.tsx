@@ -42,6 +42,10 @@ export default function CommentPostInHome({
     commentTimeLine.reset()
   }
 
+  if (!currentUserId) {
+    return <div>โปรดเข้าสูระบบเพื่อแสดงความคิดเห็น</div>
+  }
+
   // const onSubmitPost = async () => {
   //   try {
   //     const response = await fetch(`/api/commentArticle`, {

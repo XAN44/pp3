@@ -144,7 +144,7 @@ export function ImgProfilee({ user }: Props) {
     await updateImage({
       userId: user?.id,
       image: values.image,
-      path: pathname,
+      path: pathname as string ,
     })
     toast({
       title: 'อัพเดทโปรไฟล์สําเร็จ',
@@ -161,7 +161,7 @@ export function ImgProfilee({ user }: Props) {
   const onSubmitBio = async (values: z.infer<typeof UserBio>) => {
     await updateBio({
       userId: user?.id,
-      path: pathname,
+      path: pathname as string,
       bio: values.bio,
     })
 
@@ -179,7 +179,7 @@ export function ImgProfilee({ user }: Props) {
     await updateName({
       userId: user?.id,
       name: values.name,
-      path: pathname,
+      path: pathname as string ,
     })
     toast({
       title: 'อัพเดท name สำเร็จ',
@@ -197,7 +197,7 @@ export function ImgProfilee({ user }: Props) {
     await Facebook({
       userId: user?.id,
       Facebook: values.facebookUrl,
-      path: pathname,
+      path: pathname as string,
     })
     toast({
       description: 'Your message has been sent.',
@@ -208,7 +208,7 @@ export function ImgProfilee({ user }: Props) {
     await IG({
       userId: user?.id,
       IG: values.igUrl,
-      path: pathname,
+      path: pathname as string,
     })
     toast({
       description: 'Your message has been sent.',
@@ -218,7 +218,7 @@ export function ImgProfilee({ user }: Props) {
     await twitter({
       userId: user?.id,
       Twitter: values.twitterUrl,
-      path: pathname,
+      path: pathname as string ,
     })
     toast({
       description: 'Your message has been sent.',
@@ -229,7 +229,7 @@ export function ImgProfilee({ user }: Props) {
     await tiktok({
       userId: user?.id,
       Tiktok: values.tiktokUrl,
-      path: pathname,
+      path: pathname as string,
     })
     toast({
       description: 'Your message has been sent.',
@@ -240,7 +240,7 @@ export function ImgProfilee({ user }: Props) {
     await updateNickname({
       userId: user?.id,
       nickname: values.nickname,
-      path: pathname,
+      path: pathname as string,
     })
     toast({
       title: 'อัพเดท BIO สำเร็จ',

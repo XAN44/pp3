@@ -12,9 +12,8 @@ export const ArticlePost = z.object({
   articleImage: z.string().url().nonempty(),
 })
 
-
 export const EditArticle = z.object({
-  title:z.string().nonempty().optional(),
+  title: z.string().nonempty().optional(),
   articleContent: z.string().nonempty().optional(),
 })
 
@@ -39,7 +38,13 @@ export const EventPost = z.object({
     ),
   eventcreator: z.string().nonempty('โปรดกรอกข้อมูล'),
   eventmore: z.string().nonempty('โปรดกรอกข้อมูล'),
-  eventparticipants: z.string().nonempty('โปรดกรอกข้อมูล'),
+  eventparticipants: z.string().refine(
+    (value) => {
+      // เช็คว่าเป็นตัวเลขหรือคำว่า "ไม่จำกัด" เท่านั้น
+      return /^\d+$/.test(value) || value === 'ไม่จำกัด'
+    },
+    { message: 'โปรดกรอกข้อมูลเป็นตัวเลขหรือคำว่า "ไม่จำกัด"' }
+  ),
 })
 
 export const commentPost = z.object({

@@ -84,8 +84,7 @@ const RoomList: React.FC<ConversationProps> = ({ initialItem }) => {
             fixed
             inset-y-0
             left-0
-            mt-14
-            block
+             block
             w-full
             overflow-y-auto
             border-r
@@ -120,9 +119,7 @@ const RoomList: React.FC<ConversationProps> = ({ initialItem }) => {
                     transition
                     hover:opacity-75
                     "
-          >
-            <MdOutlineGroupAdd size={20} />
-          </div>
+          ></div>
         </div>
 
         {items.map((item, index) => (

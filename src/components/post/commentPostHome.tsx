@@ -52,7 +52,7 @@ interface Props {
 
   reply: {
     id: string
-    replytext: true
+    replytext: string
     author: {
       id: string | null
       name: string | null

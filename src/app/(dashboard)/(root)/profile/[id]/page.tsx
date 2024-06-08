@@ -52,44 +52,49 @@ export default async function Page({ params }: { params: { id: string } }) {
   if (!userInfo) redirect('/sign-in') // ! และถ้าหากว่าไม่มี Prarams.id จะทำการ redireact ไปที่หน้า Sign-ins
 
   return (
-    <div className=" mb-[590px] flex  h-32 flex-col gap-0 animate-in ">
-      {userInfo.map((Account) => (
-        <>
-          <aside
-            className=" 
-
-              inset-x-0  left-[32px]  w-full   place-items-start  px-3 xl:fixed xl:h-full xl:w-96 
-              
-              "
-          >
-            <ProfileHeader
-              key={Account.id}
-              accountId={Account.id}
-              authUserId={user.id}
-              name={Account.name || ''}
-              nickname={Account.nickname || ''}
-              image={Account.image || ' '}
-              bio={Account.bio || ''}
-              totalFollower={userfollow}
-              totalFollowing={userfollowing}
-              isFollow={checkFollower}
-              contact={{
-                facebook: Account.Facebook || '',
-                ig: Account.IG || '',
-                twitter: Account.Twitter || '',
-                tiktok: Account.Tiktok || '',
-              }}
-              article={{
-                id: params.id,
-              }}
-              event={{
-                id: params.id,
-              }}
-            />
-          </aside>
-          <main className="mt-8 w-[690px]">
-            <div className="relative place-items-center justify-center text-center ">
-              <div className=" ">
+    <div className="flex items-center justify-center  ">
+      {userInfo.map((Account, index) => (
+        <div
+          key={index}
+          className=" mb-[590px] flex  h-32 flex-col gap-0 animate-in "
+        >
+          <div>
+            <div
+              className=" 
+            
+            inset-x-0  left-[32px]  w-full   place-items-start  px-3 xl:fixed xl:h-full xl:w-96 
+            
+            "
+            >
+              <ProfileHeader
+                key={Account.id}
+                accountId={Account.id}
+                authUserId={user.id}
+                name={Account.name || ''}
+                nickname={Account.nickname || ''}
+                image={Account.image || ' '}
+                bio={Account.bio || ''}
+                totalFollower={userfollow}
+                totalFollowing={userfollowing}
+                isFollow={checkFollower}
+                contact={{
+                  facebook: Account.Facebook || '',
+                  ig: Account.IG || '',
+                  twitter: Account.Twitter || '',
+                  tiktok: Account.Tiktok || '',
+                }}
+                article={{
+                  id: params.id,
+                }}
+                event={{
+                  id: params.id,
+                }}
+              />
+            </div>
+          </div>
+          <div className="">
+            <div className="mt-8 w-[690px]">
+              <div className="relative place-items-center justify-center text-center ">
                 <Tabs defaultValue="article">
                   <TabsList className="">
                     <TabsTrigger value="POST">POST</TabsTrigger>
@@ -98,18 +103,18 @@ export default async function Page({ params }: { params: { id: string } }) {
                     <TabsTrigger value="event"> กิจกรรม</TabsTrigger>
                   </TabsList>
                   <TabsContent value="POST">
-                    <div className="mb-3 mt-5 place-items-center p-3 text-center ">
-                      {userInfo?.map((Account) => (
-                        <>
+                    <div className="mb-3 mt-5 grid place-items-center items-center justify-center p-3 text-center">
+                      {userInfo?.map((Account, index) => (
+                        <div key={index}>
                           <POSTFORM
                             key={Account.id}
                             accountId={Account.id}
                             authUserId={user?.id || ''}
                           />
-                        </>
+                        </div>
                       ))}
 
-                      {otherPost.map(async (post: any, index: any) => (
+                      {otherPost.map(async (post) => (
                         <>
                           <div className="w-full rounded-lg p-3 shadow-xl">
                             <div className="">
@@ -117,7 +122,7 @@ export default async function Page({ params }: { params: { id: string } }) {
                                 key={post?.id}
                                 id={post?.id}
                                 content={post.content}
-                                ImagePost={post?.ImagePost}
+                                ImagePost={post?.ImagePost || ''}
                                 tag={post.tag}
                                 currentId={user?.id || ''}
                                 authorId={post.authorId}
@@ -242,8 +247,8 @@ export default async function Page({ params }: { params: { id: string } }) {
                 </Tabs>
               </div>
             </div>
-          </main>
-        </>
+          </div>
+        </div>
       ))}
     </div>
   )

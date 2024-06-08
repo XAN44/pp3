@@ -79,11 +79,6 @@ export default function ArticleCard({
           <aside className="w-full ">
             <div className="w-40">
               <b className="">{title}</b>
-              <p
-                dangerouslySetInnerHTML={{
-                  __html: articleContent?.substring(0, 13) || '',
-                }}
-              />
             </div>
           </aside>
           <div className=" grid place-items-center items-center justify-center">

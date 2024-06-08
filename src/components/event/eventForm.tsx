@@ -38,7 +38,7 @@ import {
   Textarea,
 } from '@nextui-org/react'
 import { Loader2 } from 'lucide-react'
-import { redirect, usePathname } from 'next/navigation'
+import { redirect, usePathname, useRouter } from 'next/navigation'
 import React, { ChangeEvent, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { CiImageOn } from 'react-icons/ci'
@@ -74,7 +74,7 @@ export default function EventForm({ accountId, authUserId }: Props) {
   const [isLoading, setIsloading] = useState(false)
   const [isText, setIsText] = useState('บันทึก')
   const [imageSelected, setImageSelected] = useState(false)
-
+  const router = useRouter()
   const toast = useToast()
 
   const pathname = usePathname()
@@ -125,6 +125,8 @@ export default function EventForm({ accountId, authUserId }: Props) {
       blogInArticle: values.blogInArticle ? String(values.blogInArticle) : '',
       tag: values.tag ? String(values.tag) : '',
       path: pathname || '',
+    }).then((id) => {
+      router.push(`/event/${id}`)
     })
 
     toast.promise(UserPromise, {
@@ -166,7 +168,9 @@ export default function EventForm({ accountId, authUserId }: Props) {
     <>
       {accountId === authUserId && (
         <div className=" ">
-          <Button onClick={onOpen}>Create Event</Button>
+          <Button onClick={onOpen} className="w-28">
+            สร้างกิจกรรม
+          </Button>
           <AlertDialog
             motionPreset="slideInBottom"
             leastDestructiveRef={cancelRef}

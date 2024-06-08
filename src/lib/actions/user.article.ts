@@ -22,7 +22,7 @@ export async function POSTARTILE({
   ArticleImage,
   path,
   tag,
-}: Props): Promise<void> {
+}: Props): Promise<string> {
   try {
     const user = await getCurrentUser()
     if (!authorId) {
@@ -54,6 +54,7 @@ export async function POSTARTILE({
       }
     })
     if(create){
+
       const findFollow = await db.follows.findMany({
         where:{
           followerId:create.author?.id
@@ -62,7 +63,7 @@ export async function POSTARTILE({
           following:true
         }
       })
-      if(!findFollow){return}
+      if(!findFollow){return ''}
        if(findFollow){
         for(const follow of findFollow){
         const createNotification = await db.notification.create({
@@ -80,7 +81,7 @@ export async function POSTARTILE({
     
 
     revalidatePath(path)
-    return 
+    return create.id 
   } catch (error: any) {
     console.error(error) // Log the error for debugging
 

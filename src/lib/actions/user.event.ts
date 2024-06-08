@@ -33,7 +33,7 @@ export async function EVENTPOST({
   eventmore,
   path,
   tag,
-}: Props): Promise<any> {
+}: Props): Promise<string> {
   try {
     if (!authorId) {
       throw new Error('กรุณาเข้าสู่ระบบ')
@@ -81,7 +81,7 @@ export async function EVENTPOST({
           following:true
         }
       })      
-      if(!findFollow){return }
+      if(!findFollow){return ''}
       if(findFollow){
        for(const follow of findFollow){
         await db.notification.create({
@@ -96,6 +96,7 @@ export async function EVENTPOST({
     }
 
     revalidatePath(path)
+    return create.id
   } catch (error: any) {
     console.error(error) // Log the error for debugging
 

@@ -29,7 +29,16 @@ const Page = async ({ params }: { params: { id: string } }) => {
   if (!params.id) return null
 
   const user = await getCurrentUser()
-  if (!user) return null
+  if (!user) {
+    return (
+      <div
+        className="flex items-center
+     justify-center text-red-600 "
+      >
+        โปรดเข้าสู่ระบบเพื่ออ่านเนื้อหา
+      </div>
+    )
+  }
 
   const userInfo = await fetchUser(user.id)
   if (!userInfo) redirect('/profile')
@@ -40,7 +49,7 @@ const Page = async ({ params }: { params: { id: string } }) => {
   const checkFollower = await CheckFollow(params.id, user.id)
 
   return (
-    <Container className=" inset-y-28 top-24 mt-32 h-full max-w-full place-items-start ">
+    <Container className="  ">
       <div className="">
         <ArticleCardPage
           key={ArticleBy?.id}

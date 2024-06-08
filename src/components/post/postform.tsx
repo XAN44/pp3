@@ -27,7 +27,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Select, SelectItem, Textarea } from '@nextui-org/react'
 import { Loader2 } from 'lucide-react'
 import Image from 'next/image'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import React, { ChangeEvent, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { CiImageOn } from 'react-icons/ci'
@@ -50,7 +50,7 @@ export default function POSTFORM({ accountId, authUserId }: Props) {
   const [isText, setIsText] = useState('บันทึก')
   const [imageSelected, setImageSelected] = useState(false)
   const toast = useToast()
-
+  const router = useRouter()
   const pathname = usePathname()
   const postArticle = useForm<z.infer<typeof ArticlePost>>({
     resolver: zodResolver(ArticlePost),
@@ -76,7 +76,9 @@ export default function POSTFORM({ accountId, authUserId }: Props) {
       content: values.articleContent ? String(values.articleContent) : '',
       ImagePost: values.articleImage ? String(values.articleImage) : '',
       tag: values.tag ? String(values.tag) : '',
-      path: pathname,
+      path: pathname || ' ',
+    }).then((createId) => {
+      router.push(`/post/${createId}`)
     })
 
     toast.promise(UserPromise, {
@@ -120,7 +122,9 @@ export default function POSTFORM({ accountId, authUserId }: Props) {
     <>
       {accountId === authUserId && (
         <div className=" ">
-          <Button onClick={onOpen}>Create Post</Button>
+          <Button onClick={onOpen} className="w-28">
+            สร้างโพสต์
+          </Button>
           <AlertDialog
             motionPreset="slideInBottom"
             leastDestructiveRef={cancelRef}

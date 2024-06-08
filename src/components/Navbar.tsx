@@ -27,6 +27,10 @@ import {
 import NotificationCard from './notification/notificationCard'
 import SearchBar from './SearchBar'
 import { Text } from '@chakra-ui/react'
+import { ChatBubbleIcon } from '@radix-ui/react-icons'
+import { MdChat } from 'react-icons/md'
+import { IoChatboxOutline, IoChatbubblesOutline } from 'react-icons/io5'
+import Active from '../app/(dashboard)/(root)/active/page'
 
 interface User {
   userId: string
@@ -37,7 +41,10 @@ const Navbars = async ({ userId }: User) => {
   console.log(user?.image)
 
   return (
-    <Navbar shouldHideOnScroll className="  bg-black text-white">
+    <Navbar
+      shouldHideOnScroll
+      className="  flex w-full max-w-full bg-black text-white "
+    >
       <NavbarBrand>LOGO</NavbarBrand>
       <NavbarBrand>
         <Link href="/home">
@@ -47,9 +54,9 @@ const Navbars = async ({ userId }: User) => {
         </Link>
       </NavbarBrand>
       <NavbarBrand>
-        <Link href="/allblog">
+        <Link href="/Entertainment">
           <Text as="b" color="white">
-            Blog
+            Entertainment
           </Text>
         </Link>
       </NavbarBrand>
@@ -57,6 +64,13 @@ const Navbars = async ({ userId }: User) => {
         <Link href="/allevent">
           <Text as="b" color="white">
             Activty
+          </Text>
+        </Link>
+      </NavbarBrand>
+      <NavbarBrand>
+        <Link href="/allblog">
+          <Text as="b" color="white">
+            Blog
           </Text>
         </Link>
       </NavbarBrand>
@@ -75,6 +89,14 @@ const Navbars = async ({ userId }: User) => {
         </Link>
       </NavbarBrand>
       <NavbarContent justify="end" className="items-center justify-center">
+        <NavbarItem>
+          <Link href="/conversationroom">
+            <IoChatbubblesOutline
+              size={25}
+              className="text-white hover:cursor-pointer"
+            />
+          </Link>
+        </NavbarItem>
         <NavbarItem className="mt-4">
           <NotificationCard userId={userId || ''} />
         </NavbarItem>
@@ -99,8 +121,10 @@ const Navbars = async ({ userId }: User) => {
                     <DropdownMenuGroup>
                       <Link href={`/profile/${user?.id}`}>
                         <DropdownMenuItem>
-                          Profile
-                          <DropdownMenuShortcut>(โปรไฟล์)</DropdownMenuShortcut>
+                          โปรไฟล์
+                          <DropdownMenuShortcut>
+                            (หน้าโปรไฟล์)
+                          </DropdownMenuShortcut>
                         </DropdownMenuItem>
                       </Link>
 
@@ -118,7 +142,15 @@ const Navbars = async ({ userId }: User) => {
                             twitterUrl: '',
                           }}
                         />
-                        <DropdownMenuShortcut>(ตั้งค่า)</DropdownMenuShortcut>
+                        <DropdownMenuShortcut>
+                          (หน้าตั้งค่า)
+                        </DropdownMenuShortcut>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem>
+                        <Link href="/active">อื่นๆ</Link>
+                        <DropdownMenuShortcut>
+                          (หน้าตรวจสอบ)
+                        </DropdownMenuShortcut>
                       </DropdownMenuItem>
 
                       <DropdownMenuSeparator />

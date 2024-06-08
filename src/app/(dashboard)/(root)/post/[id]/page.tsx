@@ -40,7 +40,7 @@ const Page = async ({ params }: { params: { id: string } }) => {
   const checkFollower = await CheckFollow(params.id, user.id)
 
   return (
-    <Container className=" inset-y-28 top-24 mt-32 h-full place-items-start ">
+    <Container className="  ">
       <div className="">
         <PostPage
           key={ArticleBy?.id}
@@ -98,7 +98,11 @@ const Page = async ({ params }: { params: { id: string } }) => {
                 image: '',
               }
             }
-            reply={comment.Reply || []}
+            reply={comment.Reply.map((r) => ({
+              id: r.id,
+              author: r.author,
+              replytext: r.replytext,
+            }))}
             isComment
             isReply
           />

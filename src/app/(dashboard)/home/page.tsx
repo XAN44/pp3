@@ -85,191 +85,79 @@ export default async function Page() {
   const followBlog = await fetchBlogByFollowing(user?.id || '')
 
   return (
-    <>
-      <div className="  mb-[590px] flex h-32 flex-col gap-0 xl:w-full xl:flex-row ">
-        <aside
-          className=" 
-                inset-x-0 left-[32px] w-full
-                place-items-start px-3 
-                xl:ml-16 xl:mt-10 xl:h-full
-                xl:w-96 "
-        >
-          {userInfo?.map((Account) => (
-            <>
-              <Fetchprofilehome
-                key={Account.id}
-                accountId={Account.id}
-                authUserId={user?.id || ''}
-                name={Account.name || ''}
-                nickname={Account.nickname || ''}
-                image={Account.image || ' '}
-                bio={Account.bio || ''}
-                totalFollower={userfollow}
-                totalFollowing={userfollowing}
-                article={{
-                  id: user?.id || '',
-                }}
-                event={{
-                  id: user?.id || '',
-                }}
-              />
-            </>
-          ))}
-
-          {!user && (
-            <Fetchprofilehome
-              key={''}
-              accountId={''}
-              authUserId={''}
-              name={''}
-              nickname={''}
-              image={' '}
-              bio={''}
-              totalFollower={0}
-              totalFollowing={0}
-              article={{
-                id: '',
-              }}
-              event={{
-                id: '',
-              }}
-            />
-          )}
-        </aside>
-        <main className="ml-16 mt-8 w-[690px]  ">
-          <div className=" place-items-center justify-center text-center ">
-            <div className=" ">
-              <Tabs defaultValue="article">
-                <TabsList className="">
-                  <TabsTrigger value="article"> บทความ</TabsTrigger>
-                  <TabsTrigger value="event"> กิจกรรม</TabsTrigger>
-                  <TabsTrigger value="follow"> ติดตาม</TabsTrigger>
-                </TabsList>
-
-                <TabsContent value="article">
-                  <div className="mb-6">
-                    <div className="mb-3 mt-5 place-items-center p-3 text-center ">
-                      {userInfo?.map((Account) => (
-                        <>
-                          <ArticleForm
-                            key={Account.id}
-                            accountId={Account.id}
-                            authUserId={user?.id || ''}
-                          />
-                        </>
-                      ))}
-                    </div>
-                    <Articleinhomepage />
-                  </div>
-                </TabsContent>
-                <TabsContent value="event">
-                  <div className="mb-6">
-                    <div className="mb-3 mt-5 place-items-center p-3 text-center ">
-                      {userInfo?.map((Account) => (
-                        <>
-                          <EventForm
-                            key={Account.id}
-                            accountId={Account.id}
-                            authUserId={user?.id || ''}
-                          />
-                        </>
-                      ))}
-                    </div>
-                    <EventInhomepage />
-                  </div>
-                </TabsContent>
-
-                <TabsContent value="follow">
-                  <div className="mb-6">
-                    <FollowinHomePage />
-                  </div>
-                </TabsContent>
-              </Tabs>
-              <div className="mb-3 mt-5 place-items-center p-3 text-center ">
-                {userInfo?.map((Account) => (
-                  <>
-                    <POSTFORM
-                      key={Account.id}
-                      accountId={Account.id}
-                      authUserId={user?.id || ''}
+    <div className="  mb-[790px]  h-screen max-w-full flex-col gap-0 xl:w-full xl:flex-row ">
+      <main className="ml-16 mt-8 w-[690px]  items-center justify-center ">
+        <div className=" place-items-center justify-center text-center ">
+          <div className="mb-3 mt-5 place-items-center p-3 text-center ">
+            {otherPost.map((post, index) => (
+              <div key={index}>
+                <div className="w-full rounded-lg p-3 shadow-xl">
+                  <div className="">
+                    <Posthome
+                      key={post?.id}
+                      id={post?.id}
+                      content={post.content}
+                      ImagePost={post?.ImagePost || ''}
+                      tag={post.tag}
+                      currentId={user?.id || ''}
+                      authorId={post.authorId}
+                      author={post.author}
+                      comments={post.comments}
+                      createAt={formatDistanceToNow(new Date(post.createdAt), {
+                        locale: th,
+                        addSuffix: true,
+                      })}
                     />
-                  </>
-                ))}
-
-                {otherPost.map(async (post: any, index: any) => (
-                  <>
-                    <div className="w-full rounded-lg p-3 shadow-xl">
-                      <div className="">
-                        <Posthome
-                          key={post?.id}
-                          id={post?.id}
-                          content={post.content}
-                          ImagePost={[post?.ImagePost]}
-                          tag={post.tag}
-                          currentId={user?.id || ''}
-                          authorId={post.authorId}
-                          author={post.author}
-                          comments={post.comments}
-                          createAt={formatDistanceToNow(
-                            new Date(post.createdAt),
-                            { locale: th, addSuffix: true }
-                          )}
+                  </div>
+                  <div className="left-3 mt-7 ">
+                    <CommentPostInHome
+                      postId={post.id}
+                      currentUserImage={user?.image || ''}
+                      currentUserId={user?.id || ''}
+                    />
+                  </div>
+                  <div className="mb-10 mt-10">
+                    {post.comments.slice(0, 4).map((comments: any) => (
+                      <>
+                        <CommentPostHome
+                          key={comments.id}
+                          id={comments.id}
+                          comments={comments?.text}
+                          postId={comments.articleId}
+                          current={
+                            user || {
+                              id: '',
+                              name: '',
+                              image: '',
+                            }
+                          }
+                          authorId={comments.authorId}
+                          createAt={new Date(
+                            comments.createdAt
+                          ).toLocaleString()}
+                          author={
+                            comments.author || {
+                              id: '',
+                              name: '',
+                              image: '',
+                            }
+                          }
+                          reply={comments.Reply}
+                          isComment
+                          isReply
                         />
-                      </div>
-                      <div className="left-3 mt-7 ">
-                        <CommentPostInHome
-                          postId={post.id}
-                          currentUserImage={user?.image || ''}
-                          currentUserId={user?.id || ''}
-                        />
-                      </div>
-                      <div className="mb-10 mt-10">
-                        {post.comments.slice(0, 4).map((comments: any) => (
-                          <>
-                            <CommentPostHome
-                              key={comments.id}
-                              id={comments.id}
-                              comments={comments?.text}
-                              postId={comments.articleId}
-                              current={
-                                user || {
-                                  id: '',
-                                  name: '',
-                                  image: '',
-                                }
-                              }
-                              authorId={comments.authorId}
-                              createAt={new Date(
-                                comments.createdAt
-                              ).toLocaleString()}
-                              author={
-                                comments.author || {
-                                  id: '',
-                                  name: '',
-                                  image: '',
-                                }
-                              }
-                              reply={comments.Reply}
-                              isComment
-                              isReply
-                            />
-                          </>
-                        ))}
-                        <Link href={`/post/${post.id}`}>
-                          <VisitBtnPOSTAll
-                            id={post.id}
-                            userId={user?.id || ''}
-                          />
-                        </Link>
-                      </div>
-                    </div>
-                  </>
-                ))}
+                      </>
+                    ))}
+                    <Link href={`/post/${post.id}`}>
+                      <VisitBtnPOSTAll id={post.id} userId={user?.id || ''} />
+                    </Link>
+                  </div>
+                </div>
               </div>
-            </div>
+            ))}
           </div>
-        </main>
-      </div>
-    </>
+        </div>
+      </main>
+    </div>
   )
 }

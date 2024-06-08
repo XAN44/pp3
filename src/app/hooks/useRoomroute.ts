@@ -5,6 +5,7 @@ import { HiArrowLeftOnRectangle, HiUser } from 'react-icons/hi2'
 import useConversation from './useConversation'
 import { signOut } from 'next-auth/react'
 import useRoom from './useRoom'
+import { HomeIcon } from '@radix-ui/react-icons'
 
 const useRoomroute = () => {
   const pathname = usePathname()
@@ -24,11 +25,11 @@ const useRoomroute = () => {
         icon: HiUser,
         active: pathname === '/chat',
       },
+
       {
-        label: 'Logout',
-        href: '#',
-        onClick: () => signOut(),
-        icon: HiArrowLeftOnRectangle,
+        label: 'Home',
+        href: '/home',
+        icon: HomeIcon,
       },
     ],
     [pathname, conversationroomId]

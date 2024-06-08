@@ -48,6 +48,7 @@ export default function NotificationCard({ userId }: user) {
   const {
     notificationCount,
     notificationIncrement,
+
     notificationRead,
     statusRead,
   } = UseStoreNotification((state) => ({
@@ -103,8 +104,8 @@ export default function NotificationCard({ userId }: user) {
                   <TabsTrigger value="other"> อื่นๆ</TabsTrigger>
                 </TabsList>
                 <TabsContent value="Post">
-                  {notifications.map((notification: any) => (
-                    <>
+                  {notifications.map((notification: any ) => (
+                    <div key='1'>
                       <div className="flex items-center justify-start ">
                         {notification?.postId && (
                           <>
@@ -139,12 +140,12 @@ export default function NotificationCard({ userId }: user) {
                           </>
                         )}
                       </div>
-                    </>
+                    </div>
                   ))}
                 </TabsContent>
                 <TabsContent value="Blog">
                   {notifications.map((notification: any) => (
-                    <>
+                    <div key='2'>
                       <div className="flex items-center justify-start ">
                         {notification?.articleId && (
                           <>
@@ -178,12 +179,12 @@ export default function NotificationCard({ userId }: user) {
                           </>
                         )}
                       </div>
-                    </>
+                    </div>
                   ))}
                 </TabsContent>
                 <TabsContent value="event">
                   {notifications.map((notification: any) => (
-                    <>
+                    <div key='3'>
                       <div className="flex items-center justify-start ">
                         {notification?.eventId && (
                           <>
@@ -217,12 +218,12 @@ export default function NotificationCard({ userId }: user) {
                           </>
                         )}
                       </div>
-                    </>
+                    </div>
                   ))}
                 </TabsContent>
                 <TabsContent value="other">
                   {notifications.map((notification: any) => (
-                    <>
+                    <div key='4'>
                       <div className="flex items-center justify-start ">
                         {notification?.followsFollowingId && (
                           <>
@@ -230,15 +231,14 @@ export default function NotificationCard({ userId }: user) {
                               <div className="grid">
                                 <p>{notification.body}</p>
                                 <p className="text-green-600">
-                                  {' '}
-                                  เมื่อ{' '}
+                                  เมื่อ
                                   {formatDistanceToNow(
                                     new Date(notification?.createAt),
                                     {
                                       addSuffix: true,
                                       locale: th,
                                     }
-                                  )}{' '}
+                                  )}
                                 </p>
                               </div>
                             </Link>
@@ -256,7 +256,7 @@ export default function NotificationCard({ userId }: user) {
                           </>
                         )}
                       </div>
-                    </>
+                    </div>
                   ))}
                 </TabsContent>
               </Tabs>

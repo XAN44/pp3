@@ -27,7 +27,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Select, SelectItem, Textarea } from '@nextui-org/react'
 import { Loader2 } from 'lucide-react'
 import Image from 'next/image'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import React, { ChangeEvent, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { CiImageOn } from 'react-icons/ci'
@@ -55,7 +55,7 @@ export default function ArticleForm({ accountId, authUserId }: Props) {
   const toast = useToast()
 
   const [contents, setContents] = useState('')
-
+  const router = useRouter()
   const pathname = usePathname()
   const postArticle = useForm<z.infer<typeof ArticlePost>>({
     resolver: zodResolver(ArticlePost),
@@ -112,6 +112,8 @@ export default function ArticleForm({ accountId, authUserId }: Props) {
       ArticleImage: values.articleImage ? String(values.articleImage) : '',
       tag: values.tag ? String(values.tag) : '',
       path: pathname || '',
+    }).then((createId) => {
+      router.push(`/article/${createId}`)
     })
 
     toast.promise(UserPromise, {
@@ -124,7 +126,6 @@ export default function ArticleForm({ accountId, authUserId }: Props) {
 
     setIsloading(false)
     setIsText('บันทึกสำเร็จ')
-    console.log('NEW ARTICLE', POSTARTILE)
   }
 
   const handleImage = (
@@ -155,7 +156,9 @@ export default function ArticleForm({ accountId, authUserId }: Props) {
     <>
       {accountId === authUserId && (
         <div className=" ">
-          <Button onClick={onOpen}>Create Blog</Button>
+          <Button onClick={onOpen} className="w-28">
+            สร้างบทความ
+          </Button>
           <AlertDialog
             motionPreset="slideInBottom"
             leastDestructiveRef={cancelRef}

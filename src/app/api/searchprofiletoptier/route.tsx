@@ -1,7 +1,13 @@
 import { db } from '@/lib/db'
+import { getIconCode } from 'next/dist/compiled/@vercel/og/emoji'
 import { NextResponse } from 'next/server'
+import { getCurrentUser } from '../../../lib/session'
 
 export async function GET(request: Request) {
+  const user = await getCurrentUser()
+  if (!user?.id) {
+    return NextResponse.json({ message: 'Plse login' })
+  }
   try {
     const topArticle = await db.user.findMany({
       select: {

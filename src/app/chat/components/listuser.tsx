@@ -8,7 +8,7 @@ interface UserListProps {
 }
 const ListUser: React.FC<UserListProps> = ({ items }) => {
   return (
-    <aside
+    <div
       className="
         fixed
         left-0
@@ -41,7 +41,7 @@ const ListUser: React.FC<UserListProps> = ({ items }) => {
           <Boxuser key={item.id} data={item} />
         ))}
       </div>
-    </aside>
+    </div>
   )
 }
 

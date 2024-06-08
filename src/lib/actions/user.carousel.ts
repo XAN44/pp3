@@ -77,6 +77,9 @@ export async function fetchInBlogPage() {
         },
       },
     },
+    orderBy: {
+      createAt: 'desc',
+    },
   })
   return fetchUser
 }
@@ -203,6 +206,9 @@ export async function fetchEventInBlogPage() {
         },
       },
     },
+    orderBy: {
+      createAt: 'desc',
+    },
   })
   return fetchUser
 }
@@ -300,10 +306,8 @@ export async function geteventregister(eventID: string) {
   })
   return fetchUser
 }
- 
 
- 
-  export async function fetchPostcarosule() {
+export async function fetchPostcarosule() {
   const fetchUser = await db.post.findMany({
     select: {
       id: true,
@@ -385,6 +389,7 @@ export async function fetchPostcarosuleByID(id: string) {
     },
     select: {
       id: true,
+
       ImagePost: true,
       content: true,
       createdAt: true,

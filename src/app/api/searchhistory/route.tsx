@@ -5,6 +5,10 @@ import { NextResponse } from 'next/server'
 export async function GET(request: Request) {
   try {
     const user = await getCurrentUser()
+
+    if (!user?.id) {
+      return NextResponse.json({ message: 'Plse login' })
+    }
     if (user?.id) {
       const article = await db.searchHistory.findMany({
         where: {

@@ -27,7 +27,7 @@ export default async function Page() {
 
   return (
     <>
-      <div className="h-full w-full items-center justify-center text-center ">
+      <div className="mt-16 h-full w-full items-center justify-center text-center">
         <Text as="b">คุณสามารถเลือกหาบทความได้ที่นี่</Text>
         <Text>เนื้อหาใหม่ของเราพร้อมแล้ว! ไปอ่านกันเลย</Text>
         <div className="mt-10 flex justify-center gap-5 space-x-4">

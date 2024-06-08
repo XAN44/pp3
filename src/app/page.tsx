@@ -2,15 +2,21 @@ import HomePageContent1 from '@/components/homepage/HomePageContent1'
 import HomePageContent from '../components/homepage/HomePageContent'
 import HomePageHeader from '../components/homepage/HomePageHeader'
 import Footer from '@/components/Footer'
+import Navbars from '../components/Navbar'
+import { useSession } from 'next-auth/react'
+import { getCurrentUser } from '../lib/session'
 
-export default function Home() {
+export default async function Home() {
+  const user = await getCurrentUser()
+
   return (
     <>
+      <Navbars userId={user?.id || ' '} />
       <div
         className="
-        -mt-[400px]
-        h-96
+         h-full
         w-full
+        
       "
       >
         {/* Cover Image */}

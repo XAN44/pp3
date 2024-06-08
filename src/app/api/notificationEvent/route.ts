@@ -29,7 +29,6 @@ export async function GET(request: Request) {
       const formatStartEvent = format(eventStartTime, 'yyyy-MM-dd ', {
         locale: th,
       })
-      console.log('formatStartEvent', formatStartEvent)
 
       const notificationExists = await db.notification.findFirst({
         where: {
@@ -54,9 +53,8 @@ export async function GET(request: Request) {
       }
     }
 
-    return NextResponse.json({})
+    return NextResponse.json({ message: 'succes' })
   } catch (error) {
-    console.log(error)
-    return error
+    return NextResponse.json(error)
   }
 }

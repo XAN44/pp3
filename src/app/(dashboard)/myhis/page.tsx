@@ -16,7 +16,6 @@ export default function page() {
         <HomePageContent />
       </div>
       <Divider className="my-4 w-[500px] ring-0 ring-black " />
-
       <Footer />
     </>
   )

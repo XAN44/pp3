@@ -23,7 +23,7 @@ const EventAllTravel: React.FC<EventInitial> = ({ data }) => {
 
   const [currentPage, setCurrentPage] = useState(1)
 
-  const itemPerPage = 4
+  const itemPerPage = 20
   const totalPage = Math.ceil((data?.length || 0) / itemPerPage) || 0
 
   const handlePageChange = (pageNumber: number) => {

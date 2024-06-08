@@ -27,7 +27,7 @@ const fetcher = (url: string) => fetch(url).then((res) => res.json())
 interface Props {
   id: string
   content: string | null
-  ImagePost: string[]
+  ImagePost: string
   createAt: string
   tag: {
     id: string | null
@@ -220,11 +220,7 @@ export default function Posthome({
       </div>
       <div className="mt-4 grid place-items-center items-center justify-center ">
         <div className="mt-4 grid place-items-center items-center justify-center">
-          {ImagePost.map((image, i) => (
-            <div key={i}>
-              <Image alt={`Blog Image ${i + 1}`} src={image} />
-            </div>
-          ))}
+          <Image alt={`Blog Image`} src={ImagePost} />
         </div>
       </div>
 
