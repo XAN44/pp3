@@ -39,7 +39,7 @@ const EventAllBusines: React.FC<EventInitial> = ({ data }) => {
     return (
       <div className=" flex h-dvh w-full items-center justify-center ">
         <Text as="b" fontSize="inherit" color="red">
-          ไม่มีเนื้อหาเกี่ยวกับการท่องเที่ยว
+          ไม่มีเนื้อหาเกี่ยวกับธุรกิจ
         </Text>
       </div>
     )

@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { db } from '../../../lib/db'
 import { getCurrentUser } from '../../../lib/session'
 import { U } from '../../../types/joinEvent'
+export const dynamic = "force-dynamic"
 
 export async function GET(req: Request) {
   try {
