@@ -116,9 +116,8 @@ const SignUpForm = () => {
           <div className="basis-1/2">
             <div className="flex h-full w-full flex-col items-center justify-center">
               <Text as="b" fontSize="larger">
-                สมัครบัญชีของคุณ
+                CREATE YOUR ACCOUNT
               </Text>
-              <Text as="p"> โปรดกรอกรายละเอียดด้านล่าง</Text>
               <div className="mt-6 w-1/3">
                 <GoogleSignInButton>Coninue with Google</GoogleSignInButton>
               </div>

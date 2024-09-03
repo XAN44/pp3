@@ -16,7 +16,7 @@ export default function VisitBtnPOSTAll({
 
   const visit = async () => {
     try {
-      await VisitPost(userId, id, pathname)
+      await VisitPost(userId, id, pathname || '')
     } catch (error) {
       console.error('Error:', error)
     }

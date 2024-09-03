@@ -185,6 +185,11 @@ export default function ArticleHomePage({
   const [follow, setFollow] = useState(false)
   const [liked, setLiked] = useState(false)
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
+  const {
+    isOpen: IsOpenEdit,
+    onOpen: OnOpenEdit,
+    onOpenChange: OnEdit,
+  } = useDisclosure()
 
   useEffect(() => {
     if (Follow && Follow.Followed) {
@@ -216,6 +221,7 @@ export default function ArticleHomePage({
       console.error('เกิดข้อผิดพลาดในการกดไลค์:', error)
     }
   }
+
   return (
     <>
       <div className="">
@@ -229,13 +235,17 @@ export default function ArticleHomePage({
             {author?.image && (
               <Avatar src={author?.image || ''} alt="profileImage" />
             )}
-            <div className="ml-3 grid">
+            <div className="ml-3 grid grid-cols-1">
               <Text> {author && author.name}</Text>
               <Text>{author && author.bio}</Text>
             </div>
           </Flex>
 
-          <div className="mt-3 flex items-center justify-center space-x-10 text-center xl:grid xl:items-start xl:justify-start xl:space-x-0 xl:text-start">
+          <div className="m-3 flex items-center justify-center gap-6 space-x-10 text-center xl:grid xl:items-start xl:justify-start xl:space-x-0 xl:text-start"></div>
+          <div className="flex flex-col">
+            <p>
+              <Link href={`/profile/${author?.id}`}>เยี่ยมชมโปรไฟล์</Link>
+            </p>
             <div className="flex ">
               <div className="w-[83px]">
                 <Text>ผู้ติดตาม</Text>
@@ -247,9 +257,6 @@ export default function ArticleHomePage({
               <Text>{totalFollowing}</Text>
             </div>
           </div>
-          <p>
-            <Link href={`/profile/${author?.id}`}>เยี่ยมชมโปรไฟล์</Link>
-          </p>
         </div>
 
         <div className="ml-3">
@@ -347,13 +354,13 @@ export default function ArticleHomePage({
                     after:transition
                     after:!duration-500 hover:-translate-y-2 hover:after:scale-150 hover:after:opacity-0
                     "
-                      onPress={onOpen}
+                      onPress={OnOpenEdit}
                     >
                       <CiEdit size={25} className="hover:cursor-pointer" />
                     </Button>
                   </div>
                   <div className="">
-                    <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+                    <Modal isOpen={IsOpenEdit} onOpenChange={OnEdit}>
                       <ModalContent>
                         {(onClose) => (
                           <>
@@ -393,7 +400,7 @@ export default function ArticleHomePage({
                 </>
               )}
             </div>
-            <Text as="small">เขียนวันที่ {createAt}</Text>
+            <Text as="small">สร้างเมื่อ {createAt}</Text>
           </div>
         </div>
       </div>

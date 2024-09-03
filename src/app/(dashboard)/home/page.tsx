@@ -1,19 +1,3 @@
-import ArticleForm from '@/components/article/articleForm'
-import EventCard from '@/components/event/eventCard'
-import EventForm from '@/components/event/eventForm'
-import HomePageHeader from '@/components/homepage/HomePageHeader'
-import ProfileHeader from '@/components/profile/ProfileHeader'
-import Fetchprofilehome from '@/components/profile/fetchprofilehome'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import {
-  Avatar,
-  Button,
-  Card,
-  CardBody,
-  CardFooter,
-  CardHeader,
-  Image,
-} from '@nextui-org/react'
 import Link from 'next/link'
 import { Badge } from '@chakra-ui/react'
 import {
@@ -22,42 +6,19 @@ import {
   getTotalFollowing,
 } from '@/lib/actions/user.follow'
 import { fetchUserProfileByID } from '@/lib/actions/user.post'
-import { TotalVisit1, TotalVisitEvent } from '@/lib/actions/user.visit'
 import { getCurrentUser } from '@/lib/session'
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from '@/components/ui/carousel'
-import ArticleinHome from '@/components/article/articleinhome'
-import Articleinhomepage from '@/components/compoinhome/articleinhomepage'
 
-import ArticleHome from '@/components/article/articlehome'
-import Reply from '@/components/post/replyForm'
-import CommentCard from '@/components/post/commentCard'
-import { Heading } from '@radix-ui/themes'
-import { FetchArticleByID } from '@/lib/actions/user.article'
-import CommentArticleInHome from '@/components/article/commentArticleInHome'
-import CommentArticleHome from '@/components/article/commentArticleHome'
-import VisitBtnArticleAll from '@/components/visit/visitArticleAll'
 import {
   fetchBlogByFollowing,
   fetchInBlogPage,
   fetchInEnentPage,
   fetchPostcarosule,
-  geteventregister,
 } from '@/lib/actions/user.carousel'
-import EventInhomepage from '@/components/event/eventInhomepage'
-import POSTFORM from '@/components/post/postform'
 import Posthome from '@/components/post/posthome'
 import CommentPostInHome from '@/components/post/commentPostInHome'
 import CommentPostHome from '@/components/post/commentPostHome'
 import VisitBtnPOSTAll from '@/components/visit/visitPost'
-import FollowinHomePage from '@/components/compoinhome/followinhomepage'
 import { Metadata } from 'next'
-import ArticleFormmany from '@/components/article/articleFormMany'
 import { format, formatDistanceToNow } from 'date-fns'
 import { th } from 'date-fns/locale'
 

@@ -31,11 +31,8 @@ export const EventPost = z.object({
   eventImage: z.string().url().nonempty('โปรดกรอกข้อมูล'),
   eventstartTime: z.string().nonempty('โปรดกรอกข้อมูล'),
   eventlocation: z.string().nonempty('โปรดกรอกข้อมูล'),
-  blogInArticle: z
-    .string()
-    .nonempty(
-      'โปรดกรอกข้อมูล หรือถ้าหากไม่มีบทความคุณสามารถเริ่มสร้างบล็อกได้เพื่อสร้างความน่าเชื่อถือในกิจกรรมของคุณ'
-    ),
+  blogInArticle: z.string(),
+
   eventcreator: z.string().nonempty('โปรดกรอกข้อมูล'),
   eventmore: z.string().nonempty('โปรดกรอกข้อมูล'),
   eventparticipants: z.string().refine(

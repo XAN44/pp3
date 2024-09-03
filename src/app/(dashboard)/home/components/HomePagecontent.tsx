@@ -6,13 +6,12 @@ import HomepageSocial from './HomepageSocial'
 const HomePageContent = () => {
   return (
     <div className="fixed left-28 h-full w-1/5 flex-col items-center justify-center overflow-y-scroll ">
-      <div className="   h-full  text-center">
+      <div className="h-full  text-center">
         <Text as="b" fontSize="larger" align="center">
           เนื้อหาแนะนำ
         </Text>
         <Articleinhomepage />
         <EventInhomepage />
-        <HomepageSocial />
       </div>
     </div>
   )

@@ -40,6 +40,11 @@ export default function NotificationCard({ userId }: user) {
   const path = usePathname() ?? ''
 
   const { data: notifications } = useSWR(`/api/notification`, fetcher)
+  const { data: notificationEvents } = useSWR(`/api/notificationEvent`, fetcher)
+  const { data: notificationsJoin } = useSWR(
+    `/api/notificationJoinEvent`,
+    fetcher
+  )
 
   const { data: noi } = useSWR(`/api/countnoi`, fetcher)
 
@@ -101,11 +106,12 @@ export default function NotificationCard({ userId }: user) {
                   <TabsTrigger value="Post"> โพสต์</TabsTrigger>
                   <TabsTrigger value="Blog"> บทความ</TabsTrigger>
                   <TabsTrigger value="event"> กิจกรรม</TabsTrigger>
-                  <TabsTrigger value="other"> อื่นๆ</TabsTrigger>
+                  <TabsTrigger value="other"> การติดตาม</TabsTrigger>
+                  <TabsTrigger value="remember">แจ้งกิจกรรม</TabsTrigger>
                 </TabsList>
                 <TabsContent value="Post">
-                  {notifications.map((notification: any ) => (
-                    <div key='1'>
+                  {notifications.map((notification: any) => (
+                    <div key="1">
                       <div className="flex items-center justify-start ">
                         {notification?.postId && (
                           <>
@@ -145,7 +151,7 @@ export default function NotificationCard({ userId }: user) {
                 </TabsContent>
                 <TabsContent value="Blog">
                   {notifications.map((notification: any) => (
-                    <div key='2'>
+                    <div key="2">
                       <div className="flex items-center justify-start ">
                         {notification?.articleId && (
                           <>
@@ -184,7 +190,7 @@ export default function NotificationCard({ userId }: user) {
                 </TabsContent>
                 <TabsContent value="event">
                   {notifications.map((notification: any) => (
-                    <div key='3'>
+                    <div key="3">
                       <div className="flex items-center justify-start ">
                         {notification?.eventId && (
                           <>
@@ -223,7 +229,7 @@ export default function NotificationCard({ userId }: user) {
                 </TabsContent>
                 <TabsContent value="other">
                   {notifications.map((notification: any) => (
-                    <div key='4'>
+                    <div key="4">
                       <div className="flex items-center justify-start ">
                         {notification?.followsFollowingId && (
                           <>
@@ -258,6 +264,40 @@ export default function NotificationCard({ userId }: user) {
                       </div>
                     </div>
                   ))}
+                </TabsContent>
+
+                <TabsContent value="remember">
+                  <TabsContent value="remember">
+                    {notificationsJoin
+                      .filter((notification: any) =>
+                        notification.body.includes('มีกิจกรรม')
+                      )
+                      .map((notification: any) => (
+                        <div key={notification.id}>
+                          <div className="flex items-center justify-start ">
+                            <Link href={`/event/${notification.eventId}`}>
+                              <div className="grid">
+                                <p>{notification.body}</p>
+                                <p className="text-green-600">
+                                  {formatDistanceToNow(
+                                    new Date(notification.createAt),
+                                    {
+                                      addSuffix: true,
+                                      locale: th,
+                                    }
+                                  )}
+                                </p>
+                              </div>
+                            </Link>
+                            <Delete
+                              className="hover:cursor-pointer"
+                              onClick={() => handleDelete(notification.id)}
+                              size={20}
+                            />
+                          </div>
+                        </div>
+                      ))}
+                  </TabsContent>
                 </TabsContent>
               </Tabs>
             </DialogDescription>

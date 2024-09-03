@@ -32,18 +32,17 @@ export async function Follower(
             followingId: currentId,
           },
         })
-        if(newFollower){  
-         const follow = await db.notification.create({
-          data: {
-            id: accountId,
-            userId: newFollower.followerId,
-            body: `@${user?.name} ได้ติดตามคุณ`,
-            followsFollowerId: newFollower.followerId,
-            followsFollowingId: newFollower.followingId,
-          },
-        })  
-        console.log(follow)
-      }
+        if (newFollower) {
+          const follow = await db.notification.create({
+            data: {
+              id: accountId,
+              userId: newFollower.followerId,
+              body: `@${user?.name} ได้ติดตามคุณ`,
+              followsFollowerId: newFollower.followerId,
+              followsFollowingId: newFollower.followingId,
+            },
+          })
+        }
 
         console.log('Added new follow:', newFollower)
         revalidatePath(path)
@@ -83,16 +82,14 @@ export async function unFollower(
             followingId: currentId,
           },
         })
-          
-        if(deletedFollow){
+
+        if (deletedFollow) {
           await db.notification.delete({
-            where:{
+            where: {
               id: accountId,
             },
-            
           })
         }
-
 
         revalidatePath(path)
         console.log(`Deleted follow relation: ${JSON.stringify(deletedFollow)}`)

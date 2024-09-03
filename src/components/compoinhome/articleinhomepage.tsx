@@ -29,8 +29,12 @@ export default async function Articleinhomepage() {
   const user = await getCurrentUser()
   return (
     <div className="flex flex-col items-center justify-center">
-      <Text as="b">บล็อกแนะนำวันนี้</Text>
-
+      <div className="flex w-full flex-row items-center justify-between ">
+        <Text as="b">บล็อกแนะนำวันนี้</Text>
+        <Link href="/allblog" underline="always">
+          ดูทั้งหมด
+        </Link>
+      </div>
       <Carousel
         opts={{
           align: 'center',
@@ -112,11 +116,6 @@ export default async function Articleinhomepage() {
         <CarouselPrevious />
         <CarouselNext />
       </Carousel>
-      <div className="flex w-full flex-col">
-        <div className="items-end justify-end text-end">
-          <Link href="/allblog">ดูทั้งหมด</Link>
-        </div>
-      </div>
     </div>
   )
 }

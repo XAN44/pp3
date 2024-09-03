@@ -201,7 +201,11 @@ export default function EventHomePage({
             </div>
           </Flex>
 
-          <div className="mt-3 flex items-center justify-center space-x-10 text-center xl:grid xl:items-start xl:justify-start xl:space-x-0 xl:text-start">
+          <div className="m-3 flex items-center justify-center gap-6 space-x-10 text-center xl:grid xl:items-start xl:justify-start xl:space-x-0 xl:text-start"></div>
+          <div className="flex flex-col">
+            <p>
+              <Link href={`/profile/${author?.id}`}>เยี่ยมชมโปรไฟล์</Link>
+            </p>
             <div className="flex ">
               <div className="w-[83px]">
                 <Text>ผู้ติดตาม</Text>
@@ -213,9 +217,6 @@ export default function EventHomePage({
               <Text>{totalFollowing}</Text>
             </div>
           </div>
-          <p>
-            <Link href={`/profile/${author?.id}`}>เยี่ยมชมโปรไฟล์</Link>
-          </p>
         </div>
 
         <div className="ml-3">
@@ -306,7 +307,7 @@ export default function EventHomePage({
                 {checkREGEVENT?.eventparticipants}
               </div>
             )}
-            <Text as="small">เขียนวันที่ {createAt}</Text>
+            <Text as="small">สร้างเมื่อ {createAt}</Text>
           </div>
         </div>
       </div>

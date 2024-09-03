@@ -15,7 +15,7 @@ interface Props {
   eventparticipants: string
   eventcreator: string
   eventmore: string
-  blogInArticle: any
+  blogInArticle: string
   path: string
   tag: string
 }
@@ -39,7 +39,7 @@ export async function EVENTPOST({
       throw new Error('กรุณาเข้าสู่ระบบ')
     }
 
-   const create = await db.event.create({
+    const create = await db.event.create({
       data: {
         author: {
           connect: { id: authorId },
@@ -52,7 +52,7 @@ export async function EVENTPOST({
         eventstartTime,
         eventlocation,
         blogInArticle: {
-          connect: { id: blogInArticle },
+          connect: { id: blogInArticle }, // ใช้ id เท่านั้น
         },
         eventparticipants,
         tag: {
@@ -61,41 +61,44 @@ export async function EVENTPOST({
           },
         },
       },
-      select:{
-        id:true,
-        title:true,
-        author:{
-          include:{
-            followers:true,
-            following:true,
-          }
-        }
-      }
-    })
-     if(create){
-      const findFollow = await db.follows.findMany({
-        where:{
-          followerId:create.author?.id
+      select: {
+        id: true,
+        title: true,
+        author: {
+          include: {
+            followers: true,
+            following: true,
+          },
         },
-        select:{
-          following:true
-        }
-      })      
-      if(!findFollow){return ''}
-      if(findFollow){
-       for(const follow of findFollow){
-        await db.notification.create({
-          data:{
-            body:`ผู้ใช้ ${create.author?.name} ที่คุณติดตามได้สร้างกิจกรรม ${create.title}`,
-            eventId:create.id,
-            userId:follow.following.id
-          }
-        })
+      },
+    })
+    if (create) {
+      const findFollow = await db.follows.findMany({
+        where: {
+          followerId: create.author?.id,
+        },
+        select: {
+          following: true,
+        },
+      })
+      if (!findFollow) {
+        return ''
       }
+      if (findFollow) {
+        for (const follow of findFollow) {
+          await db.notification.create({
+            data: {
+              body: `ผู้ใช้ ${create.author?.name} ที่คุณติดตามได้สร้างกิจกรรม ${create.title}`,
+              eventId: create.id,
+              userId: follow.following.id,
+            },
+          })
+        }
       }
     }
 
     revalidatePath(path)
+    console.log(create)
     return create.id
   } catch (error: any) {
     console.error(error) // Log the error for debugging

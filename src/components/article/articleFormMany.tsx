@@ -82,7 +82,7 @@ export default function ArticleFormmany({ accountId, authUserId }: Props) {
         : '',
       ArticleImage: values.articleImage ? String(values.articleImage) : '',
       tag: values.tag ? String(values.tag) : '',
-      path: pathname,
+      path: pathname || '',
     })
 
     toast.promise(UserPromise, {

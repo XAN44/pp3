@@ -75,11 +75,21 @@ function ProfileHeader({
       revalidateOnMount: true, // *ปิดระมวลผลเริ่มต้น
     }
   )
-  const router = useRouter()
 
-  const handleClick = () => {
-    router.push(`/conversationroom/`)
-  }
+  const router = useRouter()
+  const [isLoading, setIsloading] = useState(false)
+
+  const handleClick = useCallback(() => {
+    setIsloading(true)
+    axios
+      .post('/api/conversationroom', {
+        userId: accountId,
+      })
+      .then((data) => {
+        router.push(`/conversationroom/${data.data.accountId}`)
+      })
+      .finally(() => setIsloading(false))
+  }, [accountId, router])
 
   const visitHandler = async (articleId: string) => {
     await fetch('/api/search', {
@@ -119,14 +129,14 @@ function ProfileHeader({
             {/* NAME AND NICKNAME */}
             <div className=" mt-4 grid items-center justify-center text-center xl:mr-4 xl:items-start xl:justify-start xl:text-start ">
               <div
-                className="flex items-center  justify-center text-center
+                className="flex flex-col items-start  justify-start text-start
               
-                xl:mr-4 xl:items-start xl:justify-start xl:text-start"
+                 xl:items-start xl:justify-start xl:text-start"
               >
                 <Text fontSize="large" as="b">
                   {name}
                 </Text>
-                <div className="ml-2">
+                <div className=" ">
                   {nickname && nickname ? (
                     <Text fontSize="small">@{nickname}</Text>
                   ) : (

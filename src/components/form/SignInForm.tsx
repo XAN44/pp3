@@ -25,6 +25,7 @@ import { useEffect, useState } from 'react'
 import useImageForm from './imageIndex'
 import { Domine } from 'next/font/google'
 import { motion } from 'framer-motion'
+import ResetPasswordForm from './components/resetPassword'
 const FormSchema = z.object({
   email: z.string().min(1, 'Email is required').email('Invalid email'),
   password: z
@@ -168,6 +169,15 @@ const SignInForm = () => {
                     href="/sign-up"
                   >
                     Sign up
+                  </Link>
+                </p>
+                <p className="m-3 mt-2 text-center text-sm text-gray-600">
+                  If you forgot password ? &nbsp;
+                  <Link
+                    className="text-blue-500 hover:underline"
+                    href="/resetPassword"
+                  >
+                    Reset Password
                   </Link>
                 </p>
               </Form>

@@ -178,7 +178,9 @@ const ProfileDrawer: React.FC<ProfileDrawerProps> = ({
                                             "
                           >
                             <div className="mb-2">
-                              <Avatars user={otherUser} />
+                              <Link href={`/profile/${otherUser.id}`}>
+                                <Avatars user={otherUser} />
+                              </Link>
                             </div>
                             <div className="">{title}</div>
                             <div className="text-sm text-gray-500">

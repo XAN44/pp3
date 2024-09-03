@@ -34,8 +34,12 @@ export default async function EventInhomepage() {
   const user = await getCurrentUser()
   return (
     <div className="flex flex-col items-center justify-center ">
-      <Text as="b">กิจกรรมแนะนำวันนี้</Text>
-
+      <div className="flex w-full flex-row items-center justify-between ">
+        <Text as="b">กิจกรรมแนะนำวันนี้</Text>
+        <Link href="/allevent" underline="always">
+          ดูทั้งหมด
+        </Link>
+      </div>
       <Carousel
         opts={{
           align: 'center',
@@ -118,12 +122,6 @@ export default async function EventInhomepage() {
         <CarouselPrevious />
         <CarouselNext />
       </Carousel>
-      <div className="flex w-full flex-col">
-        <div className="items-end justify-end text-end">
-          <Link href="/allevent">ดูทั้งหมด</Link>
-        </div>
-        <div className="divider divider-neutral "></div>
-      </div>
     </div>
   )
 }

@@ -6,7 +6,7 @@ import Link from 'next/link'
 import { Text } from '@chakra-ui/react'
 import { Heart, Trash2 } from 'lucide-react'
 import useSWR from 'swr'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import VisitBtnArticleC from '../visit/visitArticleC'
 import Followbtn from '../follow/followbtn'
 import { Card, CardBody, CardFooter } from '@nextui-org/react'
@@ -27,6 +27,8 @@ import {
 } from '@nextui-org/react'
 import { AiOutlineDelete } from 'react-icons/ai'
 import { useRouter } from 'next/navigation'
+import axios from 'axios'
+import { CiEdit } from 'react-icons/ci'
 const fetcher = (url: string) => fetch(url).then((res) => res.json())
 
 interface Props {
@@ -124,10 +126,37 @@ export default function PostPage({
       console.error('เกิดข้อผิดพลาดในการลบโพส:', error)
     }
   }
+  const [Textcontent, setTextContent] = useState('')
+
+  useEffect(() => {
+    setTextContent(articleContent || '')
+  }, [setTextContent, articleContent])
+
+  const handleEdit = useCallback(() => {
+    axios
+      .put('/api/POSTEDIT', {
+        id,
+        ...(Textcontent !== articleContent
+          ? { content: Textcontent }
+          : { content: articleContent }),
+      })
+      .then((res) => {
+        router.refresh()
+        console.log(res)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }, [id, Textcontent, articleContent, router])
 
   const [follow, setFollow] = useState(false)
   const [liked, setLiked] = useState(false)
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
+  const {
+    isOpen: IsOpenEdit,
+    onOpen: OnOpenEdit,
+    onOpenChange: OnEdit,
+  } = useDisclosure()
 
   useEffect(() => {
     if (Follow && Follow.Followed) {
@@ -204,7 +233,11 @@ export default function PostPage({
               checkFollow={isFollow}
             />
           )}
-          <div className="mt-3 flex items-center justify-center space-x-10 text-center xl:grid xl:items-start xl:justify-start xl:space-x-0 xl:text-start">
+          <div className="m-3 flex items-center justify-center gap-6 space-x-10 text-center xl:grid xl:items-start xl:justify-start xl:space-x-0 xl:text-start"></div>
+          <div className="flex flex-col">
+            <p>
+              <Link href={`/profile/${author?.id}`}>เยี่ยมชมโปรไฟล์</Link>
+            </p>
             <div className="flex ">
               <div className="w-[83px]">
                 <Text>ผู้ติดตาม</Text>
@@ -216,9 +249,6 @@ export default function PostPage({
               <Text>{totalFollowing}</Text>
             </div>
           </div>
-          <p>
-            <Link href={`/profile/${author?.id}`}>เยี่ยมชมโปรไฟล์</Link>
-          </p>
         </div>
 
         <div className="ml-3">
@@ -303,10 +333,55 @@ export default function PostPage({
                       )}
                     </ModalContent>
                   </Modal>
+                  <Button
+                    isIconOnly
+                    size="sm"
+                    aria-label="delete"
+                    variant="light"
+                    color="danger"
+                    className="
+                    relative left-4 overflow-visible 
+                    after:absolute after:inset-0 after:bg-background/40 
+                    after:transition
+                    after:!duration-500 hover:-translate-y-2 hover:after:scale-150 hover:after:opacity-0
+                    "
+                    onPress={OnOpenEdit}
+                  >
+                    <CiEdit size={25} className="hover:cursor-pointer" />
+                  </Button>
+                  <Modal isOpen={IsOpenEdit} onOpenChange={OnEdit}>
+                    <ModalContent>
+                      {(onClose) => (
+                        <>
+                          <ModalHeader className="flex flex-col gap-1">
+                            เริ่มการแก้ไขบทความ
+                          </ModalHeader>
+                          <ModalBody>
+                            <input
+                              type="text"
+                              onChange={(e) => setTextContent(e.target.value)}
+                            />
+                          </ModalBody>
+                          <ModalFooter>
+                            <Button
+                              color="danger"
+                              variant="light"
+                              onPress={handleEdit}
+                            >
+                              แก้ไขบทความ
+                            </Button>
+                            <Button color="primary" onPress={onClose}>
+                              ยกเลิก
+                            </Button>
+                          </ModalFooter>
+                        </>
+                      )}
+                    </ModalContent>
+                  </Modal>
                 </>
               )}
             </div>
-            <Text as="small">เขียนวันที่ {createAt}</Text>
+            <Text as="small">สร้างเมื่อ {createAt}</Text>
           </div>
         </div>
       </div>

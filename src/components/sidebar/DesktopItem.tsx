@@ -36,7 +36,7 @@ const DesktopItem: React.FC<DesktopItemProps> = ({
             p-3
             text-sm
             font-semibold
-            leading-6
+            leading-6 
             text-gray-500
             hover:bg-gray-100
             hover:text-black

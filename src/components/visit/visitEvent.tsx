@@ -16,7 +16,7 @@ export default function VisitEvent({
 
   const visit = async () => {
     try {
-      await VisitEventt(userId, id, pathname)
+      await VisitEventt(userId, id, pathname || '')
     } catch (error) {
       console.error('Error:', error)
     }

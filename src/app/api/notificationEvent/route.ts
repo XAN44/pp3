@@ -1,7 +1,6 @@
 import { db } from '@/lib/db'
 import { getCurrentUser } from '@/lib/session'
-import { format, parseISO, isSameDay, addDays } from 'date-fns'
-import { th } from 'date-fns/locale'
+import { parseISO, isSameDay, addDays } from 'date-fns'
 import { NextResponse } from 'next/server'
 
 export async function GET(request: Request) {
@@ -9,9 +8,10 @@ export async function GET(request: Request) {
     const user = await getCurrentUser()
 
     const dateTimeNow = new Date()
-    const today = format(dateTimeNow, 'yyyy-MM-dd ', { locale: th })
+    // No need to format the date, just use the date object
+    const today = dateTimeNow
 
-    console.log('today', dateTimeNow)
+    console.log('today', today)
 
     const events = await db.registerEvent.findMany({
       where: {
@@ -26,8 +26,10 @@ export async function GET(request: Request) {
       const eventStartTime = parseISO(event.event?.eventstartTime || '')
       const notificationDate = addDays(eventStartTime, -1)
 
-      const formatStartEvent = format(eventStartTime, 'yyyy-MM-dd ', {
-        locale: th,
+      const formatStartEvent = eventStartTime.toLocaleDateString('th-TH', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
       })
 
       const notificationExists = await db.notification.findFirst({
@@ -53,7 +55,7 @@ export async function GET(request: Request) {
       }
     }
 
-    return NextResponse.json({ message: 'succes' })
+    return NextResponse.json({ message: 'success' })
   } catch (error) {
     return NextResponse.json(error)
   }

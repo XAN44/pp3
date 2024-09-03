@@ -78,7 +78,7 @@ const RoomList: React.FC<ConversationProps> = ({ initialItem }) => {
   }, [pusherKey, conversationroomId, router])
 
   return (
-    <aside
+    <div
       className={clsx(
         `
             fixed
@@ -130,7 +130,7 @@ const RoomList: React.FC<ConversationProps> = ({ initialItem }) => {
           />
         ))}
       </div>
-    </aside>
+    </div>
   )
 }
 

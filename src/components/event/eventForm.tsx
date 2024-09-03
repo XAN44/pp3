@@ -107,6 +107,9 @@ export default function EventForm({ accountId, authUserId }: Props) {
         }
       }
     }
+    if (blogInEvent && blogInEvent.length > 0) {
+      values.blogInArticle = blogInEvent[0]?.id || '' // ใช้ ID จาก blogInEvent
+    }
 
     const UserPromise = EVENTPOST({
       authorId: authUserId,
@@ -123,6 +126,7 @@ export default function EventForm({ accountId, authUserId }: Props) {
       eventcreator: values.eventcreator ? String(values.eventcreator) : '',
       eventmore: values.eventmore ? String(values.eventmore) : '',
       blogInArticle: values.blogInArticle ? String(values.blogInArticle) : '',
+
       tag: values.tag ? String(values.tag) : '',
       path: pathname || '',
     }).then((id) => {
@@ -137,7 +141,6 @@ export default function EventForm({ accountId, authUserId }: Props) {
 
     setIsloading(false)
     setIsText('บันทึกสำเร็จ')
-    console.log('NEW ARTICLE', POSTARTILE)
   }
 
   const handleImage = (

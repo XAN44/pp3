@@ -20,11 +20,12 @@ export async function GET(request: Request) {
         likeId: true,
         readStatus: true,
         createAt: true,
-        followsFollowerId:true,
-        followsFollowingId:true
+        followsFollowerId: true,
+        followsFollowingId: true,
       },
     })
 
+    console.log(notifications.map((f) => f.body))
     return NextResponse.json(notifications)
   } catch (error: any) {
     console.error(`Error fetching notifications: ${error.message}`)

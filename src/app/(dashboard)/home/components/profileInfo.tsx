@@ -13,7 +13,7 @@ const ProfileInfo = async () => {
   const userfollow = await getTotalFollowers(user?.id || '')
   const userfollowing = await getTotalFollowing(user?.id || '')
   return (
-    <aside
+    <div
       className=" 
       inset-x-0
       right-0 place-items-start
@@ -66,7 +66,7 @@ const ProfileInfo = async () => {
       <div className="mt-3">
         <ProfileInfoAbout />
       </div>
-    </aside>
+    </div>
   )
 }
 

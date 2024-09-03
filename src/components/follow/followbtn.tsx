@@ -30,6 +30,7 @@ function Followbtn({
       } else {
         await Follower(ProfileId, isFollowing, path || '  ')
       }
+
       setisisDisabled(false) // จบการโหลดข้อมูล
     } catch (error) {
       console.error('Error:', error)
@@ -39,7 +40,7 @@ function Followbtn({
 
   return (
     <>
-      <div className="">
+      <div className="mt-3">
         <Button onClick={onFollow} isDisabled={isDisabled}>
           {checkFollow ? 'Unfollow' : 'Follow'}
         </Button>

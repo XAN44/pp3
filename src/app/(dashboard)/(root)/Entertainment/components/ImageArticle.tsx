@@ -59,7 +59,7 @@ const ImageArticle = () => {
             </div>
           </div>
         )}
-      </div>
+      </div>  
     </div>
   )
 }

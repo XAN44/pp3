@@ -144,7 +144,7 @@ export function ImgProfilee({ user }: Props) {
     await updateImage({
       userId: user?.id,
       image: values.image,
-      path: pathname as string ,
+      path: pathname as string,
     })
     toast({
       title: 'อัพเดทโปรไฟล์สําเร็จ',
@@ -179,7 +179,7 @@ export function ImgProfilee({ user }: Props) {
     await updateName({
       userId: user?.id,
       name: values.name,
-      path: pathname as string ,
+      path: pathname as string,
     })
     toast({
       title: 'อัพเดท name สำเร็จ',
@@ -218,7 +218,7 @@ export function ImgProfilee({ user }: Props) {
     await twitter({
       userId: user?.id,
       Twitter: values.twitterUrl,
-      path: pathname as string ,
+      path: pathname as string,
     })
     toast({
       description: 'Your message has been sent.',
@@ -369,7 +369,7 @@ export function ImgProfilee({ user }: Props) {
                       <FormItem>
                         <FormLabel className="text-sm">ชื่อ</FormLabel>
                         <FormControl>
-                          <Textarea
+                          <Input
                             placeholder="ชื่อ"
                             className="w-full"
                             {...field}

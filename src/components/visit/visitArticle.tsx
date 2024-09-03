@@ -16,7 +16,7 @@ export default function VisitBtnArticle({
 
   const visit = async () => {
     try {
-      await VisitArticle(userId, id, pathname)
+      await VisitArticle(userId, id, pathname || '')
     } catch (error) {
       console.error('Error:', error)
     }

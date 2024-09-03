@@ -45,7 +45,6 @@ const Navbars = async ({ userId }: User) => {
       shouldHideOnScroll
       className="  flex w-full max-w-full bg-black text-white "
     >
-      <NavbarBrand>LOGO</NavbarBrand>
       <NavbarBrand>
         <Link href="/home">
           <Text as="b" color="white">

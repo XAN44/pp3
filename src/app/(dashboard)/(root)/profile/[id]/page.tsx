@@ -24,6 +24,7 @@ import { th } from 'date-fns/locale'
 import { Metadata } from 'next'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
+import ContentFollow from '../../../../../components/follow/contentFollow'
 
 export const metadata: Metadata = {
   title: 'Profile',
@@ -62,8 +63,8 @@ export default async function Page({ params }: { params: { id: string } }) {
             <div
               className=" 
             
-            inset-x-0  left-[32px]  w-full   place-items-start  px-3 xl:fixed xl:h-full xl:w-96 
-            
+            inset-x-0  left-[32px]  w-full   place-items-start  px-3 pt-3 xl:fixed xl:h-full 
+            xl:w-96
             "
             >
               <ProfileHeader
@@ -97,10 +98,10 @@ export default async function Page({ params }: { params: { id: string } }) {
               <div className="relative place-items-center justify-center text-center ">
                 <Tabs defaultValue="article">
                   <TabsList className="">
-                    <TabsTrigger value="POST">POST</TabsTrigger>
-
+                    <TabsTrigger value="POST">โพสต์</TabsTrigger>
                     <TabsTrigger value="article"> บทความ</TabsTrigger>
                     <TabsTrigger value="event"> กิจกรรม</TabsTrigger>
+                    <TabsTrigger value="follow"> การติดตาม</TabsTrigger>
                   </TabsList>
                   <TabsContent value="POST">
                     <div className="mb-3 mt-5 grid place-items-center items-center justify-center p-3 text-center">
@@ -242,6 +243,16 @@ export default async function Page({ params }: { params: { id: string } }) {
                           registerCount={0}
                         />
                       ))}
+                    </div>
+                  </TabsContent>
+                  <TabsContent value="follow">
+                    <div className="place-items-center text-center">
+                      <ContentFollow
+                        id={Account.id}
+                        checkFollow={checkFollower}
+                        isFollowing={user.id}
+                        authUserId={user.id}
+                      />
                     </div>
                   </TabsContent>
                 </Tabs>
