@@ -15,11 +15,7 @@ const ProfileInfo = async () => {
   return (
     <div
       className=" 
-      inset-x-0
-      right-0 place-items-start
-      px-3  
-      xl:ml-16 xl:mt-10 xl:h-full
-      xl:w-96
+    h-full w-full
                  "
     >
       {userInfo?.map((Account) => (
@@ -63,9 +59,6 @@ const ProfileInfo = async () => {
           }}
         />
       )}
-      <div className="mt-3">
-        <ProfileInfoAbout />
-      </div>
     </div>
   )
 }

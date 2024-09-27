@@ -11,6 +11,7 @@ import HomepageChat from '../../app/(dashboard)/home/components/HomepageChart'
 import POSTFORM from '../post/postform'
 import ArticleForm from '../article/articleForm'
 import EventForm from '../event/eventForm'
+import { AvatarImage } from '@radix-ui/react-avatar'
 
 interface Props {
   accountId: string
@@ -93,7 +94,7 @@ function Fetchprofilehome({
       items-center
       justify-center
       rounded-lg
-      border border-gray-300
+ 
       pb-3 pt-3
       "
       >

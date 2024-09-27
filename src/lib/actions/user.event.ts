@@ -51,15 +51,18 @@ export async function EVENTPOST({
         eventImage,
         eventstartTime,
         eventlocation,
-        blogInArticle: {
-          connect: { id: blogInArticle }, // ใช้ id เท่านั้น
-        },
         eventparticipants,
         tag: {
           create: {
             tag: tag,
           },
         },
+        // เช็คว่า blogInArticle มีค่าอยู่หรือไม่ก่อนจะทำการเชื่อมโยง
+        ...(blogInArticle && {
+          blogInArticle: {
+            connect: { id: blogInArticle }, // ใช้ id เท่านั้น
+          },
+        }),
       },
       select: {
         id: true,
@@ -72,6 +75,7 @@ export async function EVENTPOST({
         },
       },
     })
+
     if (create) {
       const findFollow = await db.follows.findMany({
         where: {
@@ -98,7 +102,6 @@ export async function EVENTPOST({
     }
 
     revalidatePath(path)
-    console.log(create)
     return create.id
   } catch (error: any) {
     console.error(error) // Log the error for debugging
