@@ -112,7 +112,7 @@ export async function getTotalFollowers(accountId: string) {
     })
     return totalFollowers
   } catch (error) {
-    throw new Error('เกิดข้อผิดพลาดในการดึงจำนวนผู้ติดตาม')
+    return null
   }
 }
 

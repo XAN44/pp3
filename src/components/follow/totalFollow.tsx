@@ -16,7 +16,7 @@ export default function TotalFollowe({ account }: Props) {
     const fetchTotalFollowers = async () => {
       try {
         const followersCount = await getTotalFollowers(account.id)
-        setTotalFollowers(followersCount)
+        setTotalFollowers(followersCount || 0)
       } catch (error) {
         console.error(error)
       }

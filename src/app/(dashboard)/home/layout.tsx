@@ -16,11 +16,29 @@ export default async function HomeLayout({
   children: React.ReactNode
 }) {
   return (
-    <main className="grid h-full grid-cols-3">
-      <div className="sticky col-span-1 h-full max-h-full">
+    <main
+      className="
+    flex 
+    h-full 
+    max-h-full 
+    w-full 
+    max-w-full
+     "
+    >
+      <div className="mt-8  hidden h-full max-h-full w-1/2 md:hidden    lg:flex">
+        <HomePageContent />
+      </div>
+      {children}
+      <div
+        className="
+      fixed 
+      right-0  
+      hidden 
+      max-h-full w-1/4
+      overflow-y-scroll md:hidden lg:flex"
+      >
         <ProfileInfo />
       </div>
-      <div className="col-span-2 overflow-y-auto">{children}</div>
     </main>
   )
 }

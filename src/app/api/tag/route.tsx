@@ -16,5 +16,7 @@ export async function GET(req: Request) {
       },
     })
     return NextResponse.json(articles)
-  } catch (error) {}
+  } catch (error) {
+    return NextResponse.json('Error sometihn')
+  }
 }

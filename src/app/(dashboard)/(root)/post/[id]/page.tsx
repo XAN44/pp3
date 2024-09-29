@@ -51,7 +51,7 @@ const Page = async ({ params }: { params: { id: string } }) => {
           tag={ArticleBy.tag.map((tagItem) => ({
             tag: tagItem.tag || '',
           }))}
-          totalFollower={userfollow}
+          totalFollower={userfollow || 0}
           totalFollowing={userfollowing}
           isFollow={checkFollower}
           authorId={ArticleBy.authorId}

@@ -43,44 +43,44 @@ const Navbars = async ({ userId }: User) => {
   return (
     <Navbar
       shouldHideOnScroll
-      className="  flex w-full max-w-full bg-black text-white "
+      className="  flex w-full max-w-full items-center justify-center bg-black text-center text-white "
     >
-      <NavbarBrand>
+      <NavbarBrand className="flex w-full items-center justify-center">
         <Link href="/home">
           <Text as="b" color="white">
             Home
           </Text>
         </Link>
       </NavbarBrand>
-      <NavbarBrand>
+      <NavbarBrand className="flex w-full items-center justify-center">
         <Link href="/Entertainment">
           <Text as="b" color="white">
             Entertainment
           </Text>
         </Link>
       </NavbarBrand>
-      <NavbarBrand>
+      <NavbarBrand className="flex w-full items-center justify-center">
         <Link href="/allevent">
           <Text as="b" color="white">
             Activty
           </Text>
         </Link>
       </NavbarBrand>
-      <NavbarBrand>
+      <NavbarBrand className="flex w-full items-center justify-center">
         <Link href="/allblog">
           <Text as="b" color="white">
             Blog
           </Text>
         </Link>
       </NavbarBrand>
-      <NavbarBrand>
+      <NavbarBrand className="flex w-full items-center justify-center">
         <Link href="/myhis">
           <Text as="b" color="white">
             About
           </Text>
         </Link>
       </NavbarBrand>
-      <NavbarBrand>
+      <NavbarBrand className="flex w-full items-center justify-center">
         <Link href="/workwithus">
           <Text as="b" color="white">
             Contact

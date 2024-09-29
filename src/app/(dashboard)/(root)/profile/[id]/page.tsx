@@ -75,7 +75,7 @@ export default async function Page({ params }: { params: { id: string } }) {
                 nickname={Account.nickname || ''}
                 image={Account.image || ' '}
                 bio={Account.bio || ''}
-                totalFollower={userfollow}
+                totalFollower={userfollow || 0}
                 totalFollowing={userfollowing}
                 isFollow={checkFollower}
                 contact={{

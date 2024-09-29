@@ -63,7 +63,7 @@ const Page = async ({ params }: { params: { id: string } }) => {
             name: user.name || '',
           }}
           isFollow={checkFollower}
-          totalFollower={userfollow}
+          totalFollower={userfollow || 0}
           totalFollowing={userfollowing}
           totalVisit={await TotalVisitEvent(ArticleBy.id)}
           createAt={new Date(ArticleBy.createAt).toLocaleString()}

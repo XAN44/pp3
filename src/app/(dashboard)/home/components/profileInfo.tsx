@@ -28,7 +28,7 @@ const ProfileInfo = async () => {
             nickname={Account.nickname || ''}
             image={Account.image || ' '}
             bio={Account.bio || ''}
-            totalFollower={userfollow}
+            totalFollower={userfollow || 0}
             totalFollowing={userfollowing}
             article={{
               id: user?.id || '',

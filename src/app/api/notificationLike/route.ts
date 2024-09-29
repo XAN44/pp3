@@ -10,6 +10,11 @@ export async function GET(request: Request) {
         postId: true,
       },
     })
+    if (!getNorification) {
+      return NextResponse.json('Null')
+    }
     return NextResponse.json(getNorification)
-  } catch (error) {}
+  } catch (error) {
+    return NextResponse.json('Error sometihn')
+  }
 }

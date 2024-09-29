@@ -21,6 +21,7 @@ import { HiEllipsisHorizontal, HiEllipsisVertical } from 'react-icons/hi2'
 import PostDelete from './components/PostDelete'
 import PostOption from './components/PostOption'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json())
 
@@ -80,6 +81,7 @@ export default function Posthome({
   isComment,
   currentId,
 }: Props) {
+  const router = useRouter()
   const { data: Like, mutate: MutaLike } = useSWR<LikeData>(
     `/api/likepost?id=${id}`,
     fetcher
@@ -152,7 +154,7 @@ export default function Posthome({
           'Content-Type': 'application/json',
         },
       })
-      const data = await response.json()
+      router.refresh()
       if (response.ok) {
         setLiked(!liked)
         MutaLike()
@@ -187,12 +189,8 @@ export default function Posthome({
         >
           <div className="flex w-full max-w-full  flex-grow  items-center justify-center ">
             <Text as="b"> {author && author.name}</Text>
-            <div className="divider divider-neutral divider-horizontal mt-3 h-5 w-2 items-center justify-center" />
-            <div className="mb-2 mr-3">
-              {currentId === author?.id && (
-                <div className="badge badge-neutral mt-3">โพสต์ของคุณ</div>
-              )}
-            </div>
+            <div className="divider divider-neutral divider-horizontal mt-2 h-3 w-2 items-center justify-center" />
+
             <div className="  items-center justify-center ">
               <Link href={`/profile/${author?.id}`}>
                 <Text
@@ -201,7 +199,7 @@ export default function Posthome({
                   cursor="pointer"
                   className="hover:underline"
                 >
-                  เยี่ยมชมโปรไฟล์
+                  View Profile
                 </Text>
               </Link>
             </div>

@@ -177,11 +177,7 @@ export default function ArticleHome({
           <div className="flex items-center justify-center ">
             <Text as="b"> {author && author.name}</Text>
             <div className="divider divider-neutral divider-horizontal mt-3 h-5 w-2 items-center justify-center" />
-            <div className="mb-2 mr-3">
-              {currentId === author?.id && (
-                <div className="badge badge-neutral mt-3">โพสต์ของคุณ</div>
-              )}
-            </div>
+
             <div className=" flex place-items-end items-center justify-end ">
               <div className="">
                 {currentId !== author?.id && (
