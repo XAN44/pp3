@@ -25,6 +25,7 @@ import { Metadata } from 'next'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import ContentFollow from '../../../../../components/follow/contentFollow'
+import React from 'react'
 
 export const metadata: Metadata = {
   title: 'Profile',

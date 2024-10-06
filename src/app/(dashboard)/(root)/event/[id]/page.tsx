@@ -1,4 +1,3 @@
-import ArticleCardPage from '@/components/article/articlePage'
 import BlogInEvent from '@/components/event/blogInEvent'
 import CardEvent from '@/components/event/cardEvent'
 import CommentEventandreply from '@/components/event/commentEventandreply'
@@ -17,14 +16,14 @@ import {
 import { TotalVisitEvent } from '@/lib/actions/user.visit'
 import { getCurrentUser } from '@/lib/session'
 import { Container, Heading } from '@radix-ui/themes'
-import { readdirSync } from 'fs'
-import { Rye } from 'next/font/google'
+
 import { redirect } from 'next/navigation'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import EventJoin from '@/components/event/eventJoin'
 import { Metadata } from 'next'
 import { th } from 'date-fns/locale'
 import { format, formatDistanceToNow, parseISO } from 'date-fns'
+import React from 'react'
 
 export const metadata: Metadata = {
   title: 'Event',

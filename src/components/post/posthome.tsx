@@ -1,4 +1,6 @@
 'use client'
+import React from 'react'
+
 import { Badge, Button, Divider, Image, useSwitch } from '@nextui-org/react'
 import { Avatar, AvatarImage } from '../ui/avatar'
 import Followbtn from '../follow/followbtn'
@@ -168,9 +170,9 @@ export default function Posthome({
   return (
     <div className="h-full w-full  ">
       <div className="flex justify-between">
-        <Avatar className="h-14 w-14">
+        <Avatar className="avatar h-14 w-14">
           {author?.image && (
-            <AvatarImage
+            <Image
               src={author?.image || ''}
               alt="profileImage"
               width={250}

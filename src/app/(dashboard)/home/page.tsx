@@ -21,6 +21,7 @@ import VisitBtnPOSTAll from '@/components/visit/visitPost'
 import { Metadata } from 'next'
 import { format, formatDistanceToNow } from 'date-fns'
 import { th } from 'date-fns/locale'
+import React from 'react'
 
 export const metadata: Metadata = {
   title: 'Home',

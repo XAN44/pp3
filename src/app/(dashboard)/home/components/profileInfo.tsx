@@ -1,3 +1,4 @@
+import React from 'react'
 import Fetchprofilehome from '../../../../components/profile/fetchprofilehome'
 import {
   getTotalFollowers,
@@ -59,6 +60,9 @@ const ProfileInfo = async () => {
           }}
         />
       )}
+      <div className="mt-3">
+        <ProfileInfoAbout />
+      </div>
     </div>
   )
 }

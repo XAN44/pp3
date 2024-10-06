@@ -26,6 +26,7 @@ import { CiEdit } from 'react-icons/ci'
 import 'react-quill/dist/quill.snow.css'
 import dynamic from 'next/dynamic'
 import axios from 'axios'
+import React from 'react'
 
 const DynamicQuill = dynamic(() => import('react-quill'), { ssr: false })
 

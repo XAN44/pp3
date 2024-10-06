@@ -1,5 +1,4 @@
 'use client'
-
 import { Text } from '@chakra-ui/react'
 import useSWR from 'swr'
 import { Avatar, Image } from '@nextui-org/react'
@@ -12,6 +11,7 @@ import POSTFORM from '../post/postform'
 import ArticleForm from '../article/articleForm'
 import EventForm from '../event/eventForm'
 import { AvatarImage } from '@radix-ui/react-avatar'
+import React from 'react'
 
 interface Props {
   accountId: string
@@ -99,7 +99,7 @@ function Fetchprofilehome({
       "
       >
         <div className="mt-4 grid w-full items-center justify-center text-center">
-          <div className="flex flex-col items-center justify-center">
+          <div className="avatar flex flex-col items-center justify-center">
             <Image
               src={image}
               width={100}
