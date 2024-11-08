@@ -209,10 +209,7 @@ export default function PostPage({
   }
   return (
     <>
-      <div className="">
-        <Text as="b">This is a POST</Text>
-      </div>
-      <div className=" flex  h-full w-full items-center ">
+      <div className=" mt-6  flex h-full w-full items-center ">
         <div className="flex rounded-lg p-3 shadow-xl ring-1 ring-gray-400   ">
           {/* TODO: Image && Name */}
 
@@ -225,14 +222,7 @@ export default function PostPage({
               <Text>{author && author.bio}</Text>
             </div>
           </Flex>
-          {currentId !== authorId && (
-            <Followbtn
-              key={authorId}
-              ProfileId={currentId}
-              isFollowing={authorId || ''}
-              checkFollow={isFollow}
-            />
-          )}
+
           <div className="m-3 flex items-center justify-center gap-6 space-x-10 text-center xl:grid xl:items-start xl:justify-start xl:space-x-0 xl:text-start"></div>
           <div className="flex flex-col">
             <p>

@@ -35,7 +35,12 @@ export default async function Workus() {
           <Text as="b" color="red" fontSize="2xl">
             ช่องทางหลัก
           </Text>
-          <Text className="mb-3 mt-3">E-mail : Watthanai45r@gmail.com</Text>
+          <p>
+            หากท่านต้องการร้องเรียนเนื้อหาที่ไม่เหมาะสม และต้องการสอบถามอื่นๆ
+          </p>
+          <Text as="b" className="mb-3 mt-3">
+            E-mail : Watthanai45r@gmail.com
+          </Text>
           <br />
 
           <div className="mt-3 flex flex-col space-y-3">
@@ -74,7 +79,7 @@ export default async function Workus() {
                 <Image src="/ig.png" alt="youtube" width="32" height="32" />:
                 INSTRAGRAM
               </Text>
-              <Text className="btn-prim btn btn flex place-items-center justify-center gap-3 text-center">
+              <Text className="flex place-items-center justify-center gap-3 text-center">
                 <Image src="/tiktok.png" alt="youtube" width="32" height="32" />
                 : TIKTOK
               </Text>

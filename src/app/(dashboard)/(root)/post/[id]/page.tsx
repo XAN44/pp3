@@ -35,16 +35,16 @@ const Page = async ({ params }: { params: { id: string } }) => {
   if (!userInfo) redirect('/profile')
 
   const ArticleBy = await FetchPOSTeByID(params.id)
-  const userfollow = await getTotalFollowers(params.id)
-  const userfollowing = await getTotalFollowing(params.id)
-  const checkFollower = await CheckFollow(params.id, user.id)
+  const userfollow = await getTotalFollowers(ArticleBy.authorId as string)
+  const userfollowing = await getTotalFollowing(ArticleBy.authorId as string)
+  const checkFollower = await CheckFollow(ArticleBy.authorId as string, user.id)
 
   return (
     <Container className="  ">
       <div className="">
         <PostPage
-          key={ArticleBy?.id}
-          id={ArticleBy?.id}
+          key={ArticleBy.id}
+          id={ArticleBy.id}
           currentId={user.id}
           articleContent={ArticleBy?.content}
           ArticleImage={ArticleBy.ImagePost}

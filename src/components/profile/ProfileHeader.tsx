@@ -151,14 +151,16 @@ function ProfileHeader({
           </div>
         </div>
 
-        {accountId !== authUserId && (
-          <Followbtn
-            key={authUserId}
-            ProfileId={accountId}
-            isFollowing={authUserId}
-            checkFollow={isFollow}
-          />
-        )}
+        <div className="flex w-full items-center justify-center">
+          {accountId !== authUserId && (
+            <Followbtn
+              key={authUserId}
+              ProfileId={accountId}
+              isFollowing={authUserId}
+              checkFollow={isFollow}
+            />
+          )}
+        </div>
 
         <div className="mt-3 flex items-center justify-center space-x-10 text-center xl:grid xl:items-start xl:justify-start xl:space-x-0 xl:text-start">
           <div className="flex ">
