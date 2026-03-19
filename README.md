@@ -1,32 +1,26 @@
 # 🏘️ Community Platform — Graduation Project
 
 เว็บไซต์ชุมชนออนไลน์สำหรับกระจายข่าวสาร จัดกิจกรรม 
-และเชื่อมต่อผู้คนในชุมชนเดียวกัน
-
----
-
-## 🎯 จุดประสงค์
-
-แก้ปัญหาการสื่อสารในชุมชนที่กระจัดกระจาย 
-รวมทุกอย่างไว้ในที่เดียว — ข่าวสาร, กิจกรรม, 
-และการพูดคุยแบบ Real-time
+และเชื่อมต่อผู้คนในชุมชนเดียวกัน สร้างขึ้นเพื่อแก้ปัญหา
+การสื่อสารที่กระจัดกระจายภายในชุมชน
 
 ---
 
 ## ✨ Features
 
 **Content**
-- 📰 Blog — เขียนบทความและแชร์ข่าวสารชุมชน
-- 📅 Event — สร้างและจัดการกิจกรรม/การนัดหมาย
+- 📰 Blog — เขียนบทความด้วย Rich Text Editor (Tiptap/Quill)
+- 📅 Event — สร้างและจัดการกิจกรรม/การนัดหมายในชุมชน
 - 📝 Post — แชร์เนื้อหาชีวิตประจำวัน
 
 **Social**
+- 💬 Real-time Chat ด้วย Socket.io + Pusher
 - 👍 Like / Follow — ติดตามและมีส่วนร่วมกับเนื้อหา
-- 💬 Real-time Chat — พูดคุยแบบ Real-time ด้วย Socket.io
 - 👤 User Profile — จัดการโปรไฟล์ส่วนตัว
 
-**Auth**
-- 🔐 Google OAuth ผ่าน Auth.js
+**Auth & Upload**
+- 🔐 Google OAuth ผ่าน NextAuth
+- 🖼️ อัปโหลดรูปภาพผ่าน Cloudinary / EdgeStore / Uploadthing
 
 ---
 
@@ -34,11 +28,15 @@
 
 | Category | Technology |
 |---|---|
-| Framework | Next.js (App Router), TypeScript |
-| Real-time | Socket.io (via custom server) |
-| Auth | Auth.js + Google OAuth |
+| Framework | Next.js 14, TypeScript |
+| Real-time | Socket.io + Pusher |
+| Auth | NextAuth (Auth.js) + Google OAuth |
 | ORM | Prisma |
-| UI | TailwindCSS + shadcn/ui |
+| Database | PostgreSQL / MySQL / Supabase |
+| State | Zustand + SWR |
+| UI | TailwindCSS, Radix UI, NextUI, Mantine, Chakra UI |
+| Form | React Hook Form + Zod |
+| Editor | Tiptap + Quill |
 | Dev Watch | Nodemon |
 
 ---
@@ -46,19 +44,22 @@
 ## 📁 โครงสร้างสำคัญ
 ```
 pp3/
-├── server/          # Custom server — Socket.io + Next.js
+├── server/          # Custom server — Socket.io + Express
 ├── prisma/          # Database schema
-├── src/             # Next.js app directory
 ├── drawing.drawio   # Database design diagram
 ├── rest.http        # API testing
+├── src/             # Next.js app directory
 └── nodemon.json     # Watch server
 ```
 
 ---
 
-## ⚠️ หมายเหตุ
+## 🚀 เริ่มใช้งาน
+```bash
+npm install
+cp .env.example .env   # ตั้งค่า DATABASE_URL, NEXTAUTH_SECRET, Google OAuth
+npx prisma db push
+npm run dev
+```
 
-- ต้องรันผ่าน custom server เสมอ 
-  ไม่ใช่ `next dev` ตรงๆ
-- ไม่รองรับ deploy บน Vercel 
-  เพราะมี Socket.io
+> ⚠️ ต้องรันผ่าน custom server เสมอ — ไม่รองรับ Vercel
