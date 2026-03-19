@@ -44,3 +44,21 @@
 ---
 
 ## 📁 โครงสร้างสำคัญ
+```
+pp3/
+├── server/          # Custom server — Socket.io + Next.js
+├── prisma/          # Database schema
+├── src/             # Next.js app directory
+├── drawing.drawio   # Database design diagram
+├── rest.http        # API testing
+└── nodemon.json     # Watch server
+```
+
+---
+
+## ⚠️ หมายเหตุ
+
+- ต้องรันผ่าน custom server เสมอ 
+  ไม่ใช่ `next dev` ตรงๆ
+- ไม่รองรับ deploy บน Vercel 
+  เพราะมี Socket.io
